@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project data: raw originals must not be committed
+data/raw/*
+!data/raw/.gitkeep
