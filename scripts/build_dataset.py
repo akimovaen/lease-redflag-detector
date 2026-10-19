@@ -1,10 +1,13 @@
 """Build the lease text dataset from the ALeaseBERT annotations.
 
-Selects leases for group A (plain text) and group B (OCR scans, built later),
-converts group A to text files and writes data/texts/manifest.csv.
+Selects leases for group A (plain text) and group B (simulated scans read back
+with OCR), writes them to data/texts/ and writes data/texts/manifest.csv.
 
 The `dirt` column combines automatic heuristics with manual corrections from
 data/texts/dirt_manual.csv (columns: id, add, remove; tags separated by ";").
+
+Scans and their OCR output are cached in data/raw/scans/; delete that folder
+to rebuild them after changing the noise settings in scan.py.
 
 Usage: uv run python scripts/build_dataset.py
 """
@@ -14,12 +17,16 @@ import itertools
 import json
 import random
 import re
+import zlib
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from pathlib import Path
 
+import scan
+
 ROOT = Path(__file__).resolve().parent.parent
 POOL = ROOT / "data/raw/aleasebert/annotated/pool"
+SCANS = ROOT / "data/raw/scans"
 TEXTS = ROOT / "data/texts"
 MANIFEST = TEXTS / "manifest.csv"
 DIRT_MANUAL = TEXTS / "dirt_manual.csv"
@@ -43,6 +50,8 @@ BUCKETS = {
     (2_000, 5_000): {"A": 5, "B": 3},
     (5_000, MAX_WORDS + 1): {"A": 6, "B": 0},
 }
+# Noise level for each group B lease, in selection order.
+OCR_NOISE_PLAN = ["light", "medium", "heavy", "light", "medium"]
 
 DIRT_TAGS = {
     "ocr",  # went through OCR (group B)
@@ -73,6 +82,7 @@ MANIFEST_FIELDS = [
     "words",
     "mvp_flags",
     "dirt",
+    "ocr_noise",
     "license",
     "golden",
 ]
@@ -196,6 +206,45 @@ def select(leases: list[Lease]) -> dict[str, list[Lease]]:
     return picked
 
 
+def scanned_text(text_id: str, lease: Lease, noise: scan.Noise) -> str:
+    """OCR text of a simulated scan of the lease, cached in data/raw/scans/."""
+    cached = SCANS / f"{text_id}.{noise.name}.txt"
+    if cached.exists():
+        return cached.read_text(encoding="utf-8")
+    seed = zlib.crc32(lease.source_id.encode())
+    text = scan.scan(lease.paragraphs, noise, seed, SCANS / f"{text_id}.pdf")
+    cached.write_text(text, encoding="utf-8")
+    return text
+
+
+def write_text(
+    text_id: str,
+    group: str,
+    lease: Lease,
+    text: str,
+    detected_dirt: set[str],
+    manual_dirt: dict[str, tuple[set[str], set[str]]],
+    ocr_noise: str = "",
+) -> dict[str, str | int]:
+    """Writes the text file and returns its manifest row."""
+    (TEXTS / f"{text_id}.txt").write_text(text, encoding="utf-8")
+    add, remove = manual_dirt.get(text_id, (set(), set()))
+    dirt = (detected_dirt | add) - remove
+    return {
+        "id": text_id,
+        "group": group,
+        "source": "ALeaseBERT",
+        "source_id": lease.source_id,
+        "language": "en",
+        "words": len(text.split()),
+        "mvp_flags": ";".join(sorted(lease.mvp_flags)),
+        "dirt": ";".join(sorted(dirt)),
+        "ocr_noise": ocr_noise,
+        "license": "CC BY-NC 4.0",
+        "golden": "",
+    }
+
+
 def main() -> None:
     leases = [load_lease(path) for path in sorted(POOL.glob("*.ann.json"))]
     picked = select(leases)
@@ -204,36 +253,31 @@ def main() -> None:
     TEXTS.mkdir(parents=True, exist_ok=True)
     rows = []
     for lease in picked["A"]:
-        text_id = f"alb_{lease.source_id}"
-        add, remove = manual_dirt.get(text_id, (set(), set()))
-        dirt = (detect_dirt(lease.paragraphs) | add) - remove
-        (TEXTS / f"{text_id}.txt").write_text(
-            "\n".join(lease.paragraphs) + "\n", encoding="utf-8"
-        )
+        text = "\n".join(lease.paragraphs) + "\n"
+        dirt = detect_dirt(lease.paragraphs)
         rows.append(
-            {
-                "id": text_id,
-                "group": "A",
-                "source": "ALeaseBERT",
-                "source_id": lease.source_id,
-                "language": "en",
-                "words": lease.words,
-                "mvp_flags": ";".join(sorted(lease.mvp_flags)),
-                "dirt": ";".join(sorted(dirt)),
-                "license": "CC BY-NC 4.0",
-                "golden": "",
-            }
+            write_text(f"alb_{lease.source_id}", "A", lease, text, dirt, manual_dirt)
         )
+
+    for lease, noise_name in zip(picked["B"], OCR_NOISE_PLAN, strict=True):
+        text_id = f"ocr_{lease.source_id}"
+        noise = scan.NOISE_LEVELS[noise_name]
+        text = scanned_text(text_id, lease, noise)
+        # OCR misreads like "éach" look like foreign words, so the language
+        # check runs on the original text.
+        dirt = (detect_dirt(text.split("\n")) - {"mixed_lang"}) | {"ocr"}
+        dirt |= detect_dirt(lease.paragraphs) & {"mixed_lang"}
+        rows.append(
+            write_text(text_id, "B", lease, text, dirt, manual_dirt, noise_name)
+        )
+        print(f"Group B: scanned {lease.source_id} ({noise_name} noise)")
 
     with MANIFEST.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=MANIFEST_FIELDS)
         writer.writeheader()
         writer.writerows(rows)
 
-    print(f"Group A: wrote {len(rows)} texts to {TEXTS.relative_to(ROOT)}")
-    print("Group B (OCR, not built yet):")
-    for lease in picked["B"]:
-        print(f"  {lease.source_id} ({lease.words} words)")
+    print(f"Wrote {len(rows)} texts to {TEXTS.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":
