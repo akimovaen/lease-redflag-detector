@@ -222,3 +222,6 @@ __marimo__/
 # Project data: raw originals must not be committed
 data/raw/*
 !data/raw/.gitkeep
+
+# macOS
+.DS_Store
