@@ -1,0 +1,67 @@
+{
+  "text_id": "alb_lease_contract_201",
+  "config": "qwen3-8b-t07",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8
+  },
+  "created_at": "2026-10-28T10:47:55+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 29.699,
+  "input_tokens": 1289,
+  "output_tokens": 527,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Bozhou Fengyi Chinese Medicine Development and Research Institute",
+    "lessee": "Anhui Xuelingxian Pharmaceutical Co., Ltd.",
+    "premises_address": "East Liuge Village, Weiwu Road, Bozhou",
+    "area": {
+      "value": 10000.0,
+      "unit": "sqm"
+    },
+    "start_date": "2008-08-01",
+    "end_date": "2023-07-31",
+    "rent": {
+      "amount": 1200000.0,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B has the priority to lease the house after the contract expires, and it can extend the lease term with negotiation of Party A if it cannot find the house promptly after the contract expires."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B can decorate the house without affecting the house structure, but the scale, scope, process and materials shall be approved by Party A, and then the construction work can be carried out."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party A transfers the house ownership to the third party according to the legal procedures, this contract continues to take effect to the new house owner without the agreement."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall get the approval of Party A if it intends to exchange the house with others, and Party A shall support the reasonable demand of Party B."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If the contract is terminated owing to the above reasons, the rent will be calculated by the actual using time, and it will refund the difference."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The two parties shall not take the responsibility for each other if they have the loss that the house is removed or rebuilt owing to the demand of municipal construction."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The two parties take no responsibilities if the house is damaged or Party B has loss owing to the force majeure."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Bozhou Fengyi Chinese Medicine Development and Research Institute\",\n  \"lessee\": \"Anhui Xuelingxian Pharmaceutical Co., Ltd.\",\n  \"premises_address\": \"East Liuge Village, Weiwu Road, Bozhou\",\n  \"area\": {\n    \"value\": 10000,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2008-08-01\",\n  \"end_date\": \"2023-07-31\",\n  \"rent\": {\n    \"amount\": 1200000,\n    \"currency\": \"CNY\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B has the priority to lease the house after the contract expires, and it can extend the lease term with negotiation of Party A if it cannot find the house promptly after the contract expires.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B can decorate the house without affecting the house structure, but the scale, scope, process and materials shall be approved by Party A, and then the construction work can be carried out.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party A transfers the house ownership to the third party according to the legal procedures, this contract continues to take effect to the new house owner without the agreement.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall get the approval of Party A if it intends to exchange the house with others, and Party A shall support the reasonable demand of Party B.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If the contract is terminated owing to the above reasons, the rent will be calculated by the actual using time, and it will refund the difference.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The two parties shall not take the responsibility for each other if they have the loss that the house is removed or rebuilt owing to the demand of municipal construction.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The two parties take no responsibilities if the house is damaged or Party B has loss owing to the force majeure.\"\n    }\n  ]\n}"
+}

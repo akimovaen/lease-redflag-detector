@@ -1,0 +1,80 @@
+[
+  {
+    "config": "claude-sonnet-medium",
+    "model": "claude-sonnet-5-5",
+    "prompt": "extraction/v1",
+    "sampling": "effort=medium",
+    "texts": 20,
+    "valid_pct": 100.0,
+    "field_accuracy": 0.9365079365079365,
+    "flag_precision": 0.9230769230769231,
+    "flag_recall": 0.6666666666666666,
+    "flag_f1": 0.7741935483870968,
+    "latency_p50_s": 3.4495,
+    "latency_p95_s": 9.142650000000001,
+    "cost_per_1000_usd": 27.1054,
+    "per_field": {
+      "document_type": 1.0,
+      "lessor": 1.0,
+      "lessee": 1.0,
+      "premises_address": 0.8571428571428571,
+      "area": 0.8571428571428571,
+      "start_date": 1.0,
+      "end_date": 1.0,
+      "rent": 0.8571428571428571,
+      "indexation": 0.8571428571428571
+    }
+  },
+  {
+    "config": "qwen3-8b-t0",
+    "model": "qwen3:8b",
+    "prompt": "extraction/v1",
+    "sampling": "temperature=0.0, top_p=1.0",
+    "texts": 20,
+    "valid_pct": 25.0,
+    "field_accuracy": 0.25396825396825395,
+    "flag_precision": 0.75,
+    "flag_recall": 0.16666666666666666,
+    "flag_f1": 0.27272727272727276,
+    "latency_p50_s": 240.72500000000002,
+    "latency_p95_s": 358.903,
+    "cost_per_1000_usd": 0.0,
+    "per_field": {
+      "document_type": 0.2857142857142857,
+      "lessor": 0.2857142857142857,
+      "lessee": 0.2857142857142857,
+      "premises_address": 0.14285714285714285,
+      "area": 0.14285714285714285,
+      "start_date": 0.2857142857142857,
+      "end_date": 0.2857142857142857,
+      "rent": 0.2857142857142857,
+      "indexation": 0.2857142857142857
+    }
+  },
+  {
+    "config": "qwen3-8b-t07",
+    "model": "qwen3:8b",
+    "prompt": "extraction/v1",
+    "sampling": "temperature=0.7, top_p=0.8",
+    "texts": 20,
+    "valid_pct": 25.0,
+    "field_accuracy": 0.25396825396825395,
+    "flag_precision": 0.5,
+    "flag_recall": 0.1111111111111111,
+    "flag_f1": 0.1818181818181818,
+    "latency_p50_s": 252.8305,
+    "latency_p95_s": 366.97685,
+    "cost_per_1000_usd": 0.0,
+    "per_field": {
+      "document_type": 0.2857142857142857,
+      "lessor": 0.2857142857142857,
+      "lessee": 0.2857142857142857,
+      "premises_address": 0.2857142857142857,
+      "area": 0.14285714285714285,
+      "start_date": 0.2857142857142857,
+      "end_date": 0.2857142857142857,
+      "rent": 0.14285714285714285,
+      "indexation": 0.2857142857142857
+    }
+  }
+]

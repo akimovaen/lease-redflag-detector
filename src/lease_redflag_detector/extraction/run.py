@@ -29,6 +29,10 @@ def make_extractor(config: RunConfig) -> Extractor:
         )
 
         return AnthropicExtractor(config)
+    if config.provider == "ollama":
+        from lease_redflag_detector.extraction.ollama_extractor import OllamaExtractor
+
+        return OllamaExtractor(config)
     raise ValueError(f"unsupported provider: {config.provider}")
 
 
@@ -67,7 +71,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--only", nargs="+", metavar="ID", help="run these texts only")
-    parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument(
+        "--workers",
+        type=int,
+        help="parallel requests (default: 4 for APIs, 1 for a local model, "
+        "so that latency is not inflated by queueing)",
+    )
     args = parser.parse_args()
 
     load_dotenv(ROOT / ".env")
@@ -76,9 +85,10 @@ def main() -> None:
     out_dir = RESULTS / config.name
     out_dir.mkdir(parents=True, exist_ok=True)
     ids = args.only or text_ids()
+    workers = args.workers or (1 if config.provider == "ollama" else 4)
 
     print(f"{config.name}: {len(ids)} texts → {out_dir.relative_to(ROOT)}/")
-    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+    with ThreadPoolExecutor(max_workers=workers) as pool:
         records = list(pool.map(lambda i: run_one(extractor, i, out_dir), ids))
     for r in records:
         line = f"  {r['text_id']:<28} {r['status']:<6} {r['latency_s']:>7.1f}s"

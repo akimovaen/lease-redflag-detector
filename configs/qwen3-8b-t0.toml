@@ -1,0 +1,13 @@
+# Local model, greedy decoding: the most deterministic output.
+name = "qwen3-8b-t0"
+provider = "ollama"
+model = "qwen3:8b"
+prompt = "extraction/v1"
+max_tokens = 4000
+timeout_s = 900
+max_retries = 2
+context_tokens = 32768
+
+[sampling]
+temperature = 0.0
+top_p = 1.0

@@ -1,9 +1,14 @@
 CONFIG ?= configs/claude-sonnet-medium.toml
 
-.PHONY: run test lint
+.PHONY: run extract metrics test lint
 
-run:
+run: extract metrics
+
+extract:
 	uv run python -m lease_redflag_detector.extraction.run --config $(CONFIG)
+
+metrics:
+	uv run python -m lease_redflag_detector.extraction.metrics
 
 test:
 	uv run pytest

@@ -27,6 +27,7 @@ class RunConfig(BaseModel):
     max_tokens: int = 8000
     timeout_s: float = 180
     max_retries: int = 3
+    context_tokens: int | None = None  # context window of a local model
     sampling: dict[str, str | float | int] = {}
 
     @classmethod

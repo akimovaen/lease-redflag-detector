@@ -1,0 +1,76 @@
+{
+  "text_id": "ocr_lease_contract_11",
+  "config": "qwen3-8b-t0",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "created_at": "2026-10-28T10:38:27+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 52.968,
+  "input_tokens": 2960,
+  "output_tokens": 760,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Shanghai New Cogi Cosmetic Co., Ltd.",
+    "lessee": "Shanghai Mecox Lane Information Technology Co., Ltd.",
+    "premises_address": "west part of 17th Floor, Diamond Building, 487 Tianlin Road, Xuluai District, Shanghai",
+    "area": null,
+    "start_date": "2009-08-20",
+    "end_date": "2012-08-19",
+    "rent": {
+      "amount": 85330.0,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "sublease_permitted",
+        "quote": "Party B may sublet part or the whole of the Premises to another party during the tenancy."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B wishes to renew the lease, a written request shall be provided to Party A two months prior to the expiration of the term of the lease."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A shall repair them within 2 days from the date of receipt of the notice. If Party A fails to repair in time, Party B may repair them at the cost of Party A."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B early surrenders the lease other than in accordance with the provisions herein during the tenancy, the Deposit paid by Party B shall not be returned."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If the said liquidated damages are insufficient to make up for the losses suffered by the other party, the defaulting party shall further compensate for the balance thereof:"
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A shall be liable to compensate Party B for its losses occasioned by Party A’s failure to inform Party B that the Premises have been mortgaged or the transfer of the ownership of the Premises has been restricted before the leasing of"
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A shall be liable to compensate Party B for its property damage or personal injury occasioned by Party's failure to perform its obligations as contained herein related to the reparation and maintenance of the Premises during the"
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "In the event that Party A early terminates this Contract and take back the Premises other than in accordance with the provisions herein contained during the tenancy. it shall pay Party B a penalty as liquidated damages equal to twice of the rent for the days of the early termination."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In the event that Party B decorates the Premises or installs other ancillary facilities without written consent of Party A or beyond the scope and requirement thereof, Party A may require Party B to recover the Premises or compensate for its losses."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In the event that Party B early surrenders the lease other than in accordance with the provisions herein during the tenancy, the Deposit paid by Party B shall not be returned."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Shanghai New Cogi Cosmetic Co., Ltd.\",\n  \"lessee\": \"Shanghai Mecox Lane Information Technology Co., Ltd.\",\n  \"premises_address\": \"west part of 17th Floor, Diamond Building, 487 Tianlin Road, Xuluai District, Shanghai\",\n  \"area\": null,\n  \"start_date\": \"2009-08-20\",\n  \"end_date\": \"2012-08-19\",\n  \"rent\": {\n    \"amount\": 85330,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Party B may sublet part or the whole of the Premises to another party during the tenancy.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B wishes to renew the lease, a written request shall be provided to Party A two months prior to the expiration of the term of the lease.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A shall repair them within 2 days from the date of receipt of the notice. If Party A fails to repair in time, Party B may repair them at the cost of Party A.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B early surrenders the lease other than in accordance with the provisions herein during the tenancy, the Deposit paid by Party B shall not be returned.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If the said liquidated damages are insufficient to make up for the losses suffered by the other party, the defaulting party shall further compensate for the balance thereof:\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A shall be liable to compensate Party B for its losses occasioned by Party A’s failure to inform Party B that the Premises have been mortgaged or the transfer of the ownership of the Premises has been restricted before the leasing of\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A shall be liable to compensate Party B for its property damage or personal injury occasioned by Party's failure to perform its obligations as contained herein related to the reparation and maintenance of the Premises during the\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"In the event that Party A early terminates this Contract and take back the Premises other than in accordance with the provisions herein contained during the tenancy. it shall pay Party B a penalty as liquidated damages equal to twice of the rent for the days of the early termination.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In the event that Party B decorates the Premises or installs other ancillary facilities without written consent of Party A or beyond the scope and requirement thereof, Party A may require Party B to recover the Premises or compensate for its losses.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In the event that Party B early surrenders the lease other than in accordance with the provisions herein during the tenancy, the Deposit paid by Party B shall not be returned.\"\n    }\n  ]\n}"
+}
