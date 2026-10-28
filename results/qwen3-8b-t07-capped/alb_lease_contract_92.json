@@ -1,0 +1,70 @@
+{
+  "text_id": "alb_lease_contract_92",
+  "config": "qwen3-8b-t07-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T12:55:34+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 62.608,
+  "input_tokens": 4356,
+  "output_tokens": 783,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Li Yang",
+    "lessee": "Quan Toodou Network Science and Technology Co., Ltd.",
+    "premises_address": "Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing",
+    "area": null,
+    "start_date": "2009-08-11",
+    "end_date": "2011-08-10",
+    "rent": {
+      "amount": 43854.08,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "sublease_permitted",
+        "quote": "Without the consent of Party A, Party B may not sublease or assign the Leased Unit or any part thereof to any third party, or jointly use the same with any third party."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B can not continue to use the Leased Unit due to any administration or penalty by any government authority regarding the registration or recordation of the Leased Unit, it shall not be deemed as breach of contract by Party B, and this Contract shall be terminated automatically after Party A has fully refunded the security deposit as mentioned in Article 5.1 above."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If either Party is unable to perform this Contract due to earthquake, storm, hail, fire or any other event of force majeure which is unforeseeable, inevitable or uncontrollable, the influenced party shall be released from any liability relating thereto."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Neither Party may terminate this Contract except for any cause listed in Article 11 above. If Party B intends to terminate this Contract, this Contract will become terminated automatically after the security deposit paid by Party B is retained by Party A; if Party A intends to terminate this Contract, this Contract may become terminated only if Party A has paid to Party B the compensation equal to two months’ rent, in addition to the refund of Party B’s security deposit."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B violates any term or condition of this Contract and fails to make remedy within fourteen (14) days upon receipt of a written notice from Party A, this Contract shall be terminated automatically and the lease term shall be expired after fourteen (14) days upon delivery of a written notice from Party A. In that case, Party B shall evacuate from the Leased Unit and return the Leased Unit to Party A."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "During the lease term, Party A shall ensure Party B may peacefully occupy and use the Leased Unit without any disturbance of Party A or Party A’s agent, provided that Party B has paid the due and payable rent hereunder and comply with all terms and conditions of this Contract."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B may not use the exterior wall of the building."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B fails to pay any due and payable rent for more than fifteen (15) days without justifiable reason, Party A may terminate this Contract."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Li Yang\",\n  \"lessee\": \"Quan Toodou Network Science and Technology Co., Ltd.\",\n  \"premises_address\": \"Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing\",\n  \"area\": null,\n  \"start_date\": \"2009-08-11\",\n  \"end_date\": \"2011-08-10\",\n  \"rent\": {\n    \"amount\": 43854.08,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Without the consent of Party A, Party B may not sublease or assign the Leased Unit or any part thereof to any third party, or jointly use the same with any third party.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B can not continue to use the Leased Unit due to any administration or penalty by any government authority regarding the registration or recordation of the Leased Unit, it shall not be deemed as breach of contract by Party B, and this Contract shall be terminated automatically after Party A has fully refunded the security deposit as mentioned in Article 5.1 above.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If either Party is unable to perform this Contract due to earthquake, storm, hail, fire or any other event of force majeure which is unforeseeable, inevitable or uncontrollable, the influenced party shall be released from any liability relating thereto.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Neither Party may terminate this Contract except for any cause listed in Article 11 above. If Party B intends to terminate this Contract, this Contract will become terminated automatically after the security deposit paid by Party B is retained by Party A; if Party A intends to terminate this Contract, this Contract may become terminated only if Party A has paid to Party B the compensation equal to two months’ rent, in addition to the refund of Party B’s security deposit.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B violates any term or condition of this Contract and fails to make remedy within fourteen (14) days upon receipt of a written notice from Party A, this Contract shall be terminated automatically and the lease term shall be expired after fourteen (14) days upon delivery of a written notice from Party A. In that case, Party B shall evacuate from the Leased Unit and return the Leased Unit to Party A.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"During the lease term, Party A shall ensure Party B may peacefully occupy and use the Leased Unit without any disturbance of Party A or Party A’s agent, provided that Party B has paid the due and payable rent hereunder and comply with all terms and conditions of this Contract.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B may not use the exterior wall of the building.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B fails to pay any due and payable rent for more than fifteen (15) days without justifiable reason, Party A may terminate this Contract.\"\n    }\n  ]\n}"
+}

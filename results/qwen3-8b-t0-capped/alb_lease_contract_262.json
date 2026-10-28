@@ -1,0 +1,70 @@
+{
+  "text_id": "alb_lease_contract_262",
+  "config": "qwen3-8b-t0-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T12:28:18+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 38.865,
+  "input_tokens": 2299,
+  "output_tokens": 610,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "The Fifth Season Liyang Investment Management Co., Ltd.",
+    "lessee": "Quan Ju Xiang Catering",
+    "premises_address": "4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road",
+    "area": null,
+    "start_date": "2010-08-01",
+    "end_date": "2022-07-31",
+    "rent": {
+      "amount": 836000.0,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B needs to extent the lease, should submit written application to Party A 3 months before the end of the lease. After Party A agrees, both parties will sign a new contract. If no application received during this period, Party A has the right to lease the property to others."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B can perform any marketing activity without Party A’s permission. But has to report to Party A to keep record."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B can not house anyone without identification. Party B is responsible for the fire control and safety of the property. Party A is not responsible for any damage to either host or clients."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B is responsible for all the sales and service in the property. Party A is not responsible for any damage."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Without Party A’s permission, Party B can not lease part or all, or exchange lease of this property."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A is responsible for the damage of the main structure unless damage due to Party B or its customer."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B has not paid rent on time according to contract for more than 30 days, Party A has the right to terminate the contract, retake the property, and confiscate the deposit. Party B needs to compensate Party A with an amount equivalent to 3 months rent."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If can not operate due to Party A’s breach of contract, Party B has right to terminate the contract. And Party A is responsible for any damage to Party B including but not limited to renovation cost, operation loss and legal fees."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"The Fifth Season Liyang Investment Management Co., Ltd.\",\n  \"lessee\": \"Quan Ju Xiang Catering\",\n  \"premises_address\": \"4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road\",\n  \"area\": null,\n  \"start_date\": \"2010-08-01\",\n  \"end_date\": \"2022-07-31\",\n  \"rent\": {\n    \"amount\": 836000,\n    \"currency\": \"CNY\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B needs to extent the lease, should submit written application to Party A 3 months before the end of the lease. After Party A agrees, both parties will sign a new contract. If no application received during this period, Party A has the right to lease the property to others.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B can perform any marketing activity without Party A’s permission. But has to report to Party A to keep record.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B can not house anyone without identification. Party B is responsible for the fire control and safety of the property. Party A is not responsible for any damage to either host or clients.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B is responsible for all the sales and service in the property. Party A is not responsible for any damage.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Without Party A’s permission, Party B can not lease part or all, or exchange lease of this property.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A is responsible for the damage of the main structure unless damage due to Party B or its customer.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B has not paid rent on time according to contract for more than 30 days, Party A has the right to terminate the contract, retake the property, and confiscate the deposit. Party B needs to compensate Party A with an amount equivalent to 3 months rent.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If can not operate due to Party A’s breach of contract, Party B has right to terminate the contract. And Party A is responsible for any damage to Party B including but not limited to renovation cost, operation loss and legal fees.\"\n    }\n  ]\n}"
+}

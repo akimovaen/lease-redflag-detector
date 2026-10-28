@@ -1,0 +1,55 @@
+{
+  "text_id": "alb_lease_contract_92",
+  "config": "claude-haiku-medium",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T12:24:07+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 11.795,
+  "input_tokens": 8493,
+  "output_tokens": 2820,
+  "stop_reason": "end_turn",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Li Yang",
+    "lessee": "Quan Toodou Network Science and Technology Co., Ltd.",
+    "premises_address": "Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing",
+    "area": {
+      "value": 436.54,
+      "unit": "sqm"
+    },
+    "start_date": "2009-08-11",
+    "end_date": "2011-08-10",
+    "rent": {
+      "amount": 43854.08,
+      "currency": "RMB",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "service_charges_limited",
+        "quote": "(change to any of the costs will not change the total amount of the rent)"
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B can not continue to use the Leased Unit due to any administration or penalty by any government authority regarding the registration or recordation of the Leased Unit, it shall not be deemed as breach of contract by Party B, and this Contract shall be terminated automatically after Party A has fully refunded the security deposit as mentioned in Article 5.1 above."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B intends to terminate this Contract, this Contract will become terminated automatically after the security deposit paid by Party B is retained by Party A;"
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "the rate of rent in the renewed contract shall be no more than 125% of the initial rate of rent"
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Li Yang\",\"lessee\":\"Quan Toodou Network Science and Technology Co., Ltd.\",\"premises_address\":\"Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing\",\"area\":{\"value\":436.54,\"unit\":\"sqm\"},\"start_date\":\"2009-08-11\",\"end_date\":\"2011-08-10\",\"rent\":{\"amount\":43854.08,\"currency\":\"RMB\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"service_charges_limited\",\"quote\":\"(change to any of the costs will not change the total amount of the rent)\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party B can not continue to use the Leased Unit due to any administration or penalty by any government authority regarding the registration or recordation of the Leased Unit, it shall not be deemed as breach of contract by Party B, and this Contract shall be terminated automatically after Party A has fully refunded the security deposit as mentioned in Article 5.1 above.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party B intends to terminate this Contract, this Contract will become terminated automatically after the security deposit paid by Party B is retained by Party A;\"},{\"type\":\"indexation_limited\",\"quote\":\"the rate of rent in the renewed contract shall be no more than 125% of the initial rate of rent\"}]}"
+}

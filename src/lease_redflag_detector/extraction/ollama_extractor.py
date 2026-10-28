@@ -1,8 +1,10 @@
 """Extraction with a local model served by Ollama.
 
 The output schema is enforced by Ollama's structured outputs (`format`), which
-constrains decoding to the JSON schema. Connection errors and timeouts are retried
-with exponential backoff.
+constrains decoding to the JSON schema. `max_red_flags` in the config adds
+`maxItems` to that schema: small models can loop on the list until they run out
+of tokens, and the grammar then closes the list instead. Connection errors and
+timeouts are retried with exponential backoff.
 """
 
 import os
@@ -18,13 +20,19 @@ from lease_redflag_detector.extraction.extractor import (
 )
 from lease_redflag_detector.extraction.schema import LeaseAbstract
 
-SCHEMA = LeaseAbstract.model_json_schema()
+
+def output_schema(max_red_flags: int | None) -> dict:
+    schema = LeaseAbstract.model_json_schema()
+    if max_red_flags is not None:
+        schema["properties"]["red_flags"]["maxItems"] = max_red_flags
+    return schema
 
 
 class OllamaExtractor:
     def __init__(self, config: RunConfig) -> None:
         self.config = config
         self.system = load_prompt(config.prompt)
+        self.schema = output_schema(config.max_red_flags)
         self.client = httpx.Client(
             base_url=os.environ.get("OLLAMA_HOST", "http://localhost:11434"),
             timeout=config.timeout_s,
@@ -37,7 +45,7 @@ class OllamaExtractor:
                 {"role": "system", "content": self.system},
                 {"role": "user", "content": f"<lease>\n{text}\n</lease>"},
             ],
-            "format": SCHEMA,
+            "format": self.schema,
             "stream": False,
             "think": False,
             "options": {

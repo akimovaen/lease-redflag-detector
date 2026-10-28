@@ -4,14 +4,20 @@ Field accuracy and red flags are scored on the 7 golden texts; % valid, latency 
 
 | Config | Model | Prompt | Sampling | Field acc. | Flag P | Flag R | Flag F1 | % valid | p50, s | p95, s | $ / 1000 docs |
 |---|---|---|---|---|---|---|---|---|---|---|---|
+| claude-haiku-medium | claude-haiku-5-5 | extraction/v1 | effort=medium | 0.95 | 0.78 | 1.00 | 0.88 | 100 | 11.5 | 16.0 | 2.45 |
 | claude-sonnet-medium | claude-sonnet-5-5 | extraction/v1 | effort=medium | 0.94 | 0.92 | 0.67 | 0.77 | 100 | 3.4 | 9.1 | 27.11 |
 | qwen3-8b-t0 | qwen3:8b | extraction/v1 | temperature=0.0, top_p=1.0 | 0.25 | 0.75 | 0.17 | 0.27 | 25 | 240.7 | 358.9 | 0.00 |
+| qwen3-8b-t0-capped | qwen3:8b | extraction/v1 | temperature=0.0, top_p=1.0, repeat_penalty=1.1 | 0.83 | 0.57 | 0.44 | 0.50 | 100 | 54.1 | 127.1 | 0.00 |
 | qwen3-8b-t07 | qwen3:8b | extraction/v1 | temperature=0.7, top_p=0.8 | 0.25 | 0.50 | 0.11 | 0.18 | 25 | 252.8 | 367.0 | 0.00 |
+| qwen3-8b-t07-capped | qwen3:8b | extraction/v1 | temperature=0.7, top_p=0.8, repeat_penalty=1.1 | 0.83 | 0.53 | 0.50 | 0.51 | 100 | 60.2 | 137.6 | 0.00 |
 
 ## Accuracy per field
 
 | Config | document_type | lessor | lessee | premises_address | area | start_date | end_date | rent | indexation |
 |---|---|---|---|---|---|---|---|---|---|
+| claude-haiku-medium | 1.00 | 1.00 | 1.00 | 0.86 | 1.00 | 1.00 | 1.00 | 0.86 | 0.86 |
 | claude-sonnet-medium | 1.00 | 1.00 | 1.00 | 0.86 | 0.86 | 1.00 | 1.00 | 0.86 | 0.86 |
 | qwen3-8b-t0 | 0.29 | 0.29 | 0.29 | 0.14 | 0.14 | 0.29 | 0.29 | 0.29 | 0.29 |
+| qwen3-8b-t0-capped | 1.00 | 0.86 | 1.00 | 0.71 | 0.43 | 1.00 | 0.86 | 0.86 | 0.71 |
 | qwen3-8b-t07 | 0.29 | 0.29 | 0.29 | 0.29 | 0.14 | 0.29 | 0.29 | 0.14 | 0.29 |
+| qwen3-8b-t07-capped | 1.00 | 0.86 | 1.00 | 0.71 | 0.43 | 1.00 | 0.71 | 0.86 | 0.86 |

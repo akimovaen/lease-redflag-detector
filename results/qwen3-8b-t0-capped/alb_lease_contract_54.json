@@ -1,0 +1,73 @@
+{
+  "text_id": "alb_lease_contract_54",
+  "config": "qwen3-8b-t0-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T12:45:04+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 126.627,
+  "input_tokens": 10816,
+  "output_tokens": 1030,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Milan Gottwald",
+    "lessee": "SENDIO s.r.o.",
+    "premises_address": "cadastral area of Hodolany, the municipality of Olomouc, part of municipality: Hodolany, registered in the Land Registry kept by the Cadastral Authority for the Olomouc Region, Olomouc cadastral workplace, on title sheet No. 2978",
+    "area": {
+      "value": 45503.0,
+      "unit": "sqm"
+    },
+    "start_date": "2008-07-01",
+    "end_date": "2009-06-30",
+    "rent": {
+      "amount": 10000000.0,
+      "currency": "CZK",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "If the purchase agreement on which the Parties are negotiating at the time of conclusion hereof (as described in more detail in Art. XV (4) hereof) does not come into effect by July 1, 2009 for reasons attributable exclusively to the Landlord, which shall mean, for the purposes of this Contract: (i) breach of the Landlord’s obligations following from the second and third sentences of Art. VIII (1) and/or (ii) death of the Landlord or deprivation of the Landlord of legal capacity, the term of the lease pursuant to Art. XI (1) hereof shall be automatically extended to December 31, 2015; during the thus-extended term of the lease, the Tenant shall be entitled to terminate this Contract."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If a purchase agreement (as defined in Art. XV (4) hereof) is not concluded between the Parties for any reason other than that specified in Art. XI (2) hereof by September 30, 2008, this Contract shall cease to be valid and effective on June 30, 2009."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The Tenant agrees to notify the Landlord, without undue delay, of any change in the structure of the shareholders of the Tenant (i.e. the shareholders of SENDIO s.r.o.). If the entity controlling the Tenant changes during the term of the lease and the new controlling person does not belong to the same business group to which the Tenant belongs as of the date of conclusion hereof, the Landlord shall be entitled to terminate this Contract."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The Parties agree that, if the purchase agreement is concluded between them, the advance on future payments of the Rent in the amount of CZK 4,000,000.00 pursuant to Art. IV (5) hereof shall become an advance on the purchase price, or first installment on the purchase price, for sale of the Premises under the aforementioned purchase agreement."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The Parties agree that, upon conclusion (validity) of the aforementioned purchase agreement, Art. IV (5) hereof shall cease to be valid and effective and the Parties shall consider the paid advance on future payments of the Rent in the amount of CZK 4,000,000.00 pursuant to Art. IV (5) hereof to be an advance on the purchase price, or first installment on the purchase price, for the sale of the Premises under the aforementioned purchase agreement within the meaning of Section 498 of the Civil Code."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The Parties agree to act in good faith and take all steps that can be reasonably required so that the purchase agreement set forth in Art. XV (5) hereof is validly concluded by July 16, 2008."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The Parties agree on a period of notice equal to 3 (three) months which shall commence on the first day of the month following after delivery of the notice by the Tenant to the Landlord."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The Parties agree on a period of notice equal to 6 (six) months which shall commence on the first day of the month following after delivery of the notice by the Landlord to the Tenant."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Milan Gottwald\",\n  \"lessee\": \"SENDIO s.r.o.\",\n  \"premises_address\": \"cadastral area of Hodolany, the municipality of Olomouc, part of municipality: Hodolany, registered in the Land Registry kept by the Cadastral Authority for the Olomouc Region, Olomouc cadastral workplace, on title sheet No. 2978\",\n  \"area\": {\n    \"value\": 45503,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2008-07-01\",\n  \"end_date\": \"2009-06-30\",\n  \"rent\": {\n    \"amount\": 10000000,\n    \"currency\": \"CZK\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If the purchase agreement on which the Parties are negotiating at the time of conclusion hereof (as described in more detail in Art. XV (4) hereof) does not come into effect by July 1, 2009 for reasons attributable exclusively to the Landlord, which shall mean, for the purposes of this Contract: (i) breach of the Landlord’s obligations following from the second and third sentences of Art. VIII (1) and/or (ii) death of the Landlord or deprivation of the Landlord of legal capacity, the term of the lease pursuant to Art. XI (1) hereof shall be automatically extended to December 31, 2015; during the thus-extended term of the lease, the Tenant shall be entitled to terminate this Contract.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If a purchase agreement (as defined in Art. XV (4) hereof) is not concluded between the Parties for any reason other than that specified in Art. XI (2) hereof by September 30, 2008, this Contract shall cease to be valid and effective on June 30, 2009.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The Tenant agrees to notify the Landlord, without undue delay, of any change in the structure of the shareholders of the Tenant (i.e. the shareholders of SENDIO s.r.o.). If the entity controlling the Tenant changes during the term of the lease and the new controlling person does not belong to the same business group to which the Tenant belongs as of the date of conclusion hereof, the Landlord shall be entitled to terminate this Contract.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The Parties agree that, if the purchase agreement is concluded between them, the advance on future payments of the Rent in the amount of CZK 4,000,000.00 pursuant to Art. IV (5) hereof shall become an advance on the purchase price, or first installment on the purchase price, for sale of the Premises under the aforementioned purchase agreement.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The Parties agree that, upon conclusion (validity) of the aforementioned purchase agreement, Art. IV (5) hereof shall cease to be valid and effective and the Parties shall consider the paid advance on future payments of the Rent in the amount of CZK 4,000,000.00 pursuant to Art. IV (5) hereof to be an advance on the purchase price, or first installment on the purchase price, for the sale of the Premises under the aforementioned purchase agreement within the meaning of Section 498 of the Civil Code.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The Parties agree to act in good faith and take all steps that can be reasonably required so that the purchase agreement set forth in Art. XV (5) hereof is validly concluded by July 16, 2008.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The Parties agree on a period of notice equal to 3 (three) months which shall commence on the first day of the month following after delivery of the notice by the Tenant to the Landlord.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The Parties agree on a period of notice equal to 6 (six) months which shall commence on the first day of the month following after delivery of the notice by the Landlord to the Tenant.\"\n    }\n  ]\n}"
+}

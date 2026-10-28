@@ -1,0 +1,73 @@
+{
+  "text_id": "alb_lease_contract_259",
+  "config": "qwen3-8b-t0-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T12:31:20+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 52.868,
+  "input_tokens": 4084,
+  "output_tokens": 663,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "China National Precision Machinery I&E Corp. Beijing Aerospace CPMIEC Building",
+    "lessee": "Fortune Software (Beijing) Co., Ltd.",
+    "premises_address": "Room 626, 6th Floor Beijing Aerospace CPMIEC Building, No.30 Haidian South Road, Haidian District, Beijing, China",
+    "area": {
+      "value": 190.71,
+      "unit": "sqm"
+    },
+    "start_date": "2009-07-30",
+    "end_date": "2010-07-29",
+    "rent": {
+      "amount": 20596.68,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall have the priority right upon the same conditions."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall make written application for lease renewal within 2 months prior to expiration of the term."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The rent for renewal and other fees shall be determined through negotiations."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall not request to offset its due payment by the paid deposit."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B’s deposit can not offset Party A’s economic losses and reasonable fees and expenses under the circumstance of Article 4 section 3, Party B shall pay the outstanding amount within 10 days of receiving Party A’s notice. Otherwise, Party A shall have the right to terminate the Contract, and to claim for such outstanding amount and the overdue payment (5‰ per day)."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B is prohibited from changing the usage of the leased unit, transferring, subleasing, or mortgaging, pledging the leased unit to a third party without Party A’s written consent."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In the event that Party B demolishes, adds or conducts other decoration to the original structure in addition to the original decoration and facilities of the leased unit, it shall obtain Party A’s consent, execute decoration agreement, responsible for maintenance work and bear costs of such addition and reconstruction of equipments in the leased areas incurred therefrom."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall take good care of the leased unit and its equipments. Where Party B reconstructs or demolishes the leased unit without Party A’s written consent or causes damage to the leased unit due to other reasons, Party A shall be entitled to deduct any of its losses from the deposit."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"China National Precision Machinery I&E Corp. Beijing Aerospace CPMIEC Building\",\n  \"lessee\": \"Fortune Software (Beijing) Co., Ltd.\",\n  \"premises_address\": \"Room 626, 6th Floor Beijing Aerospace CPMIEC Building, No.30 Haidian South Road, Haidian District, Beijing, China\",\n  \"area\": {\n    \"value\": 190.71,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2009-07-30\",\n  \"end_date\": \"2010-07-29\",\n  \"rent\": {\n    \"amount\": 20596.68,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall have the priority right upon the same conditions.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall make written application for lease renewal within 2 months prior to expiration of the term.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The rent for renewal and other fees shall be determined through negotiations.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall not request to offset its due payment by the paid deposit.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B’s deposit can not offset Party A’s economic losses and reasonable fees and expenses under the circumstance of Article 4 section 3, Party B shall pay the outstanding amount within 10 days of receiving Party A’s notice. Otherwise, Party A shall have the right to terminate the Contract, and to claim for such outstanding amount and the overdue payment (5‰ per day).\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B is prohibited from changing the usage of the leased unit, transferring, subleasing, or mortgaging, pledging the leased unit to a third party without Party A’s written consent.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In the event that Party B demolishes, adds or conducts other decoration to the original structure in addition to the original decoration and facilities of the leased unit, it shall obtain Party A’s consent, execute decoration agreement, responsible for maintenance work and bear costs of such addition and reconstruction of equipments in the leased areas incurred therefrom.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall take good care of the leased unit and its equipments. Where Party B reconstructs or demolishes the leased unit without Party A’s written consent or causes damage to the leased unit due to other reasons, Party A shall be entitled to deduct any of its losses from the deposit.\"\n    }\n  ]\n}"
+}

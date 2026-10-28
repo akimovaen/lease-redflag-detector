@@ -51,6 +51,7 @@ def run_one(extractor: Extractor, text_id: str, out_dir: Path) -> dict:
         "model": config.model,
         "prompt": config.prompt,
         "sampling": config.sampling,
+        "max_red_flags": config.max_red_flags,
         "created_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "status": result.status,
         "error": result.error,

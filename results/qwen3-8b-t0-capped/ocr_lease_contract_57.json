@@ -1,0 +1,70 @@
+{
+  "text_id": "ocr_lease_contract_57",
+  "config": "qwen3-8b-t0-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T12:45:47+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 43.055,
+  "input_tokens": 2275,
+  "output_tokens": 695,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Beijing Shunfeng Runlin Technology and Trade Co., Ltd.",
+    "lessee": "Beijing Ninetowns Sky Eco-Agriculture Co., Ltd.",
+    "premises_address": "south of Lianying Village, Quanying Town, Shunyi District, Beijing",
+    "area": null,
+    "start_date": "2010-03-01",
+    "end_date": "2013-02-28",
+    "rent": {
+      "amount": 550000.0,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A is obligated to maintain the cement road in good condition for passage within the boundary of the premise, and is in charge of the greening work within the boundary of the premise."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Both Parties shall fully perform the Contract during the term of this Contract and neither Party may breach the Contract. Both Parties undertake that if either Party breaches the Contract within the term of this Contract, the breaching Party shall pay half of the annual rent as liquidated damages for terminating the Contract."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party A undertakes that during the term of this Contract, Party B’s use of the premise may not be affected by the transfer or mortgage of the land and the constructions on the ground under the lease."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A is obligated to help Party B in coordinating with the neighbors and assist Party B in thie efficient handling of the social security and general management."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Both Parties shall fully perform the Contract during the term of this Contract and neither Party may breach the Contract. Both Parties undertake that if either Party breaches the Contract within the term of this Contract, the breaching Party shall pay half of the annual rent as liquidated damages for terminating the Contract."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party A undertakes that during the term of this Contract, Party B’s use of the premise may not be affected by the transfer or mortgage of the land and the constructions on the ground under the lease."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Beijing Shunfeng Runlin Technology and Trade Co., Ltd.\",\n  \"lessee\": \"Beijing Ninetowns Sky Eco-Agriculture Co., Ltd.\",\n  \"premises_address\": \"south of Lianying Village, Quanying Town, Shunyi District, Beijing\",\n  \"area\": null,\n  \"start_date\": \"2010-03-01\",\n  \"end_date\": \"2013-02-28\",\n  \"rent\": {\n    \"amount\": 550000,\n    \"currency\": \"CNY\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A is obligated to maintain the cement road in good condition for passage within the boundary of the premise, and is in charge of the greening work within the boundary of the premise.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Both Parties shall fully perform the Contract during the term of this Contract and neither Party may breach the Contract. Both Parties undertake that if either Party breaches the Contract within the term of this Contract, the breaching Party shall pay half of the annual rent as liquidated damages for terminating the Contract.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party A undertakes that during the term of this Contract, Party B’s use of the premise may not be affected by the transfer or mortgage of the land and the constructions on the ground under the lease.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A is obligated to help Party B in coordinating with the neighbors and assist Party B in thie efficient handling of the social security and general management.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Both Parties shall fully perform the Contract during the term of this Contract and neither Party may breach the Contract. Both Parties undertake that if either Party breaches the Contract within the term of this Contract, the breaching Party shall pay half of the annual rent as liquidated damages for terminating the Contract.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party A undertakes that during the term of this Contract, Party B’s use of the premise may not be affected by the transfer or mortgage of the land and the constructions on the ground under the lease.\"\n    }\n  ]\n}"
+}

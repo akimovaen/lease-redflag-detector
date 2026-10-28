@@ -28,6 +28,7 @@ class RunConfig(BaseModel):
     timeout_s: float = 180
     max_retries: int = 3
     context_tokens: int | None = None  # context window of a local model
+    max_red_flags: int | None = None  # cap on the list in the decoding grammar
     sampling: dict[str, str | float | int] = {}
 
     @classmethod
