@@ -1,0 +1,36 @@
+{
+  "document_type": "lease",
+  "lessor": "Shanghai New Cogi Cosmetic Co., Ltd.",
+  "lessee": "Shanghai Mecox Lane Information Technology Co., Ltd.",
+  "premises_address": "West part of 17th Floor, Diamond Building, 487 Tianlin Road, Xuhui District, Shanghai",
+  "area": {
+    "value": 967.38,
+    "unit": "sqm"
+  },
+  "start_date": "2009-08-20",
+  "end_date": "2012-08-19",
+  "rent": {
+    "amount": 85330.0,
+    "currency": "CNY",
+    "period": "month"
+  },
+  "indexation": "none",
+  "red_flags": [
+    {
+      "type": "indexation_limited",
+      "quote": "The rent shall remain unchanged during the tenancy."
+    },
+    {
+      "type": "landlord_repairs",
+      "quote": "Party A shall repair them within 2 days from the date of recelpt of the notice. If Party A fails to repair in tite, Party B inay repair theth at the cost of Party A."
+    },
+    {
+      "type": "sublease_permitted",
+      "quote": "8-1 Party B may sublet part or the whole of the Premises to another party during the tenancy."
+    },
+    {
+      "type": "landlord_repairs",
+      "quote": "In the event that the Premises have been defective by the time of handing over, Party A shall repair the Premises within three days from the date of banding over. If failed to repair the Premises punctually, Party A shall reduce the rent and amend the provisions in relation to the rent."
+    }
+  ]
+}

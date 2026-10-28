@@ -225,3 +225,6 @@ data/raw/*
 
 # macOS
 .DS_Store
+
+# Local Ukrainian translations to help golden set labeling
+data/processed/golden_hints/*.uk.md

@@ -30,6 +30,7 @@ SCANS = ROOT / "data/raw/scans"
 TEXTS = ROOT / "data/texts"
 MANIFEST = TEXTS / "manifest.csv"
 DIRT_MANUAL = TEXTS / "dirt_manual.csv"
+GOLDEN = ROOT / "data/golden"
 
 SEED = 42
 MAX_WORDS = 10_000
@@ -241,7 +242,7 @@ def write_text(
         "dirt": ";".join(sorted(dirt)),
         "ocr_noise": ocr_noise,
         "license": "CC BY-NC 4.0",
-        "golden": "",
+        "golden": "yes" if (GOLDEN / f"{text_id}.json").exists() else "",
     }
 
 

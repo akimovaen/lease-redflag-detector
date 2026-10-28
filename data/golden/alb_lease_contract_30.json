@@ -1,0 +1,28 @@
+{
+  "document_type": "lease",
+  "lessor": "Shenzhen HYT Science & Technology Co., Ltd.",
+  "lessee": "Fiberxon Technology (Shenzhen) Inc.",
+  "premises_address": "7th Floor (partially), HYT Tower, Shenzhen Hi-Tech Industrial Park North, Beihuan RD, Shenzhen",
+  "area": {
+    "value": 1180.0,
+    "unit": "sqm"
+  },
+  "start_date": "2004-11-20",
+  "end_date": "2007-11-19",
+  "rent": {
+    "amount": 41300.0,
+    "currency": "CNY",
+    "period": "month"
+  },
+  "indexation": "none",
+  "red_flags": [
+    {
+      "type": "service_charges_limited",
+      "quote": "During the lease term, Party A shall be responsible for the land use fees of The Premises, its caused taxes, housing lease administrative fees as well as fees;"
+    },
+    {
+      "type": "landlord_repairs",
+      "quote": "Party A shall undertake the repairing expenses in the situations mentioned in the above two paragraphs (including the reasonable expenses of Party B’s repair and actions for the sake of preventing defects from developing further)."
+    }
+  ]
+}

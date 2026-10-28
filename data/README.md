@@ -10,8 +10,9 @@ data/
     manifest.csv      # one row per text: source, language, length, dirt tags, license
     dirt_manual.csv   # manual corrections to the dirt tags
     *.txt             # the texts, one paragraph per line
-  golden/             # hand-labeled reference outputs (to be added)
+  golden/             # hand-labeled reference outputs
   processed/
+    golden_hints/     # ALeaseBERT annotations to help labeling
   raw/                # original downloads, not committed
 ```
 
@@ -50,6 +51,45 @@ used in this project (`break_option`, `services_charges`, `sublease_permitted`,
 `reinstatement_clause`, `landlord_repairs`), sampled with a fixed seed across three
 length buckets (under 2,000 / 2,000–5,000 / 5,000–10,000 words). Group B uses only the
 two shorter buckets.
+
+## Golden set
+
+`golden/<id>.json` holds the reference output for a text, in the `LeaseAbstract` schema
+(`src/lease_redflag_detector/extraction/schema.py`). Texts with a golden file are marked
+`golden = yes` in the manifest.
+
+**Provenance:** values were drafted by Claude (Opus 5.5) from the full texts, with quotes cut
+verbatim from the text files by a one-off script, and then reviewed and corrected by a human.
+Because the reference was drafted by a Claude model, scores of Claude models against it may
+be biased upward; keep this in mind when comparing them with other models.
+
+Labeling rules:
+
+- **Values are the true values**, not their OCR spelling: if OCR turned `June` into `Jane`,
+  the golden date still uses June. The model is scored on recovering what the lease says.
+- **But only what the text still contains.** If OCR dropped or garbled a passage beyond
+  recognition, information found only there is treated as absent (`null`, no red flag):
+  the model cannot recover it.
+- **Quotes are verbatim from `texts/<id>.txt`**, including OCR errors, because that is the
+  text the model sees. Differences in whitespace and line breaks are ignored.
+- **`null` means the lease does not state it.** A correct `null` counts as a correct answer.
+- Dates as `YYYY-MM-DD`; `end_date` computed from the start date and term if not stated.
+- `rent`: base rent for one period without VAT, currency as an ISO 4217 code.
+- `area`: total leased area in the unit the lease uses.
+- `indexation`: `none` when the lease has no clause changing the rent during the term.
+- One red flag entry per clause; only clauses risky for the landlord under the definitions
+  in the schema.
+
+Tools:
+
+```sh
+uv run python scripts/make_golden_drafts.py   # blank golden files + hints, never overwrites
+uv run python scripts/check_golden.py         # schema and verbatim-quote check
+```
+
+Hints in `processed/golden_hints/<id>.md` list the spans the ALeaseBERT authors annotated
+for each lease, with line numbers. They are a starting point, not answers: most ALeaseBERT
+red flag spans protect the landlord rather than put it at risk.
 
 ## Manifest
 
