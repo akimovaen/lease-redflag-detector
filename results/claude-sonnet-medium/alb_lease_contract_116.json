@@ -1,0 +1,37 @@
+{
+  "text_id": "alb_lease_contract_116",
+  "config": "claude-sonnet-medium",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "created_at": "2026-10-28T09:18:12+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 8.454,
+  "input_tokens": 17695,
+  "output_tokens": 1075,
+  "stop_reason": "end_turn",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Tianjin Changhe Heli Investment Company (Limited partnership), Beijing Sales Business Segment",
+    "lessee": "Yatai Weilai Technology Development Beijing Branch, Shenzhen Yatai Weilai Educational Technology Development Co. Ltd.",
+    "premises_address": "Room 509 and 511, GohighLanfeng Tower, Block 1 of #98 S.Sanhuan Rd., Chaoyang District, Beijing",
+    "area": {
+      "value": 352.74,
+      "unit": "sqm"
+    },
+    "start_date": "2014-03-01",
+    "end_date": "2018-03-19",
+    "rent": {
+      "amount": 59862.92,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": []
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Tianjin Changhe Heli Investment Company (Limited partnership), Beijing Sales Business Segment\",\"lessee\":\"Yatai Weilai Technology Development Beijing Branch, Shenzhen Yatai Weilai Educational Technology Development Co. Ltd.\",\"premises_address\":\"Room 509 and 511, GohighLanfeng Tower, Block 1 of #98 S.Sanhuan Rd., Chaoyang District, Beijing\",\"area\":{\"value\":352.74,\"unit\":\"sqm\"},\"start_date\":\"2014-03-01\",\"end_date\":\"2018-03-19\",\"rent\":{\"amount\":59862.92,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[]}"
+}

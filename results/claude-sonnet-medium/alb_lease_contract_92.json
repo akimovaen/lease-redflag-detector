@@ -1,0 +1,50 @@
+{
+  "text_id": "alb_lease_contract_92",
+  "config": "claude-sonnet-medium",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "created_at": "2026-10-28T09:17:59+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 3.668,
+  "input_tokens": 8493,
+  "output_tokens": 415,
+  "stop_reason": "end_turn",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Li Yang",
+    "lessee": "Quan Toodou Network Science and Technology Co., Ltd.",
+    "premises_address": "Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing",
+    "area": {
+      "value": 436.54,
+      "unit": "sqm"
+    },
+    "start_date": "2009-08-11",
+    "end_date": "2011-08-10",
+    "rent": {
+      "amount": 43854.08,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A shall indemnify Party B against all losses and damages suffered by Party B due to any fault of Party A, but Party B shall be responsible for the losses and damages due to any other reason, provided that Party A shall give necessary assistance upon request of Party B."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "the rate of rent in the renewed contract shall be no more than 125% of the initial rate of rent"
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Party A must pay the property management fees to the property management company of Jianwai SOHO on a monthly basis."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Li Yang\",\"lessee\":\"Quan Toodou Network Science and Technology Co., Ltd.\",\"premises_address\":\"Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing\",\"area\":{\"value\":436.54,\"unit\":\"sqm\"},\"start_date\":\"2009-08-11\",\"end_date\":\"2011-08-10\",\"rent\":{\"amount\":43854.08,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall indemnify Party B against all losses and damages suffered by Party B due to any fault of Party A, but Party B shall be responsible for the losses and damages due to any other reason, provided that Party A shall give necessary assistance upon request of Party B.\"},{\"type\":\"indexation_limited\",\"quote\":\"the rate of rent in the renewed contract shall be no more than 125% of the initial rate of rent\"},{\"type\":\"service_charges_limited\",\"quote\":\"Party A must pay the property management fees to the property management company of Jianwai SOHO on a monthly basis.\"}]}"
+}

@@ -1,0 +1,50 @@
+{
+  "text_id": "alb_lease_562",
+  "config": "claude-sonnet-medium",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "created_at": "2026-10-28T09:18:01+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 3.094,
+  "input_tokens": 16764,
+  "output_tokens": 467,
+  "stop_reason": "end_turn",
+  "output": {
+    "document_type": "lease",
+    "lessor": "S.C.I. FEDERALE GRAMONT",
+    "lessee": "Société COTY",
+    "premises_address": "8-14 RUE GRAMONT, 14 RUE DU 4 SEPTEMBRE, 75002 PARIS",
+    "area": {
+      "value": 8050.25,
+      "unit": "sqm"
+    },
+    "start_date": "2006-01-01",
+    "end_date": "2015-02-28",
+    "rent": {
+      "amount": 3450000.0,
+      "currency": "EUR",
+      "period": "year"
+    },
+    "indexation": "index_linked",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "The Lessee shall have the authority to give notice “at the end of the third triennial period and two months” by notifying the Lessor by an extrajudicial document, at least six months prior to the expiration for the current period."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "“The Lessor must maintain, as its expense, all specific equipment, such as external access ways and green spaces, heating…in accordance with current legislation and provide them in good condition for use.”"
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "“However by derogation from the above paragraph, the Lessee shall have the authority to partially sublet the premises to one or more companies in which the Lessee holds at least 50% of their assets, in which case the Lessee must notify the Lessor in advance of all sublease contracts signed in accordance with this authorization”."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"S.C.I. FEDERALE GRAMONT\",\"lessee\":\"Société COTY\",\"premises_address\":\"8-14 RUE GRAMONT, 14 RUE DU 4 SEPTEMBRE, 75002 PARIS\",\"area\":{\"value\":8050.25,\"unit\":\"sqm\"},\"start_date\":\"2006-01-01\",\"end_date\":\"2015-02-28\",\"rent\":{\"amount\":3450000,\"currency\":\"EUR\",\"period\":\"year\"},\"indexation\":\"index_linked\",\"red_flags\":[{\"type\":\"tenant_break_option\",\"quote\":\"The Lessee shall have the authority to give notice “at the end of the third triennial period and two months” by notifying the Lessor by an extrajudicial document, at least six months prior to the expiration for the current period.\"},{\"type\":\"landlord_repairs\",\"quote\":\"“The Lessor must maintain, as its expense, all specific equipment, such as external access ways and green spaces, heating…in accordance with current legislation and provide them in good condition for use.”\"},{\"type\":\"sublease_permitted\",\"quote\":\"“However by derogation from the above paragraph, the Lessee shall have the authority to partially sublet the premises to one or more companies in which the Lessee holds at least 50% of their assets, in which case the Lessee must notify the Lessor in advance of all sublease contracts signed in accordance with this authorization”.\"}]}"
+}

@@ -1,0 +1,12 @@
+# Paid baseline. Current Claude models take no temperature or top_p;
+# the sampling knob they expose is the effort level.
+name = "claude-sonnet-medium"
+provider = "anthropic"
+model = "claude-sonnet-5-5"
+prompt = "extraction/v1"
+max_tokens = 8000
+timeout_s = 180
+max_retries = 3
+
+[sampling]
+effort = "medium"
