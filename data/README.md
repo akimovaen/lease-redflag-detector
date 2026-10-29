@@ -79,6 +79,9 @@ Labeling rules:
 - `indexation`: `none` when the lease has no clause changing the rent during the term.
 - One red flag entry per clause; only clauses risky for the landlord under the definitions
   in the schema.
+- The landlord's duty to remedy defects found when the premises are handed over is not
+  `landlord_repairs`: it is a one-off duty to deliver the premises in good condition, not
+  a burden of repairs during the term.
 
 Tools:
 
