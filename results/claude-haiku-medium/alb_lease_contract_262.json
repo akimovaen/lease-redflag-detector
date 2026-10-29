@@ -4,21 +4,24 @@
   "provider": "anthropic",
   "model": "claude-haiku-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
   "max_red_flags": null,
-  "created_at": "2026-10-28T12:23:54+00:00",
+  "created_at": "2026-10-28T14:45:00+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 11.688,
+  "latency_s": 10.584,
   "input_tokens": 5279,
-  "output_tokens": 2784,
+  "output_tokens": 2417,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
     "lessor": "The Fifth Season Liyang Investment Management Co., Ltd.",
-    "lessee": "Li Yang Quan Ju Xiang Catering Co., Ltd.",
+    "lessee": "Quan Ju Xiang Catering",
     "premises_address": "4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road",
     "area": {
       "value": 3274.0,
@@ -38,26 +41,14 @@
         "quote": "Party A is responsible for the damage of the main structure unless damage due to Party B or its customer."
       },
       {
-        "type": "service_charges_limited",
-        "quote": "Party B pays Party A CNY 4900 per month for property management."
+        "type": "tenant_break_option",
+        "quote": "If Party A can not deliver the property to Party B according to the contract, Party B has the right to terminate the contract. Party A needs to pay a compensation equivalent to 6 months rent of the first year."
       },
       {
         "type": "tenant_break_option",
-        "quote": "The party willing to terminate should inform the other party one month in advance and cancel the contract after the permission of the other party, and pays the other party a compensation equivalent to half year’s rent."
-      },
-      {
-        "type": "indexation_limited",
-        "quote": "Starting from year 6, the rent increases by 6% per year."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "If Party A can not deliver the property to Party B according to the contract, Party B has the right to terminate the contract."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "If can not operate due to Party A’s breach of contract, Party B has right to terminate the contract."
+        "quote": "If can not operate due to Party A’s breach of contract, Party B has right to terminate the contract. And Party A is responsible for any damage to Party B including but not limited to renovation cost, operation loss and legal fees."
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"The Fifth Season Liyang Investment Management Co., Ltd.\",\"lessee\":\"Li Yang Quan Ju Xiang Catering Co., Ltd.\",\"premises_address\":\"4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road\",\"area\":{\"value\":3274,\"unit\":\"sqm\"},\"start_date\":\"2010-08-01\",\"end_date\":\"2022-07-31\",\"rent\":{\"amount\":836000,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"fixed\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A is responsible for the damage of the main structure unless damage due to Party B or its customer.\"},{\"type\":\"service_charges_limited\",\"quote\":\"Party B pays Party A CNY 4900 per month for property management.\"},{\"type\":\"tenant_break_option\",\"quote\":\"The party willing to terminate should inform the other party one month in advance and cancel the contract after the permission of the other party, and pays the other party a compensation equivalent to half year’s rent.\"},{\"type\":\"indexation_limited\",\"quote\":\"Starting from year 6, the rent increases by 6% per year.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party A can not deliver the property to Party B according to the contract, Party B has the right to terminate the contract.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If can not operate due to Party A’s breach of contract, Party B has right to terminate the contract.\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"The Fifth Season Liyang Investment Management Co., Ltd.\",\"lessee\":\"Quan Ju Xiang Catering\",\"premises_address\":\"4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road\",\"area\":{\"value\":3274,\"unit\":\"sqm\"},\"start_date\":\"2010-08-01\",\"end_date\":\"2022-07-31\",\"rent\":{\"amount\":836000,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"fixed\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A is responsible for the damage of the main structure unless damage due to Party B or its customer.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party A can not deliver the property to Party B according to the contract, Party B has the right to terminate the contract. Party A needs to pay a compensation equivalent to 6 months rent of the first year.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If can not operate due to Party A’s breach of contract, Party B has right to terminate the contract. And Party A is responsible for any damage to Party B including but not limited to renovation cost, operation loss and legal fees.\"}]}"
 }

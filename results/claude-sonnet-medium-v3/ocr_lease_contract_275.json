@@ -1,0 +1,46 @@
+{
+  "text_id": "ocr_lease_contract_275",
+  "config": "claude-sonnet-medium-v3",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:49:55+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 2.584,
+  "input_tokens": 7393,
+  "output_tokens": 277,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Seongnam Industry Promotion Foundation",
+    "lessee": "Axesstel Korea, Inc.",
+    "premises_address": "25-1 Jeongja-dong, Bundang-gu, Seongnam, Gyeonggi-do, Korea",
+    "area": {
+      "value": 5617.36,
+      "unit": "sqm"
+    },
+    "start_date": "2005-08-29",
+    "end_date": "2015-08-28",
+    "rent": {
+      "amount": 203240000.0,
+      "currency": "KRW",
+      "period": "year"
+    },
+    "indexation": "market_review",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "(The “Lessee” may request the “Lessor” to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the “Lessee”."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Seongnam Industry Promotion Foundation\",\"lessee\":\"Axesstel Korea, Inc.\",\"premises_address\":\"25-1 Jeongja-dong, Bundang-gu, Seongnam, Gyeonggi-do, Korea\",\"area\":{\"value\":5617.36,\"unit\":\"sqm\"},\"start_date\":\"2005-08-29\",\"end_date\":\"2015-08-28\",\"rent\":{\"amount\":203240000,\"currency\":\"KRW\",\"period\":\"year\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"tenant_break_option\",\"quote\":\"(The “Lessee” may request the “Lessor” to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the “Lessee”.\"}]}"
+}

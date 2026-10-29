@@ -4,16 +4,20 @@
   "provider": "anthropic",
   "model": "claude-sonnet-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
-  "created_at": "2026-10-28T09:17:55+00:00",
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:45:55+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 3.524,
+  "latency_s": 3.302,
   "input_tokens": 5279,
-  "output_tokens": 239,
+  "output_tokens": 338,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
     "lessor": "The Fifth Season Liyang Investment Management Co., Ltd.",
@@ -28,15 +32,19 @@
     "rent": {
       "amount": 0.7,
       "currency": "CNY",
-      "period": "year"
+      "period": "month"
     },
     "indexation": "fixed",
     "red_flags": [
       {
         "type": "landlord_repairs",
         "quote": "Party A is responsible for the damage of the main structure unless damage due to Party B or its customer."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Before the expiration of the contract, neither party can terminate the contract at will. The party willing to terminate should inform the other party one month in advance and cancel the contract after the permission of the other party, and pays the other party a compensation equivalent to half year’s rent."
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"The Fifth Season Liyang Investment Management Co., Ltd.\",\"lessee\":\"Quan Ju Xiang Catering\",\"premises_address\":\"4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road\",\"area\":{\"value\":3274,\"unit\":\"sqm\"},\"start_date\":\"2010-08-01\",\"end_date\":\"2022-07-31\",\"rent\":{\"amount\":0.7,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"fixed\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A is responsible for the damage of the main structure unless damage due to Party B or its customer.\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"The Fifth Season Liyang Investment Management Co., Ltd.\",\"lessee\":\"Quan Ju Xiang Catering\",\"premises_address\":\"4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road\",\"area\":{\"value\":3274,\"unit\":\"sqm\"},\"start_date\":\"2010-08-01\",\"end_date\":\"2022-07-31\",\"rent\":{\"amount\":0.7,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"fixed\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A is responsible for the damage of the main structure unless damage due to Party B or its customer.\"},{\"type\":\"tenant_break_option\",\"quote\":\"Before the expiration of the contract, neither party can terminate the contract at will. The party willing to terminate should inform the other party one month in advance and cancel the contract after the permission of the other party, and pays the other party a compensation equivalent to half year’s rent.\"}]}"
 }

@@ -1,0 +1,57 @@
+{
+  "text_id": "alb_lease_contract_116",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:38:01+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 98.088,
+  "input_tokens": 10501,
+  "output_tokens": 584,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Tianjin Changhe Heli Investment Company (Limited partnership), Beijing Sales Business Segment",
+    "lessee": "Yatai Weilai Technology Development Beijing Branch, Shenzhen Yatai Weilai Educational Technology Development Co. Ltd.",
+    "premises_address": "Room 509, 5/F, GohighLanfeng Tower, #98 S.Sanhuan Rd., Chaoyang District, Beijing",
+    "area": null,
+    "start_date": "2014-03-01",
+    "end_date": "2018-03-19",
+    "rent": {
+      "amount": 69739.64,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Zhongtulian shall comply with provisions as prescribed by Changhe and PSP (Property service provider appointed to manage the Tower at which this Premise is housed), including but without limitation to Tenant Handbook and Decoration Works Manual (collectively the \"Settlement Documents\"). These Settlement Documents are constituted as integral part to this Contract. Without prejudice to Zhongtulian's business activity in ordinary course, PSP shall and may change these Settlement Documents at any time with view to the Tower, as the case may be."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Zhongtulian has the duty to settle payables as identified in this Contract. These payables shall include but without limited to the Rent (charges payable to Changhe at Zhongtulian’s account to settle possession of this Premise for lease period), PMF (Property management fee) and Miscellaneous Charges (Collectively the \"Payables\")."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian may reflect intention to renew the Lease Period under a notice in writing (Renewal Notice) three (3) months prior to its end. At equal terms and conditions, Zhongtulian has the priority to renew the Lease Period; provided renewal details shall be caused to define under prior negotiation with Changhe together."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Without Changhe prior consent, Zhongtulian is denied to sublease this Premise (sublease shall mean any form of activity to lease this Premise to third party for utilization or use together). Default in sublease shall entitle Changhe to cancel this Contract."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Tianjin Changhe Heli Investment Company (Limited partnership), Beijing Sales Business Segment\",\n  \"lessee\": \"Yatai Weilai Technology Development Beijing Branch, Shenzhen Yatai Weilai Educational Technology Development Co. Ltd.\",\n  \"premises_address\": \"Room 509, 5/F, GohighLanfeng Tower, #98 S.Sanhuan Rd., Chaoyang District, Beijing\",\n  \"area\": null,\n  \"start_date\": \"2014-03-01\",\n  \"end_date\": \"2018-03-19\",\n  \"rent\": {\n    \"amount\": 69739.64,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Zhongtulian shall comply with provisions as prescribed by Changhe and PSP (Property service provider appointed to manage the Tower at which this Premise is housed), including but without limitation to Tenant Handbook and Decoration Works Manual (collectively the \\\"Settlement Documents\\\"). These Settlement Documents are constituted as integral part to this Contract. Without prejudice to Zhongtulian's business activity in ordinary course, PSP shall and may change these Settlement Documents at any time with view to the Tower, as the case may be.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Zhongtulian has the duty to settle payables as identified in this Contract. These payables shall include but without limited to the Rent (charges payable to Changhe at Zhongtulian’s account to settle possession of this Premise for lease period), PMF (Property management fee) and Miscellaneous Charges (Collectively the \\\"Payables\\\").\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Zhongtulian may reflect intention to renew the Lease Period under a notice in writing (Renewal Notice) three (3) months prior to its end. At equal terms and conditions, Zhongtulian has the priority to renew the Lease Period; provided renewal details shall be caused to define under prior negotiation with Changhe together.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Without Changhe prior consent, Zhongtulian is denied to sublease this Premise (sublease shall mean any form of activity to lease this Premise to third party for utilization or use together). Default in sublease shall entitle Changhe to cancel this Contract.\"\n    }\n  ]\n}"
+}

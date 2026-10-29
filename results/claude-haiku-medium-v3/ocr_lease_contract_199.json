@@ -1,0 +1,46 @@
+{
+  "text_id": "ocr_lease_contract_199",
+  "config": "claude-haiku-medium-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:49:39+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 12.322,
+  "input_tokens": 9521,
+  "output_tokens": 2804,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Korea Institute of Design Promotion",
+    "lessee": "Leadis Technology Korea, Inc.",
+    "premises_address": "Room 802, 8th floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do",
+    "area": {
+      "value": 347.44,
+      "unit": "sqm"
+    },
+    "start_date": "2004-03-25",
+    "end_date": "2006-03-24",
+    "rent": {
+      "amount": 4204000.0,
+      "currency": "KRW",
+      "period": "month"
+    },
+    "indexation": "market_review",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "qay“a"
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Korea Institute of Design Promotion\",\"lessee\":\"Leadis Technology Korea, Inc.\",\"premises_address\":\"Room 802, 8th floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do\",\"area\":{\"value\":347.44,\"unit\":\"sqm\"},\"start_date\":\"2004-03-25\",\"end_date\":\"2006-03-24\",\"rent\":{\"amount\":4204000,\"currency\":\"KRW\",\"period\":\"month\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"qay“a\"}]}"
+}

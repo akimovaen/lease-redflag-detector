@@ -4,70 +4,22 @@
   "provider": "ollama",
   "model": "qwen3:8b",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "temperature": 0.0,
     "top_p": 1.0,
     "repeat_penalty": 1.1
   },
   "max_red_flags": 8,
-  "created_at": "2026-10-28T12:46:40+00:00",
-  "status": "ok",
-  "error": null,
-  "latency_s": 52.977,
-  "input_tokens": 3313,
-  "output_tokens": 765,
+  "created_at": "2026-10-28T15:17:25+00:00",
+  "status": "failed",
+  "error": "red_flags.0: quote not found verbatim in the text: 'The \"Lessee\" shall not claim any rights to the Object during the term of lease, except its right to use the same hereunder.'\nred_flags.1: quote not found verbatim in the text: 'The \"Lessee\" shall not sublet the Object in whole or in part or dispose of its rights to use the Object to a third party: or'\nred_flags.2: quote not found verbatim in the text: 'The \"Lessee\" shall not deliver the right of claim for refund of the leasehold deposit under the lease contract up to a third party or provide for the right of other pledges and/or other mortgage purpo'\nred_flags.3: quote not found verbatim in the text: 'The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Les'\nred_flags.4: quote not found verbatim in the text: 'In subsection (1) in this Article, in the event that the \"Lessor\" recognizes the fairness of termination by the \"Lessee\", the \"Lessor\" shall deduct the rentals in arrears, expenses for restoring the O'",
+  "latency_s": 88.921,
+  "input_tokens": 7932,
+  "output_tokens": 1285,
   "stop_reason": "stop",
-  "output": {
-    "document_type": "lease",
-    "lessor": "Seongnam Industry Promotion Foundation",
-    "lessee": "Axesstel Korea. Inc.",
-    "premises_address": "25-1 Jeongja-dong, Bundang-gu, Seongnam, Gyeonggi-do, Korea",
-    "area": {
-      "value": 5617.36,
-      "unit": "sqm"
-    },
-    "start_date": "2005-08-29",
-    "end_date": "2015-08-28",
-    "rent": {
-      "amount": 36180.0,
-      "currency": "KRW",
-      "period": "year"
-    },
-    "indexation": "none",
-    "red_flags": [
-      {
-        "type": "sublease_permitted",
-        "quote": "The \"Lessee\" shall not claim any rights to the Object during the term of lease, except its right to use the same hereunder."
-      },
-      {
-        "type": "sublease_permitted",
-        "quote": "The \"Lessee\" shall not sublet the Object in whole or in part or dispose of its rights to use the Object to a third party: or"
-      },
-      {
-        "type": "sublease_permitted",
-        "quote": "The \"Lessee\" shall not deliver the right of claim for refund of the leasehold deposit under the lease contract up to a third party or provide for the right of other pledges and/or other mortgage purposes."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Lessee\"."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "In subsection (1) in this Article, in the event that the \"Lessor\" recognizes the fairness of termination by the \"Lessee\", the \"Lessor\" shall deduct the rentals in arrears, expenses for restoring the Object to its original condition, etc., from the leasehold deposit provided under Article 5 hereof and the rentals paid by the \"Lessee\" and then refund the balance thereof to the \"Lessee\", if any."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Lessee\"."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "In subsection (1) in this Article, in the event that the \"Lessor\" recognizes the fairness of termination by the \"Lessee\", the \"Lessor\" shall deduct the rentals in arrears, expenses for restoring the Object to its original condition, etc., from the leasehold deposit provided under Article 5 hereof and the rentals paid by the \"Lessee\" and then refund the balance thereof to the \"Lessee\", if any."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Lessee\"."
-      }
-    ]
-  },
-  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Seongnam Industry Promotion Foundation\",\n  \"lessee\": \"Axesstel Korea. Inc.\",\n  \"premises_address\": \"25-1 Jeongja-dong, Bundang-gu, Seongnam, Gyeonggi-do, Korea\",\n  \"area\": {\n    \"value\": 5617.36,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2005-08-29\",\n  \"end_date\": \"2015-08-28\",\n  \"rent\": {\n    \"amount\": 36180,\n    \"currency\": \"KRW\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The \\\"Lessee\\\" shall not claim any rights to the Object during the term of lease, except its right to use the same hereunder.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The \\\"Lessee\\\" shall not sublet the Object in whole or in part or dispose of its rights to use the Object to a third party: or\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The \\\"Lessee\\\" shall not deliver the right of claim for refund of the leasehold deposit under the lease contract up to a third party or provide for the right of other pledges and/or other mortgage purposes.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The \\\"Lessee\\\" may request the \\\"Lessor\\\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \\\"Lessee\\\".\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In subsection (1) in this Article, in the event that the \\\"Lessor\\\" recognizes the fairness of termination by the \\\"Lessee\\\", the \\\"Lessor\\\" shall deduct the rentals in arrears, expenses for restoring the Object to its original condition, etc., from the leasehold deposit provided under Article 5 hereof and the rentals paid by the \\\"Lessee\\\" and then refund the balance thereof to the \\\"Lessee\\\", if any.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The \\\"Lessee\\\" may request the \\\"Lessor\\\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \\\"Lessee\\\".\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In subsection (1) in this Article, in the event that the \\\"Lessor\\\" recognizes the fairness of termination by the \\\"Lessee\\\", the \\\"Lessor\\\" shall deduct the rentals in arrears, expenses for restoring the Object to its original condition, etc., from the leasehold deposit provided under Article 5 hereof and the rentals paid by the \\\"Lessee\\\" and then refund the balance thereof to the \\\"Lessee\\\", if any.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The \\\"Lessee\\\" may request the \\\"Lessor\\\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \\\"Lessee\\\".\"\n    }\n  ]\n}"
+  "attempts": 2,
+  "first_error": "red_flags.0: quote not found verbatim in the text: 'The \"Lessee\" shall not claim any rights to the Object during the term of lease, except its right to use the same hereunder.'\nred_flags.1: quote not found verbatim in the text: 'The \"Lessee\" shall not sublet the Object in whole or in part or dispose of its rights to use the Object to a third party: or'\nred_flags.2: quote not found verbatim in the text: 'The \"Lessee\" shall not deliver the right of claim for refund of the leasehold deposit under the lease contract up to a third party or provide for the right of other pledges and/or other mortgage purpo'\nred_flags.3: quote not found verbatim in the text: 'The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Les'\nred_flags.4: quote not found verbatim in the text: 'In subsection (1) in this Article, in the event that the \"Lessor\" recognizes the fairness of termination by the \"Lessee\", the \"Lessor\" shall deduct the rentals in arrears, expenses for restoring the O'\nred_flags.5: quote not found verbatim in the text: 'The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Les'\nred_flags.6: quote not found verbatim in the text: 'In subsection (1) in this Article, in the event that the \"Lessor\" recognizes the fairness of termination by the \"Lessee\", the \"Lessor\" shall deduct the rentals in arrears, expenses for restoring the O'\nred_flags.7: quote not found verbatim in the text: 'The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Les'",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Seongnam Industry Promotion Foundation\",\n  \"lessee\": \"Axesstel Korea. Inc.\",\n  \"premises_address\": \"25-1 Jeongja-dong, Bundang-gu, Seongnam, Gyeonggi-do, Korea\",\n  \"area\": {\n    \"value\": 5617.36,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2005-08-29\",\n  \"end_date\": \"2015-08-28\",\n  \"rent\": {\n    \"amount\": 36180,\n    \"currency\": \"KRW\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The \\\"Lessee\\\" shall not claim any rights to the Object during the term of lease, except its right to use the same hereunder.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The \\\"Lessee\\\" shall not sublet the Object in whole or in part or dispose of its rights to use the Object to a third party: or\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The \\\"Lessee\\\" shall not deliver the right of claim for refund of the leasehold deposit under the lease contract up to a third party or provide for the right of other pledges and/or other mortgage purposes.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The \\\"Lessee\\\" may request the \\\"Lessor\\\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \\\"Lessee\\\".\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In subsection (1) in this Article, in the event that the \\\"Lessor\\\" recognizes the fairness of termination by the \\\"Lessee\\\", the \\\"Lessor\\\" shall deduct the rentals in arrears, expenses for restoring the Object to its original condition, etc., from the leasehold deposit provided under Article 5 hereof and the rentals paid by the \\\"Lessee\\\" and then refund the balance thereof to the \\\"Lessee\\\", if any.\"\n    }\n  ]\n}"
 }

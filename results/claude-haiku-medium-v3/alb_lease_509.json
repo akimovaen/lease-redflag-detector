@@ -1,0 +1,47 @@
+{
+  "text_id": "alb_lease_509",
+  "config": "claude-haiku-medium-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:49:08+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 11.516,
+  "input_tokens": 19633,
+  "output_tokens": 2529,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Capital Business Parks Globeside Limited",
+    "lessee": "Icon Clinical Research (UK) Limited",
+    "premises_address": "the land and building known as Building Two, Globeside Business Park",
+    "area": null,
+    "start_date": "2001-08-13",
+    "end_date": "2017-08-12",
+    "rent": {
+      "amount": 988350.0,
+      "currency": "GBP",
+      "period": "year"
+    },
+    "indexation": "market_review",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "The Landlord covenants with the Tenant to maintain, retain, and replace the landscaped areas shown hatched black on the plan annexed hereto until such time as the Landlord serves written notice on the Tenant terminating such obligation whereupon such obligation shall revert to the Tenant."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Notwithstanding Clause 4.16.1 the Tenant may share occupation of the whole or any part of the Premises with a Group Company PROVIDED THAT;"
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Capital Business Parks Globeside Limited\",\"lessee\":\"Icon Clinical Research (UK) Limited\",\"premises_address\":\"the land and building known as Building Two, Globeside Business Park\",\"area\":null,\"start_date\":\"2001-08-13\",\"end_date\":\"2017-08-12\",\"rent\":{\"amount\":988350,\"currency\":\"GBP\",\"period\":\"year\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"The Landlord covenants with the Tenant to maintain, retain, and replace the landscaped areas shown hatched black on the plan annexed hereto until such time as the Landlord serves written notice on the Tenant terminating such obligation whereupon such obligation shall revert to the Tenant.\"},{\"type\":\"sublease_permitted\",\"quote\":\"Notwithstanding Clause 4.16.1 the Tenant may share occupation of the whole or any part of the Premises with a Group Company PROVIDED THAT;\"}]}"
+}

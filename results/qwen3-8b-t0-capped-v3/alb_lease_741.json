@@ -1,0 +1,53 @@
+{
+  "text_id": "alb_lease_741",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:36:23+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 163.025,
+  "input_tokens": 27895,
+  "output_tokens": 963,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.2: quote not found verbatim in the text: 'Landlord may terminate this Lease and the rent shall be abated during the unexpired portion of this Lease (effective upon the date of the occurrence of such damage or destruction). No damages shall be'",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Iowa State University Research Park Corporation",
+    "lessee": "BioProtection Systems Corporation",
+    "premises_address": "Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3",
+    "area": null,
+    "start_date": "2005-08-22",
+    "end_date": "2006-08-31",
+    "rent": {
+      "amount": 2112.5,
+      "currency": "USD",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Landlord shall subject to reimbursement as Operating Costs under Section 5 above maintain the roof, foundation, heating, ventilating and air conditioning system, common areas, exterior grounds and the structural soundness of the exterior walls (including windows, glass, plate glass, door or entries) of the Building in good repair, reasonable wear and tear excepted. Provided, however, Tenant shall repair and pay for any damage caused by Tenant or Tenant’s employees, agents, invitees, licensees, subtenants or contractors, or caused by Tenant’s default hereunder."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Operating Costs paid by Landlord shall be allocated among tenants of the Building. Tenant’s pro rata share of Operating Costs shall be equal to that percent which is the ratio of the number of gross square feet in the Demised Premises to the total number of gross square feet in the Building, which pro rata share is specified on the Summary Page."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Tenant shall not assign, transfer or encumber this Lease or sublet the whole or any part of the Demised Premises without prior written consent of Landlord which consent may be withheld in its sole discretion."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Iowa State University Research Park Corporation\",\n  \"lessee\": \"BioProtection Systems Corporation\",\n  \"premises_address\": \"Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3\",\n  \"area\": null,\n  \"start_date\": \"2005-08-22\",\n  \"end_date\": \"2006-08-31\",\n  \"rent\": {\n    \"amount\": 2112.5,\n    \"currency\": \"USD\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Landlord shall subject to reimbursement as Operating Costs under Section 5 above maintain the roof, foundation, heating, ventilating and air conditioning system, common areas, exterior grounds and the structural soundness of the exterior walls (including windows, glass, plate glass, door or entries) of the Building in good repair, reasonable wear and tear excepted. Provided, however, Tenant shall repair and pay for any damage caused by Tenant or Tenant’s employees, agents, invitees, licensees, subtenants or contractors, or caused by Tenant’s default hereunder.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Operating Costs paid by Landlord shall be allocated among tenants of the Building. Tenant’s pro rata share of Operating Costs shall be equal to that percent which is the ratio of the number of gross square feet in the Demised Premises to the total number of gross square feet in the Building, which pro rata share is specified on the Summary Page.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Tenant shall not assign, transfer or encumber this Lease or sublet the whole or any part of the Demised Premises without prior written consent of Landlord which consent may be withheld in its sole discretion.\"\n    }\n  ]\n}"
+}

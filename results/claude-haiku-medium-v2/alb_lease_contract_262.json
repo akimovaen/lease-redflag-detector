@@ -1,0 +1,46 @@
+{
+  "text_id": "alb_lease_contract_262",
+  "config": "claude-haiku-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:46:31+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 13.305,
+  "input_tokens": 5737,
+  "output_tokens": 2478,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "The Fifth Season Liyang Investment Management Co., Ltd.",
+    "lessee": "Quan Ju Xiang Catering",
+    "premises_address": "4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road",
+    "area": {
+      "value": 3274.0,
+      "unit": "sqm"
+    },
+    "start_date": "2010-08-01",
+    "end_date": "2022-07-31",
+    "rent": {
+      "amount": 836000.0,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "fixed",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A is responsible for the damage of the main structure unless damage due to Party B or its customer."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"The Fifth Season Liyang Investment Management Co., Ltd.\",\"lessee\":\"Quan Ju Xiang Catering\",\"premises_address\":\"4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road\",\"area\":{\"value\":3274,\"unit\":\"sqm\"},\"start_date\":\"2010-08-01\",\"end_date\":\"2022-07-31\",\"rent\":{\"amount\":836000,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"fixed\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A is responsible for the damage of the main structure unless damage due to Party B or its customer.\"}]}"
+}

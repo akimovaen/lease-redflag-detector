@@ -4,22 +4,25 @@
   "provider": "anthropic",
   "model": "claude-haiku-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
   "max_red_flags": null,
-  "created_at": "2026-10-28T12:24:31+00:00",
+  "created_at": "2026-10-28T14:45:38+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 12.589,
+  "latency_s": 14.608,
   "input_tokens": 18037,
-  "output_tokens": 2856,
+  "output_tokens": 3367,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
     "lessor": "Milan Gottwald",
     "lessee": "SENDIO s.r.o.",
-    "premises_address": "cadastral area of Hodolany, the municipality of Olomouc, title sheet No. 2978",
+    "premises_address": "cadastral area of Hodolany, municipality of Olomouc, Land Registry title sheet No. 2978",
     "area": null,
     "start_date": "2008-07-01",
     "end_date": "2009-06-30",
@@ -48,5 +51,5 @@
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Milan Gottwald\",\"lessee\":\"SENDIO s.r.o.\",\"premises_address\":\"cadastral area of Hodolany, the municipality of Olomouc, title sheet No. 2978\",\"area\":null,\"start_date\":\"2008-07-01\",\"end_date\":\"2009-06-30\",\"rent\":{\"amount\":455310,\"currency\":\"CZK\",\"period\":\"month\"},\"indexation\":\"fixed\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"In that case, the Landlord shall be obliged to remedy these defects at his own expense without undue delay, but not later than within 21 (twenty-one) consecutive days from the date when they were ascertained.\"},{\"type\":\"tenant_break_option\",\"quote\":\"during the thus-extended term of the lease, the Tenant shall be entitled to terminate this Contract.\"},{\"type\":\"indexation_limited\",\"quote\":\"The fixed amount of the Annual Rent, as specified in Art. IV (1) hereof is set as a fixed amount for the entire term of the lease, i.e. for the term of one year pursuant to Art. XI hereof, and may not be increased in any manner whatsoever by the Landlord during this period of time.\"},{\"type\":\"sublease_permitted\",\"quote\":\"The Landlord agrees not to refuse the consent to the conclusion of the sublease contract without a serious reason.\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Milan Gottwald\",\"lessee\":\"SENDIO s.r.o.\",\"premises_address\":\"cadastral area of Hodolany, municipality of Olomouc, Land Registry title sheet No. 2978\",\"area\":null,\"start_date\":\"2008-07-01\",\"end_date\":\"2009-06-30\",\"rent\":{\"amount\":455310,\"currency\":\"CZK\",\"period\":\"month\"},\"indexation\":\"fixed\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"In that case, the Landlord shall be obliged to remedy these defects at his own expense without undue delay, but not later than within 21 (twenty-one) consecutive days from the date when they were ascertained.\"},{\"type\":\"tenant_break_option\",\"quote\":\"during the thus-extended term of the lease, the Tenant shall be entitled to terminate this Contract.\"},{\"type\":\"indexation_limited\",\"quote\":\"The fixed amount of the Annual Rent, as specified in Art. IV (1) hereof is set as a fixed amount for the entire term of the lease, i.e. for the term of one year pursuant to Art. XI hereof, and may not be increased in any manner whatsoever by the Landlord during this period of time.\"},{\"type\":\"sublease_permitted\",\"quote\":\"The Landlord agrees not to refuse the consent to the conclusion of the sublease contract without a serious reason.\"}]}"
 }

@@ -1,0 +1,62 @@
+{
+  "text_id": "alb_lease_contract_116",
+  "config": "claude-haiku-medium-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:49:16+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 14.582,
+  "input_tokens": 18214,
+  "output_tokens": 3371,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Tianjin Changhe Heli Investment Company (Limited partnership), Beijing Sales Business Segment",
+    "lessee": "Yatai Weilai Technology Development Beijing Branch, Shenzhen Yatai Weilai Educational Technology Development Co. Ltd.",
+    "premises_address": "Room 509 and 511, GohighLanfeng Tower, Block 1 of #98 S.Sanhuan Rd., Chaoyang District, Beijing",
+    "area": {
+      "value": 352.74,
+      "unit": "sqm"
+    },
+    "start_date": "2014-03-01",
+    "end_date": "2018-03-19",
+    "rent": {
+      "amount": 59862.92,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Changhe/PSP has and keeps the duty to upkeep public facilities and systems to work in good conditions, maintain public area clean and neat (excluding the area to Zhongtulian's extent under independent rent coverage);"
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "the monthly rent of the original house is RMB 69,739.64 including the property management fees and housing rental taxes."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "the property management fees will be transferred to the property management company by Party A (except in the decoration works and rent-free periods)"
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Unless Changhe prior consent, sublease is deemed to take effect if Zhongtulian is one of the followings:"
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Tianjin Changhe Heli Investment Company (Limited partnership), Beijing Sales Business Segment\",\"lessee\":\"Yatai Weilai Technology Development Beijing Branch, Shenzhen Yatai Weilai Educational Technology Development Co. Ltd.\",\"premises_address\":\"Room 509 and 511, GohighLanfeng Tower, Block 1 of #98 S.Sanhuan Rd., Chaoyang District, Beijing\",\"area\":{\"value\":352.74,\"unit\":\"sqm\"},\"start_date\":\"2014-03-01\",\"end_date\":\"2018-03-19\",\"rent\":{\"amount\":59862.92,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Changhe/PSP has and keeps the duty to upkeep public facilities and systems to work in good conditions, maintain public area clean and neat (excluding the area to Zhongtulian's extent under independent rent coverage);\"},{\"type\":\"service_charges_limited\",\"quote\":\"the monthly rent of the original house is RMB 69,739.64 including the property management fees and housing rental taxes.\"},{\"type\":\"service_charges_limited\",\"quote\":\"the property management fees will be transferred to the property management company by Party A (except in the decoration works and rent-free periods)\"},{\"type\":\"tenant_break_option\",\"quote\":\"Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows.\"},{\"type\":\"sublease_permitted\",\"quote\":\"Unless Changhe prior consent, sublease is deemed to take effect if Zhongtulian is one of the followings:\"}]}"
+}

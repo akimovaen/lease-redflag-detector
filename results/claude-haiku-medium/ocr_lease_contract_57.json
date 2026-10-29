@@ -4,26 +4,26 @@
   "provider": "anthropic",
   "model": "claude-haiku-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
   "max_red_flags": null,
-  "created_at": "2026-10-28T12:24:31+00:00",
+  "created_at": "2026-10-28T14:45:35+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 10.564,
+  "latency_s": 11.073,
   "input_tokens": 5249,
-  "output_tokens": 2524,
+  "output_tokens": 2491,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
     "lessor": "Beijing Shunfeng Runlin Technology and Trade Co., Ltd.",
-    "lessee": "Beijing Ninetown Sky Eco-Agriculture Co., Ltd.",
-    "premises_address": "located in the south of Lianying Village",
-    "area": {
-      "value": 56656.0,
-      "unit": "sqm"
-    },
+    "lessee": "Beijing Ninetowns Sky Eco-Agriculture Co., Ltd.",
+    "premises_address": "South of Lianying Village",
+    "area": null,
     "start_date": "2010-03-01",
     "end_date": "2013-02-28",
     "rent": {
@@ -35,6 +35,10 @@
     "red_flags": [
       {
         "type": "landlord_repairs",
+        "quote": "The uncompleted constructions shall'be completed and delivered to Party B for normal use within thirty (30) calendar days"
+      },
+      {
+        "type": "landlord_repairs",
         "quote": "Party A is obligated to maintain the cement road in good condition for passage within the boundary of the premise, and is in charge of the greening work within the boundary of the premise."
       },
       {
@@ -44,16 +48,8 @@
       {
         "type": "tenant_break_option",
         "quote": "If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability."
-      },
-      {
-        "type": "service_charges_limited",
-        "quote": "the charge for electricity is RMB 1 per kilowatt-hour and the charge for water is RMB 3 pef ton"
-      },
-      {
-        "type": "indexation_limited",
-        "quote": "The second year: the rent of RMB 550,000 shall be paid before March 5 th, 2011;"
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Beijing Shunfeng Runlin Technology and Trade Co., Ltd.\",\"lessee\":\"Beijing Ninetown Sky Eco-Agriculture Co., Ltd.\",\"premises_address\":\"located in the south of Lianying Village\",\"area\":{\"value\":56656,\"unit\":\"sqm\"},\"start_date\":\"2010-03-01\",\"end_date\":\"2013-02-28\",\"rent\":{\"amount\":550000,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A is obligated to maintain the cement road in good condition for passage within the boundary of the premise, and is in charge of the greening work within the boundary of the premise.\"},{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall make sure that the leased buildings and land that it delivers to Party B can be used normally.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability.\"},{\"type\":\"service_charges_limited\",\"quote\":\"the charge for electricity is RMB 1 per kilowatt-hour and the charge for water is RMB 3 pef ton\"},{\"type\":\"indexation_limited\",\"quote\":\"The second year: the rent of RMB 550,000 shall be paid before March 5 th, 2011;\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Beijing Shunfeng Runlin Technology and Trade Co., Ltd.\",\"lessee\":\"Beijing Ninetowns Sky Eco-Agriculture Co., Ltd.\",\"premises_address\":\"South of Lianying Village\",\"area\":null,\"start_date\":\"2010-03-01\",\"end_date\":\"2013-02-28\",\"rent\":{\"amount\":550000,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"The uncompleted constructions shall'be completed and delivered to Party B for normal use within thirty (30) calendar days\"},{\"type\":\"landlord_repairs\",\"quote\":\"Party A is obligated to maintain the cement road in good condition for passage within the boundary of the premise, and is in charge of the greening work within the boundary of the premise.\"},{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall make sure that the leased buildings and land that it delivers to Party B can be used normally.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability.\"}]}"
 }

@@ -4,17 +4,20 @@
   "provider": "anthropic",
   "model": "claude-haiku-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
   "max_red_flags": null,
-  "created_at": "2026-10-28T12:24:03+00:00",
+  "created_at": "2026-10-28T14:45:08+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 9.222,
+  "latency_s": 9.507,
   "input_tokens": 9734,
-  "output_tokens": 2160,
+  "output_tokens": 2227,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
     "lessor": "M&G Chenguang Holding (Group) Co., Ltd.",
@@ -35,21 +38,17 @@
     "red_flags": [
       {
         "type": "landlord_repairs",
-        "quote": "Party A ensures that the Premises and its ancillary facilities are in normal usable and safe conditions."
+        "quote": "During the lease term, if Party A fails to timely perform its repair and maintenance duties as agreed herein, thus causing damage to the Premises and property or personal damage to Party B, Party A shall compensate Party B its direct losses."
       },
       {
         "type": "landlord_repairs",
-        "quote": "if Party A fails to timely perform its repair and maintenance duties as agreed herein, thus causing damage to the Premises and property or personal damage to Party B, Party A shall compensate Party B its direct losses."
+        "quote": "During the lease term, Party A ensures that the Premises and its ancillary facilities are in normal usable and safe conditions."
       },
       {
         "type": "indexation_limited",
         "quote": "Party A has the right to modify certain clauses including rental clause in the renewed contract, but the modification of the rental shall not exceed 20%."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "Both parties agree that, should either party commit any of the following breaches, the other party may notify in writing that this Contract be cancelled."
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"M&G Chenguang Holding (Group) Co., Ltd.\",\"lessee\":\"Shanghai Shengran Information Technology Co., Ltd.\",\"premises_address\":\"13-15/F, Building No.2, 1528 Gumei Road, Caohejing High-Tech Park, Shanghai\",\"area\":{\"value\":5395.14,\"unit\":\"sqm\"},\"start_date\":\"2012-07-01\",\"end_date\":\"2015-06-30\",\"rent\":{\"amount\":8270749.62,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A ensures that the Premises and its ancillary facilities are in normal usable and safe conditions.\"},{\"type\":\"landlord_repairs\",\"quote\":\"if Party A fails to timely perform its repair and maintenance duties as agreed herein, thus causing damage to the Premises and property or personal damage to Party B, Party A shall compensate Party B its direct losses.\"},{\"type\":\"indexation_limited\",\"quote\":\"Party A has the right to modify certain clauses including rental clause in the renewed contract, but the modification of the rental shall not exceed 20%.\"},{\"type\":\"tenant_break_option\",\"quote\":\"Both parties agree that, should either party commit any of the following breaches, the other party may notify in writing that this Contract be cancelled.\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"M&G Chenguang Holding (Group) Co., Ltd.\",\"lessee\":\"Shanghai Shengran Information Technology Co., Ltd.\",\"premises_address\":\"13-15/F, Building No.2, 1528 Gumei Road, Caohejing High-Tech Park, Shanghai\",\"area\":{\"value\":5395.14,\"unit\":\"sqm\"},\"start_date\":\"2012-07-01\",\"end_date\":\"2015-06-30\",\"rent\":{\"amount\":8270749.62,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"During the lease term, if Party A fails to timely perform its repair and maintenance duties as agreed herein, thus causing damage to the Premises and property or personal damage to Party B, Party A shall compensate Party B its direct losses.\"},{\"type\":\"landlord_repairs\",\"quote\":\"During the lease term, Party A ensures that the Premises and its ancillary facilities are in normal usable and safe conditions.\"},{\"type\":\"indexation_limited\",\"quote\":\"Party A has the right to modify certain clauses including rental clause in the renewed contract, but the modification of the rental shall not exceed 20%.\"}]}"
 }

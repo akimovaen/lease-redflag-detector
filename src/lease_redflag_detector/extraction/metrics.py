@@ -8,7 +8,10 @@ Reads every `results/<config>/` folder and writes `results/metrics.md` and
 - field accuracy: share of (golden text, field) pairs answered correctly; a failed
   output counts as wrong on every field;
 - red flag precision, recall and F1 over the set of red flag types per text;
-- % valid: share of all texts with an output that passed schema validation;
+- % valid: share of all texts with an output that passed validation (schema,
+  verbatim quotes, date order; older runs checked the schema only);
+- % repaired: share of all texts that needed the repair attempt; `—` for runs
+  made before the repair step existed;
 - latency p50 and p95 over all texts, in seconds;
 - cost per 1000 documents at the mean token usage per text.
 """
@@ -97,6 +100,7 @@ class ConfigMetrics:
     sampling: str
     texts: int
     valid_pct: float
+    repaired_pct: float | None
     field_accuracy: float
     flag_precision: float
     flag_recall: float
@@ -148,6 +152,11 @@ def score_config(folder: Path, golden: dict[str, dict]) -> ConfigMetrics:
         sampling=", ".join(f"{k}={v}" for k, v in first["sampling"].items()),
         texts=len(records),
         valid_pct=100 * sum(r["status"] == "ok" for r in records) / len(records),
+        repaired_pct=(
+            100 * sum(r["attempts"] > 1 for r in records) / len(records)
+            if "attempts" in first
+            else None
+        ),
         field_accuracy=sum(field_hits.values()) / (len(FIELDS) * len(golden)),
         flag_precision=precision,
         flag_recall=recall,
@@ -171,16 +180,17 @@ def to_markdown(rows: list[ConfigMetrics], golden_count: int) -> str:
         "",
         (
             "| Config | Model | Prompt | Sampling | Field acc. | Flag P | Flag R "
-            "| Flag F1 | % valid | p50, s | p95, s | $ / 1000 docs |"
+            "| Flag F1 | % valid | % repaired | p50, s | p95, s | $ / 1000 docs |"
         ),
-        "|---|---|---|---|---|---|---|---|---|---|---|---|",
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in rows:
         cost = "n/a" if r.cost_per_1000_usd is None else f"{r.cost_per_1000_usd:.2f}"
+        repaired = "—" if r.repaired_pct is None else f"{r.repaired_pct:.0f}"
         lines.append(
             f"| {r.config} | {r.model} | {r.prompt} | {r.sampling} | {r.field_accuracy:.2f} "
             f"| {r.flag_precision:.2f} | {r.flag_recall:.2f} | {r.flag_f1:.2f} "
-            f"| {r.valid_pct:.0f} | {r.latency_p50_s:.1f} | {r.latency_p95_s:.1f} | {cost} |"
+            f"| {r.valid_pct:.0f} | {repaired} | {r.latency_p50_s:.1f} | {r.latency_p95_s:.1f} | {cost} |"
         )
     lines += ["", "## Accuracy per field", ""]
     lines.append("| Config | " + " | ".join(FIELDS) + " |")

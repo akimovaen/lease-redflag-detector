@@ -4,17 +4,20 @@
   "provider": "anthropic",
   "model": "claude-haiku-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
   "max_red_flags": null,
-  "created_at": "2026-10-28T12:24:41+00:00",
+  "created_at": "2026-10-28T14:45:45+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 10.368,
+  "latency_s": 11.217,
   "input_tokens": 6274,
-  "output_tokens": 2504,
+  "output_tokens": 2813,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
     "lessor": "Shanghai New Cogi Cosmetic Co., Ltd.",
@@ -42,8 +45,8 @@
         "quote": "In the event that the Premises have been defective by the time of handing over, Party A shall repair the Premises within three days from the date of banding over. If failed to repair the Premises punctually, Party A shall reduce the rent and amend the provisions in relation to the rent."
       },
       {
-        "type": "tenant_break_option",
-        "quote": "The Pretnises handed over by Party A fail to comply with the conditions as herein contained, which frustrates the purpose of the lease; or the Premises are defective and endanger the safety of Party B."
+        "type": "landlord_repairs",
+        "quote": "Party A shall be liable to compensate Party B for its property damage or personal injury occasioned by Party's"
       },
       {
         "type": "indexation_limited",
@@ -55,5 +58,5 @@
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Shanghai New Cogi Cosmetic Co., Ltd.\",\"lessee\":\"Shanghai Mecox Lane Information Technology Co., Ltd.\",\"premises_address\":\"west part of 17th Floor, Diamond Building, 487 Tianlin Road, Xuhui District, Shanghai\",\"area\":{\"value\":967.38,\"unit\":\"sqm\"},\"start_date\":\"2009-08-20\",\"end_date\":\"2012-08-19\",\"rent\":{\"amount\":85330,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall repair them within 2 days from the date of recelpt of the notice. If Party A fails to repair in tite, Party B inay repair theth at the cost of Party A.\"},{\"type\":\"landlord_repairs\",\"quote\":\"In the event that the Premises have been defective by the time of handing over, Party A shall repair the Premises within three days from the date of banding over. If failed to repair the Premises punctually, Party A shall reduce the rent and amend the provisions in relation to the rent.\"},{\"type\":\"tenant_break_option\",\"quote\":\"The Pretnises handed over by Party A fail to comply with the conditions as herein contained, which frustrates the purpose of the lease; or the Premises are defective and endanger the safety of Party B.\"},{\"type\":\"indexation_limited\",\"quote\":\"The rent shall remain unchanged during the tenancy.\"},{\"type\":\"sublease_permitted\",\"quote\":\"Party B may sublet part or the whole of the Premises to another party during the tenancy.\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Shanghai New Cogi Cosmetic Co., Ltd.\",\"lessee\":\"Shanghai Mecox Lane Information Technology Co., Ltd.\",\"premises_address\":\"west part of 17th Floor, Diamond Building, 487 Tianlin Road, Xuhui District, Shanghai\",\"area\":{\"value\":967.38,\"unit\":\"sqm\"},\"start_date\":\"2009-08-20\",\"end_date\":\"2012-08-19\",\"rent\":{\"amount\":85330,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall repair them within 2 days from the date of recelpt of the notice. If Party A fails to repair in tite, Party B inay repair theth at the cost of Party A.\"},{\"type\":\"landlord_repairs\",\"quote\":\"In the event that the Premises have been defective by the time of handing over, Party A shall repair the Premises within three days from the date of banding over. If failed to repair the Premises punctually, Party A shall reduce the rent and amend the provisions in relation to the rent.\"},{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall be liable to compensate Party B for its property damage or personal injury occasioned by Party's\"},{\"type\":\"indexation_limited\",\"quote\":\"The rent shall remain unchanged during the tenancy.\"},{\"type\":\"sublease_permitted\",\"quote\":\"Party B may sublet part or the whole of the Premises to another party during the tenancy.\"}]}"
 }

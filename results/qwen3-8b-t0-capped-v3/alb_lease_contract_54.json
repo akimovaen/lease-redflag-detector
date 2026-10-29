@@ -1,0 +1,57 @@
+{
+  "text_id": "alb_lease_contract_54",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:42:51+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 135.994,
+  "input_tokens": 22930,
+  "output_tokens": 971,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.2: quote not found verbatim in the text: 'If the purchase agreement on which the Parties are negotiating at the time of conclusion hereof (as described in more detail in Art. XV (4) hereof) does not come into effect by July 1, 2009 for reason'",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Milan Gottwald",
+    "lessee": "SENDIO s.r.o.",
+    "premises_address": "cadastral area of Hodolany, the municipality of Olomouc, part of municipality: Hodolany",
+    "area": null,
+    "start_date": "2008-07-01",
+    "end_date": "2009-06-30",
+    "rent": {
+      "amount": 10000000.0,
+      "currency": "CZK",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "The Tenant shall be obliged to maintain the Subject of the Lease so as to prevent any damage thereto."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "The Rent does not include payments for performances related to the use of the Subject of the Lease, including, without limitation, payments for supplies of water, gas, steam, electricity, telecommunication services and discharge of wastewater, etc."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If the purchase agreement on which the Parties are negotiating at the time of conclusion hereof (as described in more detail in Art. XV (4) hereof) does not come into effect by July 1, 2009 for reasons attributable exclusively to the Landlord, which shall mean, for the purposes of this Contract: (i) breach of the Landlord’s obligations following from the second and third sentences of Art. VIII (1) and/or (ii) death of the Landlord or deprivation of the Landlord of legal capacity, the term of the lease pursuant to Art. XI (1) hereof shall be automatically extended to December 31, 2015; during the thus-extended term of the lease, the Tenant shall be entitled to terminate this Contract."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "The Tenant shall be entitled to sublease the Subject of the Lease only with the prior written consent of the Landlord. The Landlord agrees not to refuse the consent to the conclusion of the sublease contract without a serious reason."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Milan Gottwald\",\n  \"lessee\": \"SENDIO s.r.o.\",\n  \"premises_address\": \"cadastral area of Hodolany, the municipality of Olomouc, part of municipality: Hodolany\",\n  \"area\": null,\n  \"start_date\": \"2008-07-01\",\n  \"end_date\": \"2009-06-30\",\n  \"rent\": {\n    \"amount\": 10000000,\n    \"currency\": \"CZK\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"The Tenant shall be obliged to maintain the Subject of the Lease so as to prevent any damage thereto.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"The Rent does not include payments for performances related to the use of the Subject of the Lease, including, without limitation, payments for supplies of water, gas, steam, electricity, telecommunication services and discharge of wastewater, etc.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If the purchase agreement on which the Parties are negotiating at the time of conclusion hereof (as described in more detail in Art. XV (4) hereof) does not come into effect by July 1, 2009 for reasons attributable exclusively to the Landlord, which shall mean, for the purposes of this Contract: (i) breach of the Landlord’s obligations following from the second and third sentences of Art. VIII (1) and/or (ii) death of the Landlord or deprivation of the Landlord of legal capacity, the term of the lease pursuant to Art. XI (1) hereof shall be automatically extended to December 31, 2015; during the thus-extended term of the lease, the Tenant shall be entitled to terminate this Contract.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The Tenant shall be entitled to sublease the Subject of the Lease only with the prior written consent of the Landlord. The Landlord agrees not to refuse the consent to the conclusion of the sublease contract without a serious reason.\"\n    }\n  ]\n}"
+}

@@ -1,0 +1,25 @@
+{
+  "text_id": "alb_lease_509",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:33:40+00:00",
+  "status": "failed",
+  "error": "red_flags.2: quote not found verbatim in the text: \"4.16 Alienation\\n4.16.2 Not to assign or agree to assign the whole of the Premises without the Landlord's written consent (not to be unreasonably withheld or delayed), provided that:\"\nred_flags.3: quote not found verbatim in the text: '4.16 Alienation\\n4.16.4 Not to underlet or agree to underlet the whole of the Premises or a Subletting Unit unless:'",
+  "latency_s": 149.547,
+  "input_tokens": 24320,
+  "output_tokens": 1064,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.2: quote not found verbatim in the text: \"4.16 Alienation\\n4.16.2 Not to assign or agree to assign the whole of the Premises without the Landlord's written consent (not to be unreasonably withheld or delayed), provided that:\"\nred_flags.3: quote not found verbatim in the text: '4.16 Alienation\\n4.16.4 Not to underlet or agree to underlet the whole of the Premises or a Subletting Unit unless:'",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Capital Business Parks Globeside Limited (Company number 3808246) whose registered office is at Portland House, Stag Place, London SW1E 5DS\",\n  \"lessee\": \"Icon Clinical Research (UK) Limited (Company number 02541764) whose registered office is at Kings Court, The Broadway, Winchester, Hampshire, SO23 9BE\",\n  \"premises_address\": \"Building Two, Globeside Business Park, Marlow, Buckinghamshire\",\n  \"area\": null,\n  \"start_date\": \"2001-08-13\",\n  \"end_date\": \"2017-08-13\",\n  \"rent\": {\n    \"amount\": 988350,\n    \"currency\": \"GBP\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"4.6 Repair\\n4.6.1 Subject to Clause 7.1, to keep and maintain the Premises in good and substantial repair and condition (damage by the Insured Risks excepted save to the extent that Insurance moneys are irrecoverable as a result of the act or default of the Tenant);\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"4.3 Outgoings\\nTo pay all existing and future rates, taxes, charges, assessments and outgoings in respect of the Premises (whether assessed or imposed on the owner or the occupier), except any tax (other than VAT) arising as a result of the receipt by the Landlord of the rents reserved by this Lease and any tax arising on any dealing by the Landlord with its reversion to this Lease;\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"4.16 Alienation\\n4.16.2 Not to assign or agree to assign the whole of the Premises without the Landlord's written consent (not to be unreasonably withheld or delayed), provided that:\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"4.16 Alienation\\n4.16.4 Not to underlet or agree to underlet the whole of the Premises or a Subletting Unit unless:\"\n    }\n  ]\n}"
+}

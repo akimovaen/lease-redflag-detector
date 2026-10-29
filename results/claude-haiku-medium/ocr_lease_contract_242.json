@@ -4,17 +4,20 @@
   "provider": "anthropic",
   "model": "claude-haiku-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
   "max_red_flags": null,
-  "created_at": "2026-10-28T12:24:41+00:00",
+  "created_at": "2026-10-28T14:45:47+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 9.047,
+  "latency_s": 11.981,
   "input_tokens": 10679,
-  "output_tokens": 2105,
+  "output_tokens": 2676,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
     "lessor": "Korea Institute of Design Promotion",
@@ -34,22 +37,18 @@
     "indexation": "market_review",
     "red_flags": [
       {
-        "type": "landlord_repairs",
-        "quote": "“A” shall bear the repair expense for the naturally worn or discolored wall, ceiling, floor, etc. of the object matter of the lease."
-      },
-      {
         "type": "tenant_break_option",
         "quote": "If “B” wishes to cancel the contract during the lease term, “B” shall notify “A” in writing 60 days in advance without fail."
       },
       {
-        "type": "indexation_limited",
-        "quote": "Though the increase rate of rent is not fixed regularly, it can be elastically adjusted after one year by the mutual negotiation between “A” and “B” one year later in consideration of the following factors:"
+        "type": "landlord_repairs",
+        "quote": "“A” shall bear the repair expense for the naturally worn or discolored wall, ceiling, floor, etc. of the object matter of the lease."
       },
       {
-        "type": "service_charges_limited",
-        "quote": "“A” is entitled to adjust guaranty money, rent and management expenses through negotiation with “B” by written notification of 30 days in advance in the following cases."
+        "type": "indexation_limited",
+        "quote": "Though the increase rate of rent is not fixed regularly, it can be elastically adjusted after one year by the mutual negotiation between “A” and “B” one year later in consideration of the following factors:"
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Korea Institute of Design Promotion\",\"lessee\":\"Leadis Technology Korea, Inc.\",\"premises_address\":\"Room 205-206, 2nd floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do\",\"area\":{\"value\":987.24,\"unit\":\"sqm\"},\"start_date\":\"2003-06-21\",\"end_date\":\"2005-06-20\",\"rent\":{\"amount\":11945600,\"currency\":\"KRW\",\"period\":\"month\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"“A” shall bear the repair expense for the naturally worn or discolored wall, ceiling, floor, etc. of the object matter of the lease.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If “B” wishes to cancel the contract during the lease term, “B” shall notify “A” in writing 60 days in advance without fail.\"},{\"type\":\"indexation_limited\",\"quote\":\"Though the increase rate of rent is not fixed regularly, it can be elastically adjusted after one year by the mutual negotiation between “A” and “B” one year later in consideration of the following factors:\"},{\"type\":\"service_charges_limited\",\"quote\":\"“A” is entitled to adjust guaranty money, rent and management expenses through negotiation with “B” by written notification of 30 days in advance in the following cases.\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Korea Institute of Design Promotion\",\"lessee\":\"Leadis Technology Korea, Inc.\",\"premises_address\":\"Room 205-206, 2nd floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do\",\"area\":{\"value\":987.24,\"unit\":\"sqm\"},\"start_date\":\"2003-06-21\",\"end_date\":\"2005-06-20\",\"rent\":{\"amount\":11945600,\"currency\":\"KRW\",\"period\":\"month\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"tenant_break_option\",\"quote\":\"If “B” wishes to cancel the contract during the lease term, “B” shall notify “A” in writing 60 days in advance without fail.\"},{\"type\":\"landlord_repairs\",\"quote\":\"“A” shall bear the repair expense for the naturally worn or discolored wall, ceiling, floor, etc. of the object matter of the lease.\"},{\"type\":\"indexation_limited\",\"quote\":\"Though the increase rate of rent is not fixed regularly, it can be elastically adjusted after one year by the mutual negotiation between “A” and “B” one year later in consideration of the following factors:\"}]}"
 }

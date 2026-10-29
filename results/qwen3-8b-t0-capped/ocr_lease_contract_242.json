@@ -4,67 +4,22 @@
   "provider": "ollama",
   "model": "qwen3:8b",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "temperature": 0.0,
     "top_p": 1.0,
     "repeat_penalty": 1.1
   },
   "max_red_flags": 8,
-  "created_at": "2026-10-28T12:48:36+00:00",
-  "status": "ok",
-  "error": null,
-  "latency_s": 74.471,
-  "input_tokens": 5965,
-  "output_tokens": 814,
+  "created_at": "2026-10-28T15:20:52+00:00",
+  "status": "failed",
+  "error": "red_flags.0: quote not found verbatim in the text: '\"B\" shall not transfer or provide as mortgage the right of lease nor sublet the object matter of lease to the 3rd party.'\nred_flags.1: quote not found verbatim in the text: 'If \"B\" wishes to cancel the contract during the lease term, \"B\" shall notify \"A\" in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when'\nred_flags.2: quote not found verbatim in the text: 'If \"B\" wishes to cancel the contract 60 days in advance in accordance with Clause 3 of Article 4, \"B\" shall pay \"A\" amount calculated at the interest rate of loan by stipulation of commercial bank aga'\nred_flags.3: quote not found verbatim in the text: 'However, the term for imposing penalty shall be until either the 60th day from the day when \"A\" receives written notification of contract cancellation or expiry date of lease contract, whichever comes'\nred_flags.4: quote not found verbatim in the text: 'In case that this contract is cancelled in accordance with the Clause 2, the contract deposit paid by \"B\" shall be unconditionally in the possession of \"A\" as penalty and \"B\" is not entitled to claim '\nred_flags.5: quote not found verbatim in the text: 'In case that this contract is terminated in accordance with Clause 2 of Article 4 and \"B\" completely fulfills the obligation stipulated in each provision of this contract, \"A\" shall return the deposit'\nred_flags.6: quote not found verbatim in the text: 'Within 14 days after \"B\" completes restoring state of object matter of the lease, \"A\" shall return guaranty money. For delayed return of guaranty money, delay charge at the annual interest rate of 15%'\nred_flags.7: quote not found verbatim in the text: 'In case that \"B\" does not occupy and use the object matter of the lease notwithstanding elapse of 30 days after the commencing date of leas¢ term nor pay \"A\" the whole amount of guaranty money before '",
+  "latency_s": 131.518,
+  "input_tokens": 13287,
+  "output_tokens": 1611,
   "stop_reason": "stop",
-  "output": {
-    "document_type": "lease",
-    "lessor": "Korea Institute of Design Promotion (KIDP)",
-    "lessee": "Leadis Technology Korea, Inc.",
-    "premises_address": "344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do",
-    "area": null,
-    "start_date": "2003-06-21",
-    "end_date": "2005-06-20",
-    "rent": {
-      "amount": 11945600.0,
-      "currency": "KRW",
-      "period": "month"
-    },
-    "indexation": "none",
-    "red_flags": [
-      {
-        "type": "sublease_permitted",
-        "quote": "\"B\" shall not transfer or provide as mortgage the right of lease nor sublet the object matter of lease to the 3rd party."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "If \"B\" wishes to cancel the contract during the lease term, \"B\" shall notify \"A\" in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when \"A\" receives the written notification."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "If \"B\" wishes to cancel the contract 60 days in advance in accordance with Clause 3 of Article 4, \"B\" shall pay \"A\" amount calculated at the interest rate of loan by stipulation of commercial bank against the guaranty money for the term ranging from the next day of contract cancellation to the 60th day, rent and management expenses."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "However, the term for imposing penalty shall be until either the 60th day from the day when \"A\" receives written notification of contract cancellation or expiry date of lease contract, whichever comes earlier."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "In case that this contract is cancelled in accordance with the Clause 2, the contract deposit paid by \"B\" shall be unconditionally in the possession of \"A\" as penalty and \"B\" is not entitled to claim restitution."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "In case that this contract is terminated in accordance with Clause 2 of Article 4 and \"B\" completely fulfills the obligation stipulated in each provision of this contract, \"A\" shall return the deposited guaranty money. However, if any charges in the account of \"B\" such as unpaid rent, management expenses, etc. remain unsettled, \"A\" is entitled to deduct them from guaranty money so as to make balance, which will be actually returned."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "Within 14 days after \"B\" completes restoring state of object matter of the lease, \"A\" shall return guaranty money. For delayed return of guaranty money, delay charge at the annual interest rate of 15% shall be imposed to \"A.\""
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "In case that \"B\" does not occupy and use the object matter of the lease notwithstanding elapse of 30 days after the commencing date of leas¢ term nor pay \"A\" the whole amount of guaranty money before the commencing date of lease term, this contract is regarded as automatically cancelled on the commencing date of lease term."
-      }
-    ]
-  },
+  "attempts": 2,
+  "first_error": "red_flags.0: quote not found verbatim in the text: '\"B\" shall not transfer or provide as mortgage the right of lease nor sublet the object matter of lease to the 3rd party.'\nred_flags.1: quote not found verbatim in the text: 'If \"B\" wishes to cancel the contract during the lease term, \"B\" shall notify \"A\" in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when'\nred_flags.2: quote not found verbatim in the text: 'If \"B\" wishes to cancel the contract 60 days in advance in accordance with Clause 3 of Article 4, \"B\" shall pay \"A\" amount calculated at the interest rate of loan by stipulation of commercial bank aga'\nred_flags.3: quote not found verbatim in the text: 'However, the term for imposing penalty shall be until either the 60th day from the day when \"A\" receives written notification of contract cancellation or expiry date of lease contract, whichever comes'\nred_flags.4: quote not found verbatim in the text: 'In case that this contract is cancelled in accordance with the Clause 2, the contract deposit paid by \"B\" shall be unconditionally in the possession of \"A\" as penalty and \"B\" is not entitled to claim '\nred_flags.5: quote not found verbatim in the text: 'In case that this contract is terminated in accordance with Clause 2 of Article 4 and \"B\" completely fulfills the obligation stipulated in each provision of this contract, \"A\" shall return the deposit'\nred_flags.6: quote not found verbatim in the text: 'Within 14 days after \"B\" completes restoring state of object matter of the lease, \"A\" shall return guaranty money. For delayed return of guaranty money, delay charge at the annual interest rate of 15%'\nred_flags.7: quote not found verbatim in the text: 'In case that \"B\" does not occupy and use the object matter of the lease notwithstanding elapse of 30 days after the commencing date of leas¢ term nor pay \"A\" the whole amount of guaranty money before '",
+  "output": null,
   "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Korea Institute of Design Promotion (KIDP)\",\n  \"lessee\": \"Leadis Technology Korea, Inc.\",\n  \"premises_address\": \"344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do\",\n  \"area\": null,\n  \"start_date\": \"2003-06-21\",\n  \"end_date\": \"2005-06-20\",\n  \"rent\": {\n    \"amount\": 11945600,\n    \"currency\": \"KRW\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"\\\"B\\\" shall not transfer or provide as mortgage the right of lease nor sublet the object matter of lease to the 3rd party.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If \\\"B\\\" wishes to cancel the contract during the lease term, \\\"B\\\" shall notify \\\"A\\\" in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when \\\"A\\\" receives the written notification.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If \\\"B\\\" wishes to cancel the contract 60 days in advance in accordance with Clause 3 of Article 4, \\\"B\\\" shall pay \\\"A\\\" amount calculated at the interest rate of loan by stipulation of commercial bank against the guaranty money for the term ranging from the next day of contract cancellation to the 60th day, rent and management expenses.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"However, the term for imposing penalty shall be until either the 60th day from the day when \\\"A\\\" receives written notification of contract cancellation or expiry date of lease contract, whichever comes earlier.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In case that this contract is cancelled in accordance with the Clause 2, the contract deposit paid by \\\"B\\\" shall be unconditionally in the possession of \\\"A\\\" as penalty and \\\"B\\\" is not entitled to claim restitution.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In case that this contract is terminated in accordance with Clause 2 of Article 4 and \\\"B\\\" completely fulfills the obligation stipulated in each provision of this contract, \\\"A\\\" shall return the deposited guaranty money. However, if any charges in the account of \\\"B\\\" such as unpaid rent, management expenses, etc. remain unsettled, \\\"A\\\" is entitled to deduct them from guaranty money so as to make balance, which will be actually returned.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Within 14 days after \\\"B\\\" completes restoring state of object matter of the lease, \\\"A\\\" shall return guaranty money. For delayed return of guaranty money, delay charge at the annual interest rate of 15% shall be imposed to \\\"A.\\\"\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In case that \\\"B\\\" does not occupy and use the object matter of the lease notwithstanding elapse of 30 days after the commencing date of leas¢ term nor pay \\\"A\\\" the whole amount of guaranty money before the commencing date of lease term, this contract is regarded as automatically cancelled on the commencing date of lease term.\"\n    }\n  ]\n}"
 }

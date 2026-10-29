@@ -1,0 +1,25 @@
+{
+  "text_id": "alb_lease_562",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:31:10+00:00",
+  "status": "failed",
+  "error": "red_flags.2: quote not found verbatim in the text: 'However by derogation from the above paragraph, the Lessee shall have the authority to partially sublet the premises to one or more companies in which the Lessee holds at least 50% of their assets, in'",
+  "latency_s": 121.78,
+  "input_tokens": 20839,
+  "output_tokens": 909,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.2: quote not found verbatim in the text: 'The Lessee shall have the authority to give notice \"at the end of the third triennial period and two months\" by notifying the Lessor by an extrajudicial document, at least six months prior to the expi'\nred_flags.3: quote not found verbatim in the text: 'However by derogation from the above paragraph, the Lessee shall have the authority to partially sublet the premises to one or more companies in which the Lessee holds at least 50% of their assets, in'",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"S.C.I. FEDERALE GRAMONT, Société Civile de Placements Immobiliers\",\n  \"lessee\": \"Société COTY\",\n  \"premises_address\": \"8-14 RUE GRAMONT, 14 RUE DU 4 SEPTEMBRE, 75002 PARIS\",\n  \"area\": null,\n  \"start_date\": \"2006-01-01\",\n  \"end_date\": \"2015-01-01\",\n  \"rent\": {\n    \"amount\": 3450000,\n    \"currency\": \"EUR\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"The Lessee shall be obligated to carry out all minor repairs and maintenance work, cleaning, and in general all repair work or replacements in the rented premises, throughout the duration of the lease and at its own cost, whenever these become necessary and for any reason.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"The Lessee shall undertake and directly finance the service charges required for the operation of the property. The Lessor shall be assured that the Lessee has contracted on a regular basis various maintenance work for the property by providing a copy of the signed contracts to the Lessor once they have been signed.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"However by derogation from the above paragraph, the Lessee shall have the authority to partially sublet the premises to one or more companies in which the Lessee holds at least 50% of their assets, in which case the Lessee must notify the Lessor in advance of all sublease contracts signed in accordance with this authorization.\"\n    }\n  ]\n}"
+}

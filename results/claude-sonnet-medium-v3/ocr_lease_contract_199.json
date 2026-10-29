@@ -1,0 +1,50 @@
+{
+  "text_id": "ocr_lease_contract_199",
+  "config": "claude-sonnet-medium-v3",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:50:03+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 7.66,
+  "input_tokens": 9521,
+  "output_tokens": 1112,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Korea Institute of Design Promotion",
+    "lessee": "Leadis Technology Korea, Inc.",
+    "premises_address": "Room 802, 8th floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do",
+    "area": {
+      "value": 347.44,
+      "unit": "sqm"
+    },
+    "start_date": "2004-03-25",
+    "end_date": "2006-03-24",
+    "rent": {
+      "amount": 4204000.0,
+      "currency": "KRW",
+      "period": "month"
+    },
+    "indexation": "market_review",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "If“B’ wishes to. cancel the contract during the lease term, ‘B’ shall notify ‘A’ in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when “A' receives the written notification,"
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "(1)Even during the lease term, “A” is entitled to adjust guaranty money, rent and management expenses through negotiation with “B” by written notification of 30 days in advance in the following cases."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Korea Institute of Design Promotion\",\"lessee\":\"Leadis Technology Korea, Inc.\",\"premises_address\":\"Room 802, 8th floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do\",\"area\":{\"value\":347.44,\"unit\":\"sqm\"},\"start_date\":\"2004-03-25\",\"end_date\":\"2006-03-24\",\"rent\":{\"amount\":4204000,\"currency\":\"KRW\",\"period\":\"month\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"tenant_break_option\",\"quote\":\"If“B’ wishes to. cancel the contract during the lease term, ‘B’ shall notify ‘A’ in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when “A' receives the written notification,\"},{\"type\":\"indexation_limited\",\"quote\":\"(1)Even during the lease term, “A” is entitled to adjust guaranty money, rent and management expenses through negotiation with “B” by written notification of 30 days in advance in the following cases.\"}]}"
+}

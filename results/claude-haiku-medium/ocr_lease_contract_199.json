@@ -4,20 +4,23 @@
   "provider": "anthropic",
   "model": "claude-haiku-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
   "max_red_flags": null,
-  "created_at": "2026-10-28T12:24:44+00:00",
+  "created_at": "2026-10-28T14:45:50+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 9.75,
+  "latency_s": 11.881,
   "input_tokens": 9002,
-  "output_tokens": 2304,
+  "output_tokens": 2678,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
-    "lessor": "Korea Institute of Design Promotion (KIDP)",
+    "lessor": "Korea Institute of Design Promotion",
     "lessee": "Leadis Technology Korea, Inc.",
     "premises_address": "Room 802, 8th floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do",
     "area": {
@@ -38,14 +41,14 @@
         "quote": "“B” shall bear the other repair expense."
       },
       {
-        "type": "tenant_break_option",
-        "quote": "If“B’ wishes to. cancel the contract during the lease term, ‘B’ shall notify ‘A’ in writing 60 days in advance without fail."
+        "type": "indexation_limited",
+        "quote": "Even during the lease term, “A” is entitled to adjust guaranty money, rent and management expenses through negotiation with “B” by written notification of 30 days in advance in the following cases."
       },
       {
-        "type": "indexation_limited",
-        "quote": "“A” is entitled to adjust guaranty money, rent and management expenses through negotiation with “B” by written notification of 30 days in advance in the following cases."
+        "type": "tenant_break_option",
+        "quote": "If“B’ wishes to. cancel the contract during the lease term, ‘B’ shall notify ‘A’ in writing 60 days in advance without fail."
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Korea Institute of Design Promotion (KIDP)\",\"lessee\":\"Leadis Technology Korea, Inc.\",\"premises_address\":\"Room 802, 8th floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do\",\"area\":{\"value\":347.44,\"unit\":\"sqm\"},\"start_date\":\"2004-03-25\",\"end_date\":\"2006-03-24\",\"rent\":{\"amount\":4204000,\"currency\":\"KRW\",\"period\":\"month\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"“B” shall bear the other repair expense.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If“B’ wishes to. cancel the contract during the lease term, ‘B’ shall notify ‘A’ in writing 60 days in advance without fail.\"},{\"type\":\"indexation_limited\",\"quote\":\"“A” is entitled to adjust guaranty money, rent and management expenses through negotiation with “B” by written notification of 30 days in advance in the following cases.\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Korea Institute of Design Promotion\",\"lessee\":\"Leadis Technology Korea, Inc.\",\"premises_address\":\"Room 802, 8th floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do\",\"area\":{\"value\":347.44,\"unit\":\"sqm\"},\"start_date\":\"2004-03-25\",\"end_date\":\"2006-03-24\",\"rent\":{\"amount\":4204000,\"currency\":\"KRW\",\"period\":\"month\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"“B” shall bear the other repair expense.\"},{\"type\":\"indexation_limited\",\"quote\":\"Even during the lease term, “A” is entitled to adjust guaranty money, rent and management expenses through negotiation with “B” by written notification of 30 days in advance in the following cases.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If“B’ wishes to. cancel the contract during the lease term, ‘B’ shall notify ‘A’ in writing 60 days in advance without fail.\"}]}"
 }

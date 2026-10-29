@@ -15,7 +15,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from lease_redflag_detector.extraction.extractor import Extractor, RunConfig
+from lease_redflag_detector.extraction.extractor import (
+    REPAIR_PROMPT,
+    Extractor,
+    RunConfig,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 TEXTS = ROOT / "data" / "texts"
@@ -50,6 +54,7 @@ def run_one(extractor: Extractor, text_id: str, out_dir: Path) -> dict:
         "provider": config.provider,
         "model": config.model,
         "prompt": config.prompt,
+        "repair_prompt": REPAIR_PROMPT,
         "sampling": config.sampling,
         "max_red_flags": config.max_red_flags,
         "created_at": datetime.now(UTC).isoformat(timespec="seconds"),

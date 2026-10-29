@@ -1,0 +1,50 @@
+{
+  "text_id": "alb_lease_contract_201",
+  "config": "claude-sonnet-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:47:28+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 3.094,
+  "input_tokens": 4363,
+  "output_tokens": 366,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Bozhou Fengyi Chinese Medicine Development and Research Institute",
+    "lessee": "Anhui Xuelingxian Pharmaceutical Co., Ltd.",
+    "premises_address": "East Liuge Village, Weiwu Road, Bozhou",
+    "area": {
+      "value": 10000.0,
+      "unit": "sqm"
+    },
+    "start_date": "2008-08-01",
+    "end_date": "2023-07-31",
+    "rent": {
+      "amount": 100000.0,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A takes charge of repairing of the house. Party A shall take the examination of the facilities, and it shall guarantee that there is no leakage, and the tap water, sewage and lighting, doors& windows are in good conditions, so as to ensure the normal and safe use of Party B."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "The rent is 1.2 million Yuan, and Party B shall pay 100000 Yuan to Party A before 15 of each month as the monthly rent."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Bozhou Fengyi Chinese Medicine Development and Research Institute\",\"lessee\":\"Anhui Xuelingxian Pharmaceutical Co., Ltd.\",\"premises_address\":\"East Liuge Village, Weiwu Road, Bozhou\",\"area\":{\"value\":10000,\"unit\":\"sqm\"},\"start_date\":\"2008-08-01\",\"end_date\":\"2023-07-31\",\"rent\":{\"amount\":100000,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A takes charge of repairing of the house. Party A shall take the examination of the facilities, and it shall guarantee that there is no leakage, and the tap water, sewage and lighting, doors& windows are in good conditions, so as to ensure the normal and safe use of Party B.\"},{\"type\":\"indexation_limited\",\"quote\":\"The rent is 1.2 million Yuan, and Party B shall pay 100000 Yuan to Party A before 15 of each month as the monthly rent.\"}]}"
+}

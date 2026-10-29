@@ -1,0 +1,11 @@
+# Cheap paid model, the same prompt and effort as the Sonnet baseline.
+name = "claude-haiku-medium-v3"
+provider = "anthropic"
+model = "claude-haiku-5-5"
+prompt = "extraction/v3"
+max_tokens = 8000
+timeout_s = 180
+max_retries = 3
+
+[sampling]
+effort = "medium"

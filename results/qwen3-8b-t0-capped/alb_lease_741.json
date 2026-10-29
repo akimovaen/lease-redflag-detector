@@ -4,70 +4,22 @@
   "provider": "ollama",
   "model": "qwen3:8b",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "temperature": 0.0,
     "top_p": 1.0,
     "repeat_penalty": 1.1
   },
   "max_red_flags": 8,
-  "created_at": "2026-10-28T12:38:44+00:00",
-  "status": "ok",
-  "error": null,
-  "latency_s": 113.949,
-  "input_tokens": 13270,
-  "output_tokens": 544,
+  "created_at": "2026-10-28T15:07:34+00:00",
+  "status": "failed",
+  "error": "red_flags.4: quote not found verbatim in the text: 'Landlord’s liability hereunder shall be limited to the cost of such repairs, maintenance or curing of defect and Landlord shall not be liable for costs or damages to Tenant or its property resulting f'",
+  "latency_s": 148.119,
+  "input_tokens": 27260,
+  "output_tokens": 946,
   "stop_reason": "stop",
-  "output": {
-    "document_type": "lease",
-    "lessor": "Iowa State University Research Park Corporation",
-    "lessee": "BioProtection Systems Corporation",
-    "premises_address": "Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3",
-    "area": {
-      "value": 2028.0,
-      "unit": "sqft"
-    },
-    "start_date": "2005-08-22",
-    "end_date": "2006-08-31",
-    "rent": {
-      "amount": 2112.5,
-      "currency": "USD",
-      "period": "month"
-    },
-    "indexation": "none",
-    "red_flags": [
-      {
-        "type": "landlord_repairs",
-        "quote": "Landlord agrees to release Tenant from this lease obligation upon Tenant’s move into a larger facility at the ISU Research Park."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "Tenant agrees to pay additional rents in the amount of $1.15/gross square foot, based on value of existing lab casework in Suite 3360."
-      },
-      {
-        "type": "landlord_repairs",
-        "quote": "Landlord shall not be liable for any loss or damage as a result of the delay."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "Tenant shall not be required to pay Landlord a security deposit under this Lease."
-      },
-      {
-        "type": "landlord_repairs",
-        "quote": "Landlord’s liability hereunder shall be limited to the cost of such repairs, maintenance or curing of defect and Landlord shall not be liable for costs or damages to Tenant or its property resulting from the defect."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "Tenant shall not be required to pay Landlord a security deposit under this Lease."
-      },
-      {
-        "type": "landlord_repairs",
-        "quote": "Landlord’s liability hereunder shall be limited to the cost of such repairs, maintenance or curing of defect and Landlord shall not be liable for costs or damages to Tenant or its property resulting from the defect."
-      },
-      {
-        "type": "tenant_break_option",
-        "quote": "Tenant shall not be required to pay Landlord a security deposit under this Lease."
-      }
-    ]
-  },
-  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Iowa State University Research Park Corporation\",\n  \"lessee\": \"BioProtection Systems Corporation\",\n  \"premises_address\": \"Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3\",\n  \"area\": {\n    \"value\": 2028,\n    \"unit\": \"sqft\"\n  },\n  \"start_date\": \"2005-08-22\",\n  \"end_date\": \"2006-08-31\",\n  \"rent\": {\n    \"amount\": 2112.50,\n    \"currency\": \"USD\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Landlord agrees to release Tenant from this lease obligation upon Tenant’s move into a larger facility at the ISU Research Park.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Tenant agrees to pay additional rents in the amount of $1.15/gross square foot, based on value of existing lab casework in Suite 3360.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Landlord shall not be liable for any loss or damage as a result of the delay.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Tenant shall not be required to pay Landlord a security deposit under this Lease.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Landlord’s liability hereunder shall be limited to the cost of such repairs, maintenance or curing of defect and Landlord shall not be liable for costs or damages to Tenant or its property resulting from the defect.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Tenant shall not be required to pay Landlord a security deposit under this Lease.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Landlord’s liability hereunder shall be limited to the cost of such repairs, maintenance or curing of defect and Landlord shall not be liable for costs or damages to Tenant or its property resulting from the defect.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Tenant shall not be required to pay Landlord a security deposit under this Lease.\"\n    }\n  ]\n}"
+  "attempts": 2,
+  "first_error": "red_flags.4: quote not found verbatim in the text: 'Landlord’s liability hereunder shall be limited to the cost of such repairs, maintenance or curing of defect and Landlord shall not be liable for costs or damages to Tenant or its property resulting f'\nred_flags.6: quote not found verbatim in the text: 'Landlord’s liability hereunder shall be limited to the cost of such repairs, maintenance or curing of defect and Landlord shall not be liable for costs or damages to Tenant or its property resulting f'",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Iowa State University Research Park Corporation\",\n  \"lessee\": \"BioProtection Systems Corporation\",\n  \"premises_address\": \"Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3\",\n  \"area\": {\n    \"value\": 2028,\n    \"unit\": \"sqft\"\n  },\n  \"start_date\": \"2005-08-22\",\n  \"end_date\": \"2006-08-31\",\n  \"rent\": {\n    \"amount\": 2112.50,\n    \"currency\": \"USD\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Landlord agrees to release Tenant from this lease obligation upon Tenant’s move into a larger facility at the ISU Research Park.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Tenant agrees to pay additional rents in the amount of $1.15/gross square foot, based on value of existing lab casework in Suite 3360.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Landlord shall not be liable for any loss or damage as a result of the delay.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Tenant shall not be required to pay Landlord a security deposit under this Lease.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Landlord’s liability hereunder shall be limited to the cost of such repairs, maintenance or curing of defect and Landlord shall not be liable for costs or damages to Tenant or its property resulting from the defect.\"\n    }\n  ]\n}"
 }

@@ -4,17 +4,20 @@
   "provider": "anthropic",
   "model": "claude-haiku-5-5",
   "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
   "sampling": {
     "effort": "medium"
   },
   "max_red_flags": null,
-  "created_at": "2026-10-28T12:24:11+00:00",
+  "created_at": "2026-10-28T14:45:17+00:00",
   "status": "ok",
   "error": null,
-  "latency_s": 8.812,
+  "latency_s": 9.088,
   "input_tokens": 7702,
-  "output_tokens": 2213,
+  "output_tokens": 2237,
   "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
   "output": {
     "document_type": "lease",
     "lessor": "Shijidazhi Real Estate Consulting Service Department of Fanyu District of Guangzhou",
@@ -34,14 +37,6 @@
     "indexation": "none",
     "red_flags": [
       {
-        "type": "landlord_repairs",
-        "quote": "Party A shall repair them within 2 days from the date of receipt of the notice. If Party A fails to repair in time, Party B may repair them at the cost of Party A."
-      },
-      {
-        "type": "landlord_repairs",
-        "quote": "During the tenancy, Party A ensures that the Premises and accessory facilities are in a normal, available and safe condition."
-      },
-      {
         "type": "indexation_limited",
         "quote": "The rent shall remain unchanged during the tenancy."
       },
@@ -50,14 +45,26 @@
         "quote": "(Property management fees are included.)"
       },
       {
-        "type": "sublease_permitted",
-        "quote": "Party B may sublet part or the whole of the Premises to another party during the tenancy (subject to the consent of Party A)."
+        "type": "landlord_repairs",
+        "quote": "Party A shall repair them within 2 days from the date of receipt of the notice. If Party A fails to repair in time, Party B may repair them at the cost of Party A."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A ensures that the Premises and accessory facilities are in a normal, available and safe condition."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "If failed to repair the Premises punctually, Party A shall reduce the rent and amend the provisions in relation to the rent."
       },
       {
         "type": "tenant_break_option",
         "quote": "In the event that such disputes affect Party B’s regular business, Party B may terminate the tenancy at its sole decision and/or require Party A to cover the losses suffered by it, and such termination shall not be regarded as breach of this Contract."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Party B may sublet part or the whole of the Premises to another party during the tenancy (subject to the consent of Party A)."
       }
     ]
   },
-  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Shijidazhi Real Estate Consulting Service Department of Fanyu District of Guangzhou\",\"lessee\":\"Shanghai Mecox Lane International Mailorder Co., Ltd.\",\"premises_address\":\"Warehouse of Wugucao Ferry, South Shigang Road, East Shigang Village, Shiji Town, Fanyu District, Guangzhou\",\"area\":{\"value\":3000,\"unit\":\"sqm\"},\"start_date\":\"2010-05-10\",\"end_date\":\"2012-05-09\",\"rent\":{\"amount\":48000,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall repair them within 2 days from the date of receipt of the notice. If Party A fails to repair in time, Party B may repair them at the cost of Party A.\"},{\"type\":\"landlord_repairs\",\"quote\":\"During the tenancy, Party A ensures that the Premises and accessory facilities are in a normal, available and safe condition.\"},{\"type\":\"indexation_limited\",\"quote\":\"The rent shall remain unchanged during the tenancy.\"},{\"type\":\"service_charges_limited\",\"quote\":\"(Property management fees are included.)\"},{\"type\":\"sublease_permitted\",\"quote\":\"Party B may sublet part or the whole of the Premises to another party during the tenancy (subject to the consent of Party A).\"},{\"type\":\"tenant_break_option\",\"quote\":\"In the event that such disputes affect Party B’s regular business, Party B may terminate the tenancy at its sole decision and/or require Party A to cover the losses suffered by it, and such termination shall not be regarded as breach of this Contract.\"}]}"
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Shijidazhi Real Estate Consulting Service Department of Fanyu District of Guangzhou\",\"lessee\":\"Shanghai Mecox Lane International Mailorder Co., Ltd.\",\"premises_address\":\"Warehouse of Wugucao Ferry, South Shigang Road, East Shigang Village, Shiji Town, Fanyu District, Guangzhou\",\"area\":{\"value\":3000,\"unit\":\"sqm\"},\"start_date\":\"2010-05-10\",\"end_date\":\"2012-05-09\",\"rent\":{\"amount\":48000,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"indexation_limited\",\"quote\":\"The rent shall remain unchanged during the tenancy.\"},{\"type\":\"service_charges_limited\",\"quote\":\"(Property management fees are included.)\"},{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall repair them within 2 days from the date of receipt of the notice. If Party A fails to repair in time, Party B may repair them at the cost of Party A.\"},{\"type\":\"landlord_repairs\",\"quote\":\"Party A ensures that the Premises and accessory facilities are in a normal, available and safe condition.\"},{\"type\":\"landlord_repairs\",\"quote\":\"If failed to repair the Premises punctually, Party A shall reduce the rent and amend the provisions in relation to the rent.\"},{\"type\":\"tenant_break_option\",\"quote\":\"In the event that such disputes affect Party B’s regular business, Party B may terminate the tenancy at its sole decision and/or require Party A to cover the losses suffered by it, and such termination shall not be regarded as breach of this Contract.\"},{\"type\":\"sublease_permitted\",\"quote\":\"Party B may sublet part or the whole of the Premises to another party during the tenancy (subject to the consent of Party A).\"}]}"
 }

@@ -1,0 +1,25 @@
+{
+  "text_id": "ocr_lease_contract_275",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:44:50+00:00",
+  "status": "failed",
+  "error": "red_flags.0: quote not found verbatim in the text: 'The \"Lessee\" shall be responsible for maintaining and preserving the Object during the term of lease hereunder excluding a required by circumstances as a natural calamity.'\nred_flags.1: quote not found verbatim in the text: 'The collection way and amount of the mainitenance fees shall be decided by \"Lessor\" or the maintenance agent.'\nred_flags.2: quote not found verbatim in the text: 'The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Les'\nred_flags.3: quote not found verbatim in the text: 'Without the Lessor’s consent, the \"Lessee\" shall not: 2. Sublet the Object in whole or in part or dispose of its rights to use the Object to a third party:'",
+  "latency_s": 61.087,
+  "input_tokens": 7989,
+  "output_tokens": 768,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.0: quote not found verbatim in the text: 'The \"Lessee\" shall be responsible for maintaining and preserving the Object during the term of lease hereunder excluding a required by circumstances as a natural calamity.'\nred_flags.1: quote not found verbatim in the text: 'The collection way and amount of the mainitenance fees shall be decided by \"Lessor\" or the maintenance agent.'\nred_flags.2: quote not found verbatim in the text: 'The \"Lessee\" may request the \"Lessor\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \"Les'\nred_flags.3: quote not found verbatim in the text: 'Without the Lessor’s consent, the \"Lessee\" shall not: 2. Sublet the Object in whole or in part or dispose of its rights to use the Object to a third party:'",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Seongnam Industry Promotion Foundation\",\n  \"lessee\": \"Axesstel Korea. Inc.\",\n  \"premises_address\": \"25-1 Jeongja-dong, Bundang-gu, Seongnam, Gyeonggi-do, Korea\",\n  \"area\": null,\n  \"start_date\": \"2005-08-29\",\n  \"end_date\": \"2015-08-28\",\n  \"rent\": {\n    \"amount\": 36180,\n    \"currency\": \"KRW\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"The \\\"Lessee\\\" shall be responsible for maintaining and preserving the Object during the term of lease hereunder excluding a required by circumstances as a natural calamity.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"The collection way and amount of the mainitenance fees shall be decided by \\\"Lessor\\\" or the maintenance agent.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The \\\"Lessee\\\" may request the \\\"Lessor\\\" to terminate this Agreement; but such a request shall be made in writing and should be given three (3) months’ prior to the termination date suggested by the \\\"Lessee\\\".\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Without the Lessor’s consent, the \\\"Lessee\\\" shall not: 2. Sublet the Object in whole or in part or dispose of its rights to use the Object to a third party:\"\n    }\n  ]\n}"
+}
