@@ -1,4 +1,4 @@
-CONFIG ?= configs/claude-sonnet-medium.toml
+CONFIG ?= configs/claude-haiku-medium-v3.toml
 
 .PHONY: run extract metrics test lint
 
