@@ -52,6 +52,41 @@ used in this project (`break_option`, `services_charges`, `sublease_permitted`,
 length buckets (under 2,000 / 2,000–5,000 / 5,000–10,000 words). Group B uses only the
 two shorter buckets.
 
+### Ukrainian leases (group C)
+
+Texts with the `uk_` prefix, 10 in all:
+
+- **`uk_prz_<auction>` (6):** signed leases of state property from
+  [Prozorro.Sale](https://prozorro.sale), Ukraine's public e-auction system, published
+  after the lease auction as scans without a text layer. Read with Tesseract OCR
+  (`ukr+eng`, 300 dpi), so they contain real OCR errors, including Cyrillic letters
+  read as Latin look-alikes (`Jlorosip` for `Договір`). One contract per landlord
+  (Centrenergo, Ukrzaliznytsia, Ukrposhta, Ukrnafta and two research institutes),
+  because a landlord uses the same template for all its leases.
+- **`uk_prz_<document>` (3):** signed leases of municipal property from Prozorro.Sale,
+  published with a text layer that the publisher made with OCR.
+- **`uk_template` (1):** a lease template written by the project author, with blanks
+  for the parties, address and dates. Released under the MIT License of this repository.
+
+The Prozorro.Sale contracts are public information: the law on the lease of state and
+municipal property requires them to be published in the e-auction system. They carry
+no explicit license; they are used here for non-commercial research, with the auction
+or document id as the reference (`source_id` in the manifest).
+
+Changes made to the Prozorro.Sale texts:
+
+- **Personal data is pseudonymized.** Surnames of individuals (tenants who are sole
+  traders, officials who signed) are replaced by other surnames with the same ending,
+  so the grammar of the text still works; the home address of a sole trader is
+  masked; e-mail addresses, phone numbers, IBANs and 10-digit individual tax numbers
+  are replaced with `[email]`, `[phone]`, `UA[IBAN]` and `[tax number]`. First names
+  and patronymics are kept. The replacement list stays in `data/raw/` with the
+  originals.
+- Form feeds and runs of blank lines are removed. Nothing else is corrected.
+
+Only contracts with a legal entity as the tenant are downloaded automatically; most
+Prozorro.Sale procedures with an individual tenant mask their documents anyway.
+
 ## Golden set
 
 `golden/<id>.json` holds the reference output for a text, in the `LeaseAbstract` schema
@@ -82,6 +117,14 @@ Labeling rules:
 - The landlord's duty to remedy defects found when the premises are handed over is not
   `landlord_repairs`: it is a one-off duty to deliver the premises in good condition, not
   a burden of repairs during the term.
+- Capital (structural) repairs borne by the landlord, and compensation for the tenant's
+  improvements on the terms set by law, are not `landlord_repairs` either: they are
+  the landlord's normal position as owner, not a concession in the lease.
+- A stabilization clause that keeps the terms of the lease, the rent included, in force
+  even if later legislation worsens the tenant's position counts as
+  `indexation_limited`: the landlord cannot use a change in the law to raise the rent.
+- Automatic indexation of the rent (e.g. yearly by CPI) is not a red flag: it protects
+  the landlord. Only caps, freezes or the tenant's consent to increases are.
 
 Tools:
 
@@ -99,11 +142,11 @@ red flag spans protect the landlord rather than put it at risk.
 | Column | Meaning |
 |---|---|
 | `id` | file name without `.txt` |
-| `group` | how the text was produced (A: ALeaseBERT plain text, B: ALeaseBERT scan + OCR) |
+| `group` | how the text was produced (A: ALeaseBERT plain text, B: ALeaseBERT scan + OCR, C: Ukrainian leases) |
 | `source`, `source_id` | origin dataset and the document id in it |
 | `language` | main language of the text |
 | `words` | length in words |
-| `mvp_flags` | red flag types annotated in the source, `;`-separated |
+| `mvp_flags` | red flag types annotated in ALeaseBERT, `;`-separated; empty for group C |
 | `dirt` | kinds of noise in the text, `;`-separated (see below) |
 | `ocr_noise` | scan noise level for group B (`light`, `medium`, `heavy`) |
 | `license` | license of the text |
@@ -114,7 +157,7 @@ red flag spans protect the landlord rather than put it at risk.
 | Tag | Meaning | How it is set |
 |---|---|---|
 | `ocr` | text went through OCR | by construction |
-| `mixed_lang` | fragments in another language | automatic: at least 3 distinct words with non-ASCII letters, or any Cyrillic, Arabic or CJK character. For OCR texts it is checked on the original, since misreads like `éach` look foreign |
+| `mixed_lang` | fragments in another language | automatic: at least 3 distinct words with non-ASCII letters, or any Cyrillic, Arabic or CJK character. For OCR texts it is checked on the original, since misreads like `éach` look foreign. For group C: Latin words, not counting Cyrillic look-alikes; for OCR'd texts set manually |
 | `broken_layout` | sentences split across lines | automatic: at least 5% of lines end without punctuation and the next line starts in lowercase |
 | `template_blanks` | unfilled fields | automatic: `___` or `[ ]` |
 | `encoding` | broken characters | automatic: `�`, UTF-8 read as Latin-1 (`Ã©`, `â€™`), or lone Wingdings checkbox glyphs (`þ`, `ü`) |
@@ -134,5 +177,21 @@ uv run python scripts/build_dataset.py
 Group B also needs [Tesseract](https://github.com/tesseract-ocr/tesseract)
 (`brew install tesseract`). Scans and OCR output are cached in `data/raw/scans/`;
 delete that folder to rebuild them after changing the noise settings in `scripts/scan.py`.
+
+Group C needs the Prozorro.Sale contracts, the template and the pseudonym list in
+`data/raw/`. The contracts can be downloaded again:
+
+```sh
+uv run python scripts/fetch_prozorro.py --since 2025-10-01 --count 20
+uv run python scripts/fetch_prozorro.py --document ce9dfd295c7c41f79a5918e1230cdd3b \
+    31134a620c094278ba5ba56d8364cffb c9bfc288f1ab4c7692fcdb8bc0729520
+```
+
+OCR of group C needs Poppler (`brew install poppler`) and the Ukrainian Tesseract model
+(`ukr.traineddata` from [tessdata](https://github.com/tesseract-ocr/tessdata) in the
+Tesseract `tessdata` folder). The OCR output is cached as `text.txt` next to each PDF.
+The source `.docx` of the template and the pseudonym list stay local: without the list
+the texts would contain the real names, so group C cannot be rebuilt from public sources
+alone.
 
 The selection and the scan noise are seeded, so the output is the same on every run.

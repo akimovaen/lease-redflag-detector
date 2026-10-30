@@ -1,0 +1,28 @@
+{
+  "document_type": "lease",
+  "lessor": null,
+  "lessee": null,
+  "premises_address": null,
+  "area": {
+    "value": 50,
+    "unit": "sqm"
+  },
+  "start_date": null,
+  "end_date": null,
+  "rent": {
+    "amount": 2500,
+    "currency": "EUR",
+    "period": "month"
+  },
+  "indexation": "index_linked",
+  "red_flags": [
+    {
+      "type": "tenant_break_option",
+      "quote": "8.2. Дострокове розірвання за ініціативою Орендаря можливе за умови письмового повідомлення Орендодавця не менше ніж за ___ місяців."
+    },
+    {
+      "type": "tenant_break_option",
+      "quote": "8.3. Орендар має право на одностороннє дострокове розірвання Договору після спливу 12 (дванадцяти) місяців оренди за умови письмового повідомлення Орендодавця не менш ніж за 3 (три) місяці."
+    }
+  ]
+}

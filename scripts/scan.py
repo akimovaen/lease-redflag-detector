@@ -113,7 +113,7 @@ def degrade(page: Image.Image, noise: Noise, rng: random.Random) -> Image.Image:
     return Image.open(buffer).convert("L")
 
 
-def ocr(page: Image.Image) -> str:
+def ocr(page: Image.Image, lang: str = "eng") -> str:
     tesseract = shutil.which("tesseract")
     if tesseract is None:
         raise RuntimeError(
@@ -122,7 +122,7 @@ def ocr(page: Image.Image) -> str:
     buffer = io.BytesIO()
     page.save(buffer, "PNG", dpi=(DPI, DPI))
     result = subprocess.run(
-        [tesseract, "stdin", "stdout", "-l", "eng"],
+        [tesseract, "stdin", "stdout", "-l", lang],
         input=buffer.getvalue(),
         capture_output=True,
         check=True,

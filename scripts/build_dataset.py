@@ -1,7 +1,8 @@
-"""Build the lease text dataset from the ALeaseBERT annotations.
+"""Build the lease text dataset.
 
-Selects leases for group A (plain text) and group B (simulated scans read back
-with OCR), writes them to data/texts/ and writes data/texts/manifest.csv.
+Selects leases from the ALeaseBERT annotations for group A (plain text) and group B
+(simulated scans read back with OCR), adds the Ukrainian leases of group C (see
+ukrainian.py), writes them to data/texts/ and writes data/texts/manifest.csv.
 
 The `dirt` column combines automatic heuristics with manual corrections from
 data/texts/dirt_manual.csv (columns: id, add, remove; tags separated by ";").
@@ -23,6 +24,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 import scan
+import ukrainian
 
 ROOT = Path(__file__).resolve().parent.parent
 POOL = ROOT / "data/raw/aleasebert/annotated/pool"
@@ -67,6 +69,13 @@ DIRT_TAGS = {
 MIN_FOREIGN_WORDS = 3
 MIN_MID_BREAK_SHARE = 0.05
 NON_LATIN_SCRIPT = re.compile(r"[Ѐ-ӿ؀-ۿ぀-ヿ一-鿿]")
+# In Ukrainian texts a foreign word is a Latin one. OCR often reads Cyrillic letters
+# as their Latin look-alikes ("Ha" for "на"), so words made only of such letters
+# do not count.
+LATIN_WORD = re.compile(r"\b[A-Za-z]{3,}\b")
+# Masks of personal data ("[email]", "UA[IBAN]") and Roman numerals are not foreign.
+NOT_FOREIGN = re.compile(r"\[[^\]]*\]|\b[IVXLCDM]+\b")
+CYRILLIC_LOOKALIKES = set("aceiopxykmthbnuABCEHIKMOPTXY")
 TEMPLATE_BLANK = re.compile(r"_{3,}|\[\s*\]")
 # U+FFFD replacement char, UTF-8 read as Latin-1 (Ã©, â€™), or a lone Wingdings
 # checkbox/checkmark glyph rendered as a Latin-1 letter (þ, ü, ý, ¨).
@@ -138,17 +147,26 @@ def load_lease(ann_path: Path) -> Lease:
     return Lease(source_id, html_path, parser.paragraphs, flag_types & MVP_FLAGS)
 
 
-def detect_dirt(paragraphs: list[str]) -> set[str]:
+def detect_dirt(paragraphs: list[str], language: str = "en") -> set[str]:
     text = "\n".join(paragraphs)
     tags = set()
 
-    foreign_words = {
-        word
-        for word in re.findall(r"\w+", text)
-        if any(char.isalpha() and not char.isascii() for char in word)
-    }
-    if len(foreign_words) >= MIN_FOREIGN_WORDS or NON_LATIN_SCRIPT.search(text):
-        tags.add("mixed_lang")
+    if language == "uk":
+        foreign_words = {
+            word
+            for word in LATIN_WORD.findall(NOT_FOREIGN.sub(" ", text))
+            if not set(word) <= CYRILLIC_LOOKALIKES
+        }
+        if len(foreign_words) >= MIN_FOREIGN_WORDS:
+            tags.add("mixed_lang")
+    else:
+        foreign_words = {
+            word
+            for word in re.findall(r"\w+", text)
+            if any(char.isalpha() and not char.isascii() for char in word)
+        }
+        if len(foreign_words) >= MIN_FOREIGN_WORDS or NON_LATIN_SCRIPT.search(text):
+            tags.add("mixed_lang")
 
     lines = [line.strip() for line in paragraphs if line.strip()]
     mid_breaks = sum(
@@ -221,10 +239,15 @@ def scanned_text(text_id: str, lease: Lease, noise: scan.Noise) -> str:
 def write_text(
     text_id: str,
     group: str,
-    lease: Lease,
     text: str,
     detected_dirt: set[str],
     manual_dirt: dict[str, tuple[set[str], set[str]]],
+    *,
+    source: str,
+    source_id: str,
+    license: str,
+    language: str = "en",
+    mvp_flags: set[str] = frozenset(),
     ocr_noise: str = "",
 ) -> dict[str, str | int]:
     """Writes the text file and returns its manifest row."""
@@ -234,16 +257,39 @@ def write_text(
     return {
         "id": text_id,
         "group": group,
-        "source": "ALeaseBERT",
-        "source_id": lease.source_id,
-        "language": "en",
+        "source": source,
+        "source_id": source_id,
+        "language": language,
         "words": len(text.split()),
-        "mvp_flags": ";".join(sorted(lease.mvp_flags)),
+        "mvp_flags": ";".join(sorted(mvp_flags)),
         "dirt": ";".join(sorted(dirt)),
         "ocr_noise": ocr_noise,
-        "license": "CC BY-NC 4.0",
+        "license": license,
         "golden": "yes" if (GOLDEN / f"{text_id}.json").exists() else "",
     }
+
+
+def alb_text(
+    text_id: str,
+    group: str,
+    lease: Lease,
+    text: str,
+    detected_dirt: set[str],
+    manual_dirt: dict[str, tuple[set[str], set[str]]],
+    ocr_noise: str = "",
+) -> dict[str, str | int]:
+    return write_text(
+        text_id,
+        group,
+        text,
+        detected_dirt,
+        manual_dirt,
+        source="ALeaseBERT",
+        source_id=lease.source_id,
+        license="CC BY-NC 4.0",
+        mvp_flags=lease.mvp_flags,
+        ocr_noise=ocr_noise,
+    )
 
 
 def main() -> None:
@@ -257,7 +303,7 @@ def main() -> None:
         text = "\n".join(lease.paragraphs) + "\n"
         dirt = detect_dirt(lease.paragraphs)
         rows.append(
-            write_text(f"alb_{lease.source_id}", "A", lease, text, dirt, manual_dirt)
+            alb_text(f"alb_{lease.source_id}", "A", lease, text, dirt, manual_dirt)
         )
 
     for lease, noise_name in zip(picked["B"], OCR_NOISE_PLAN, strict=True):
@@ -268,10 +314,29 @@ def main() -> None:
         # check runs on the original text.
         dirt = (detect_dirt(text.split("\n")) - {"mixed_lang"}) | {"ocr"}
         dirt |= detect_dirt(lease.paragraphs) & {"mixed_lang"}
-        rows.append(
-            write_text(text_id, "B", lease, text, dirt, manual_dirt, noise_name)
-        )
+        rows.append(alb_text(text_id, "B", lease, text, dirt, manual_dirt, noise_name))
         print(f"Group B: scanned {lease.source_id} ({noise_name} noise)")
+
+    for source, text in ukrainian.texts():
+        dirt = detect_dirt(text.split("\n"), language="uk")
+        if source.kind != "docx":
+            # OCR garbage like "Jlorosip" for "Договір" cannot be told from English
+            # without the original, so mixed_lang is set in dirt_manual.csv.
+            dirt = (dirt - {"mixed_lang"}) | {"ocr"}
+        rows.append(
+            write_text(
+                source.text_id,
+                "C",
+                text,
+                dirt,
+                manual_dirt,
+                source=source.source,
+                source_id=source.source_id,
+                license=source.license,
+                language="uk",
+            )
+        )
+        print(f"Group C: {source.text_id} ({source.kind})")
 
     with MANIFEST.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=MANIFEST_FIELDS)
