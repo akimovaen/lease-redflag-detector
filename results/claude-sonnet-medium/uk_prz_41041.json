@@ -1,0 +1,46 @@
+{
+  "text_id": "uk_prz_41041",
+  "config": "claude-sonnet-medium",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v1",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-30T10:21:39+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 6.502,
+  "input_tokens": 23704,
+  "output_tokens": 905,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Приватне акціонерне товариство \"Український інститут із проектування і розвитку інформаційно-комунікаційної інфраструктури \"Діпрозв'язок\"",
+    "lessee": "Товариство з обмеженою відповідальністю \"МВК ГРУПП\"",
+    "premises_address": "м. Київ, вул. Солом'янська 3",
+    "area": {
+      "value": 30.4,
+      "unit": "sqm"
+    },
+    "start_date": "2026-01-01",
+    "end_date": "2028-11-30",
+    "rent": {
+      "amount": 3675.83,
+      "currency": "UAH",
+      "period": "month"
+    },
+    "indexation": "index_linked",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "Кожна з Сторін має право виступити з ініціативою про дострокове розірвання Договору не пізніше ніж за 1 (один) календарний місяць до дати такого розірвання."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Приватне акціонерне товариство \\\"Український інститут із проектування і розвитку інформаційно-комунікаційної інфраструктури \\\"Діпрозв'язок\\\"\",\"lessee\":\"Товариство з обмеженою відповідальністю \\\"МВК ГРУПП\\\"\",\"premises_address\":\"м. Київ, вул. Солом'янська 3\",\"area\":{\"value\":30.4,\"unit\":\"sqm\"},\"start_date\":\"2026-01-01\",\"end_date\":\"2028-11-30\",\"rent\":{\"amount\":3675.83,\"currency\":\"UAH\",\"period\":\"month\"},\"indexation\":\"index_linked\",\"red_flags\":[{\"type\":\"tenant_break_option\",\"quote\":\"Кожна з Сторін має право виступити з ініціативою про дострокове розірвання Договору не пізніше ніж за 1 (один) календарний місяць до дати такого розірвання.\"}]}"
+}

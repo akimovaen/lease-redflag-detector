@@ -1,0 +1,53 @@
+{
+  "text_id": "uk_template",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-30T10:57:32+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 31.278,
+  "input_tokens": 2506,
+  "output_tokens": 421,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": null,
+    "lessee": null,
+    "premises_address": null,
+    "area": null,
+    "start_date": "2026-10-01",
+    "end_date": "2029-09-30",
+    "rent": {
+      "amount": 2500.0,
+      "currency": "EUR",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "Орендар має право на одностороннє дострокове розірвання Договору після спливу 12 (дванадцяти) місяців оренди за умови письмового повідомлення Орендодавця не менш ніж за 3 (три) місяці."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Орендодавець зобов’язаний: передати Приміщення у стані, придатному для використання; забезпечити можливість користування загальними зонами (за наявності)."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Ставка операційних витрат (OPEX) становить 1 (один) євро за 1 кв.м на місяць, що складає: 50 кв.м × 1 євро = 50 (п’ятдесят) євро на місяць."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": null,\n  \"lessee\": null,\n  \"premises_address\": null,\n  \"area\": null,\n  \"start_date\": \"2026-10-01\",\n  \"end_date\": \"2029-09-30\",\n  \"rent\": {\n    \"amount\": 2500,\n    \"currency\": \"EUR\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Орендар має право на одностороннє дострокове розірвання Договору після спливу 12 (дванадцяти) місяців оренди за умови письмового повідомлення Орендодавця не менш ніж за 3 (три) місяці.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Орендодавець зобов’язаний: передати Приміщення у стані, придатному для використання; забезпечити можливість користування загальними зонами (за наявності).\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Ставка операційних витрат (OPEX) становить 1 (один) євро за 1 кв.м на місяць, що складає: 50 кв.м × 1 євро = 50 (п’ятдесят) євро на місяць.\"\n    }\n  ]\n}"
+}

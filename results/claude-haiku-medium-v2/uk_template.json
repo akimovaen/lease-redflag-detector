@@ -1,0 +1,50 @@
+{
+  "text_id": "uk_template",
+  "config": "claude-haiku-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-30T10:20:53+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 5.796,
+  "input_tokens": 4629,
+  "output_tokens": 1314,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": null,
+    "lessee": null,
+    "premises_address": null,
+    "area": {
+      "value": 50.0,
+      "unit": "sqm"
+    },
+    "start_date": null,
+    "end_date": null,
+    "rent": {
+      "amount": 2500.0,
+      "currency": "EUR",
+      "period": "month"
+    },
+    "indexation": "index_linked",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "Дострокове розірвання за ініціативою Орендаря можливе за умови письмового повідомлення Орендодавця не менше ніж за ___ місяців."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Орендар має право на одностороннє дострокове розірвання Договору після спливу 12 (дванадцяти) місяців оренди за умови письмового повідомлення Орендодавця не менш ніж за 3 (три) місяці."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":null,\"lessee\":null,\"premises_address\":null,\"area\":{\"value\":50,\"unit\":\"sqm\"},\"start_date\":null,\"end_date\":null,\"rent\":{\"amount\":2500,\"currency\":\"EUR\",\"period\":\"month\"},\"indexation\":\"index_linked\",\"red_flags\":[{\"type\":\"tenant_break_option\",\"quote\":\"Дострокове розірвання за ініціативою Орендаря можливе за умови письмового повідомлення Орендодавця не менше ніж за ___ місяців.\"},{\"type\":\"tenant_break_option\",\"quote\":\"Орендар має право на одностороннє дострокове розірвання Договору після спливу 12 (дванадцяти) місяців оренди за умови письмового повідомлення Орендодавця не менш ніж за 3 (три) місяці.\"}]}"
+}

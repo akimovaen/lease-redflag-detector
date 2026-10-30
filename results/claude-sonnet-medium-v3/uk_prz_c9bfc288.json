@@ -1,0 +1,41 @@
+{
+  "text_id": "uk_prz_c9bfc288",
+  "config": "claude-sonnet-medium-v3",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-30T10:22:15+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 2.75,
+  "input_tokens": 10380,
+  "output_tokens": 234,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Управління містобудування, архітектури, житлово-комунального господарства, благоустрою та землекористування виконавчого комітету Острозької міської ради",
+    "lessee": "Благодійна організація «Благодійний фонд «Дім нових податків»",
+    "premises_address": "Рівненська область, Рівненський район, село Країв, вулиця Євгенія Стельмащука, будинок 80",
+    "area": {
+      "value": 746.0,
+      "unit": "sqm"
+    },
+    "start_date": "2026-03-02",
+    "end_date": "2031-03-02",
+    "rent": {
+      "amount": 1.0,
+      "currency": "UAH",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": []
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Управління містобудування, архітектури, житлово-комунального господарства, благоустрою та землекористування виконавчого комітету Острозької міської ради\",\"lessee\":\"Благодійна організація «Благодійний фонд «Дім нових податків»\",\"premises_address\":\"Рівненська область, Рівненський район, село Країв, вулиця Євгенія Стельмащука, будинок 80\",\"area\":{\"value\":746.0,\"unit\":\"sqm\"},\"start_date\":\"2026-03-02\",\"end_date\":\"2031-03-02\",\"rent\":{\"amount\":1.0,\"currency\":\"UAH\",\"period\":\"year\"},\"indexation\":\"none\",\"red_flags\":[]}"
+}
