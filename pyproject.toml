@@ -1,7 +1,7 @@
 [project]
 name = "lease-redflag-detector"
 version = "0.1.0"
-description = "Add your description here"
+description = "Red flag detection in commercial lease agreements: extraction, RAG, agent, API."
 readme = "README.md"
 authors = [
     { name = "lena.akimova", email = "akimova.lena.n@gmail.com" }
@@ -13,9 +13,6 @@ dependencies = [
     "pydantic>=2.14.1",
     "python-dotenv>=1.2.4",
 ]
-
-[project.scripts]
-lease-redflag-detector = "lease_redflag_detector:main"
 
 [build-system]
 requires = ["uv_build>=0.13.1,<0.14.0"]
