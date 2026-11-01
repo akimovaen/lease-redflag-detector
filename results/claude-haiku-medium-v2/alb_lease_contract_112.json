@@ -1,0 +1,50 @@
+{
+  "text_id": "alb_lease_contract_112",
+  "config": "claude-haiku-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:46:37+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 10.033,
+  "input_tokens": 10192,
+  "output_tokens": 2124,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "M&G Chenguang Holding (Group) Co., Ltd.",
+    "lessee": "Shanghai Shengran Information Technology Co., Ltd.",
+    "premises_address": "13-15/F, Building No.2, 1528 Gumei Road, Caohejing High-Tech Park, Shanghai",
+    "area": {
+      "value": 5395.14,
+      "unit": "sqm"
+    },
+    "start_date": "2012-07-01",
+    "end_date": "2015-06-30",
+    "rent": {
+      "amount": 8270749.62,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "During the lease term, Party A ensures that the Premises and its ancillary facilities are in normal usable and safe conditions."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "The unit rent per square meter of construction area of the Premises per day is adjusted to RMB Four Point Two Zero (RMB4.20), adding up to an annual rental of RMB Eight Million Two Hundred Seventy Thousand Seven Hundred Forty Nine Point Six Two (RMB8,270,749.62);"
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"M&G Chenguang Holding (Group) Co., Ltd.\",\"lessee\":\"Shanghai Shengran Information Technology Co., Ltd.\",\"premises_address\":\"13-15/F, Building No.2, 1528 Gumei Road, Caohejing High-Tech Park, Shanghai\",\"area\":{\"value\":5395.14,\"unit\":\"sqm\"},\"start_date\":\"2012-07-01\",\"end_date\":\"2015-06-30\",\"rent\":{\"amount\":8270749.62,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"During the lease term, Party A ensures that the Premises and its ancillary facilities are in normal usable and safe conditions.\"},{\"type\":\"indexation_limited\",\"quote\":\"The unit rent per square meter of construction area of the Premises per day is adjusted to RMB Four Point Two Zero (RMB4.20), adding up to an annual rental of RMB Eight Million Two Hundred Seventy Thousand Seven Hundred Forty Nine Point Six Two (RMB8,270,749.62);\"}]}"
+}

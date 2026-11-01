@@ -1,0 +1,57 @@
+{
+  "text_id": "alb_lease_contract_234",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:29:08+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 41.502,
+  "input_tokens": 4211,
+  "output_tokens": 424,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Shijidazhi Real Estate Consulting Service Department of Fanyu District of Guangzhou",
+    "lessee": "Shanghai Mecox Lane International Mailorder Co., Ltd.",
+    "premises_address": "Warehouse of Wugucao Ferry, South Shigang Road, East Shigang Village, Shiji Town, Fanyu District, Guangzhou",
+    "area": null,
+    "start_date": "2010-05-10",
+    "end_date": "2012-05-09",
+    "rent": {
+      "amount": 48000.0,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party B shall make a proper use of and take good care of the Premises and accessory facilities. In respect of any damage or breakdown of the Premises or accessory facilities as a result of the improper use of Party B, Party B shall be liable for the reparation."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Party B shall bear the costs of water, electricity, telecom, equipments and property management relating to the use of the Premises. (In addition, Party B shall pay to Party A RMB500 per month for waste disposal.)"
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B may sublet part or the whole of the Premises to another party during the tenancy (subject to the consent of Party A)."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Party B may sublet part or the whole of the Premises to another party during the tenancy (subject to the consent of Party A)."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Shijidazhi Real Estate Consulting Service Department of Fanyu District of Guangzhou\",\n  \"lessee\": \"Shanghai Mecox Lane International Mailorder Co., Ltd.\",\n  \"premises_address\": \"Warehouse of Wugucao Ferry, South Shigang Road, East Shigang Village, Shiji Town, Fanyu District, Guangzhou\",\n  \"area\": null,\n  \"start_date\": \"2010-05-10\",\n  \"end_date\": \"2012-05-09\",\n  \"rent\": {\n    \"amount\": 48000,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party B shall make a proper use of and take good care of the Premises and accessory facilities. In respect of any damage or breakdown of the Premises or accessory facilities as a result of the improper use of Party B, Party B shall be liable for the reparation.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Party B shall bear the costs of water, electricity, telecom, equipments and property management relating to the use of the Premises. (In addition, Party B shall pay to Party A RMB500 per month for waste disposal.)\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B may sublet part or the whole of the Premises to another party during the tenancy (subject to the consent of Party A).\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Party B may sublet part or the whole of the Premises to another party during the tenancy (subject to the consent of Party A).\"\n    }\n  ]\n}"
+}

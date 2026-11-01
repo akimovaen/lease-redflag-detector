@@ -1,0 +1,70 @@
+{
+  "text_id": "alb_lease_contract_112",
+  "config": "qwen3-8b-t07-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T12:53:41+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 61.535,
+  "input_tokens": 5198,
+  "output_tokens": 683,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "M&G Chenguang Holding (Group) Co., Ltd.",
+    "lessee": "Shanghai Shengran Information Technology Co., Ltd.",
+    "premises_address": "13-15/F, Building No.2, 1528 Gumei Road, Caohejing High-Tech Park, Shanghai",
+    "area": null,
+    "start_date": "2012-07-01",
+    "end_date": "2015-06-30",
+    "rent": {
+      "amount": 8270749.62,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "sublease_permitted",
+        "quote": "Unless Party A has permitted Party B to sublet the Premises in supplemental clauses of this Contract or other documents, Party B may not sublet the Premises to others in whole or in part within the lease term."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall have the preemptive right under the same conditions."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "During the lease term, if Party A fails to timely perform its repair and maintenance duties as agreed herein, thus causing damage to the Premises and property or personal damage to Party B, Party A shall compensate Party B its direct losses."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If both parties fail to enter into the renewed contract within one month prior to the expiration of the lease term, then Party A has the right to terminate this Contract upon expiration of the lease term and take back the Premises."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "During the lease term, unless described in this Contract,, if Party B surrenders the lease without authorization, Party B shall pay Party A a penalty equivalent to 0.5 times of the rental for the remaining lease days (but no more than three months rent)."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If the penalty is insufficient to cover the losses sustained by Party A, Party B shall also be liable for compensating for the difference. Party A may withhold the penalty from the lease deposit, and if the lease deposit is insufficient for such withholding, the deficient portion shall be paid by Party B separately."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A may perform inspections and maintenance to the Premises, and Party B shall cooperate at the time of such inspections and maintenance. Party A shall try its best to minimize the impact on Party B’s use of the Premises."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If the penalty is insufficient to cover the direct losses suffered by Party B, Party A shall also be liable for compensating for the difference."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"M&G Chenguang Holding (Group) Co., Ltd.\",\n  \"lessee\": \"Shanghai Shengran Information Technology Co., Ltd.\",\n  \"premises_address\": \"13-15/F, Building No.2, 1528 Gumei Road, Caohejing High-Tech Park, Shanghai\",\n  \"area\": null,\n  \"start_date\": \"2012-07-01\",\n  \"end_date\": \"2015-06-30\",\n  \"rent\": {\n    \"amount\": 8270749.62,\n    \"currency\": \"CNY\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Unless Party A has permitted Party B to sublet the Premises in supplemental clauses of this Contract or other documents, Party B may not sublet the Premises to others in whole or in part within the lease term.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall have the preemptive right under the same conditions.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"During the lease term, if Party A fails to timely perform its repair and maintenance duties as agreed herein, thus causing damage to the Premises and property or personal damage to Party B, Party A shall compensate Party B its direct losses.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If both parties fail to enter into the renewed contract within one month prior to the expiration of the lease term, then Party A has the right to terminate this Contract upon expiration of the lease term and take back the Premises.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"During the lease term, unless described in this Contract,, if Party B surrenders the lease without authorization, Party B shall pay Party A a penalty equivalent to 0.5 times of the rental for the remaining lease days (but no more than three months rent).\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If the penalty is insufficient to cover the losses sustained by Party A, Party B shall also be liable for compensating for the difference. Party A may withhold the penalty from the lease deposit, and if the lease deposit is insufficient for such withholding, the deficient portion shall be paid by Party B separately.\"\n    },\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A may perform inspections and maintenance to the Premises, and Party B shall cooperate at the time of such inspections and maintenance. Party A shall try its best to minimize the impact on Party B’s use of the Premises.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If the penalty is insufficient to cover the direct losses suffered by Party B, Party A shall also be liable for compensating for the difference.\"\n    }\n  ]\n}"
+}

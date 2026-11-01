@@ -1,0 +1,25 @@
+{
+  "text_id": "uk_prz_38360",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-30T10:27:09+00:00",
+  "status": "failed",
+  "error": "red_flags.0: quote not found verbatim in the text: 'Не, сублесування не дозволено без попереднього письмового згоди власника.'\nred_flags.1: quote not found verbatim in the text: 'Леся може припинити угоду з 90-денною строком повідомлення, якщо власник універсально припинить угоду через рішення державної влади.'\nred_flags.2: quote not found verbatim in the text: 'Леся може припинити угоду з 15-денною строком повідомлення в разі порушення правил користування приміщень, пошкодження або несплати орендної плати протягом більше 3 місяців.'",
+  "latency_s": 155.192,
+  "input_tokens": 17521,
+  "output_tokens": 818,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.0: quote not found verbatim in the text: 'No, subleasing is not permitted without prior written consent from the lessor.'\nred_flags.1: quote not found verbatim in the text: \"The lessee may terminate the lease with 90 days' notice if the lessor unilaterally terminates due to state authority decision.\"\nred_flags.2: quote not found verbatim in the text: \"The lessee may terminate the lease with 15 days' notice in case of misuse of premises, damage, or non-payment of rent for more than 3 months.\"",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Акціонерне товариство «Українська залізниця» (філія «Вокзальна компанія»)\",\n  \"lessee\": \"ТОВ «Віват Глобал Трейд»\",\n  \"premises_address\": \"м. Ужгород, вул. Станційна, 9\",\n  \"area\": {\n    \"value\": 45.2,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2025-03-30\",\n  \"end_date\": \"2026-03-30\",\n  \"rent\": {\n    \"amount\": 15000,\n    \"currency\": \"UAH\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"index_linked\",\n  \"red_flags\": [\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Не, сублесування не дозволено без попереднього письмового згоди власника.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Леся може припинити угоду з 90-денною строком повідомлення, якщо власник універсально припинить угоду через рішення державної влади.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Леся може припинити угоду з 15-денною строком повідомлення в разі порушення правил користування приміщень, пошкодження або несплати орендної плати протягом більше 3 місяців.\"\n    }\n  ]\n}"
+}

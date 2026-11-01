@@ -1,0 +1,51 @@
+{
+  "text_id": "alb_lease_contract_10",
+  "config": "claude-haiku-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:46:27+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 8.975,
+  "input_tokens": 5718,
+  "output_tokens": 1820,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Zhonghai Trust Co., Ltd.",
+    "lessee": "Shaanxi Tianren Organic Food Co., Ltd.",
+    "premises_address": "the 16th floor of National Development Bank Tower",
+    "area": null,
+    "start_date": "2008-07-01",
+    "end_date": "2009-06-30",
+    "rent": {
+      "amount": 45.0,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "In case the premise and attached facilities are damaged by quality problems, natural damages or disasters, Party A will be responsible for repair and must pay the relevant expenses."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "During the term, Pary A offers free rental fee, while Party A should bear the fee of water, electricity, etc."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "Rental fee should be ￥45.00 per month for each square meter starting from August 1, 2008."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Zhonghai Trust Co., Ltd.\",\"lessee\":\"Shaanxi Tianren Organic Food Co., Ltd.\",\"premises_address\":\"the 16th floor of National Development Bank Tower\",\"area\":null,\"start_date\":\"2008-07-01\",\"end_date\":\"2009-06-30\",\"rent\":{\"amount\":45.00,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"In case the premise and attached facilities are damaged by quality problems, natural damages or disasters, Party A will be responsible for repair and must pay the relevant expenses.\"},{\"type\":\"service_charges_limited\",\"quote\":\"During the term, Pary A offers free rental fee, while Party A should bear the fee of water, electricity, etc.\"},{\"type\":\"indexation_limited\",\"quote\":\"Rental fee should be ￥45.00 per month for each square meter starting from August 1, 2008.\"}]}"
+}

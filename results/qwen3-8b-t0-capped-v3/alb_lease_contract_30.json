@@ -1,0 +1,57 @@
+{
+  "text_id": "alb_lease_contract_30",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:25:29+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 44.091,
+  "input_tokens": 4446,
+  "output_tokens": 444,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Shenzhen HYT Science &Technology Co., Ltd.",
+    "lessee": "Fiberxon Technology (Shenzhen) Inc.",
+    "premises_address": "7th floor, HYT Tower, Shenzhen Hi-Tech Industrial Park North, Beihuan RD, Shenzhen",
+    "area": null,
+    "start_date": "2004-11-20",
+    "end_date": "2007-11-19",
+    "rent": {
+      "amount": 41300.0,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A shall be responsible for the land use fees of The Premises, its caused taxes, housing lease administrative fees as well as fees; Party B shall pay for electricity and water supply fees, sanitary fees, house (building) administrative fees, air conditioning fees and other fees that are caused by the usage of The Premises."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Party A shall be responsible for the land use fees of The Premises, its caused taxes, housing lease administrative fees as well as fees; Party B shall pay for electricity and water supply fees, sanitary fees, house (building) administrative fees, air conditioning fees and other fees that are caused by the usage of The Premises."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In case Party A doesn’t make The Premises available before the abovementioned date, Party B has the right to require that the lease term be postponed. The Parties shall confirm the postponement with written signature and report to the registration bureau for recording."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "þ Party B shall not transfer fully or partially The Premises to third parties."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Shenzhen HYT Science &Technology Co., Ltd.\",\n  \"lessee\": \"Fiberxon Technology (Shenzhen) Inc.\",\n  \"premises_address\": \"7th floor, HYT Tower, Shenzhen Hi-Tech Industrial Park North, Beihuan RD, Shenzhen\",\n  \"area\": null,\n  \"start_date\": \"2004-11-20\",\n  \"end_date\": \"2007-11-19\",\n  \"rent\": {\n    \"amount\": 41300,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A shall be responsible for the land use fees of The Premises, its caused taxes, housing lease administrative fees as well as fees; Party B shall pay for electricity and water supply fees, sanitary fees, house (building) administrative fees, air conditioning fees and other fees that are caused by the usage of The Premises.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Party A shall be responsible for the land use fees of The Premises, its caused taxes, housing lease administrative fees as well as fees; Party B shall pay for electricity and water supply fees, sanitary fees, house (building) administrative fees, air conditioning fees and other fees that are caused by the usage of The Premises.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In case Party A doesn’t make The Premises available before the abovementioned date, Party B has the right to require that the lease term be postponed. The Parties shall confirm the postponement with written signature and report to the registration bureau for recording.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"þ Party B shall not transfer fully or partially The Premises to third parties.\"\n    }\n  ]\n}"
+}

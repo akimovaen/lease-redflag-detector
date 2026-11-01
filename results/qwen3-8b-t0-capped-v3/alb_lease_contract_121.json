@@ -1,0 +1,25 @@
+{
+  "text_id": "alb_lease_contract_121",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:40:35+00:00",
+  "status": "failed",
+  "error": "red_flags.0: quote not found verbatim in the text: 'Lessee shall be under obligation to repair, by taking on costs, material and equipment such as doors, gates, sanitary installations, illumination elements, glass panels, heating and air-conditioning i'",
+  "latency_s": 153.565,
+  "input_tokens": 26633,
+  "output_tokens": 969,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.0: quote not found verbatim in the text: 'Lessee shall be under obligation to repair, by taking on costs, material and equipment such as doors, gates, sanitary installations, illumination elements, glass panels, heating and air-conditioning i'\nred_flags.2: quote not found verbatim in the text: 'In the event Lessee becomes bankrupt, insurance damages payable in conformity with the named insurance contracts shall not be included into Lessee’s portfolio.'",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Ankara Teknoloji Gelistirme Bölgesi Kurucu ve Isletici Anonim Sirketi (Ankara Cyberpark)\",\n  \"lessee\": \"Synplicity Arastirma Gelistirme Ltd. Sti.\",\n  \"premises_address\": \"Cyberplaza A Blok 3.Kat No: A308, Bilkent/ANKARA\",\n  \"area\": null,\n  \"start_date\": \"2005-08-15\",\n  \"end_date\": \"2007-08-15\",\n  \"rent\": {\n    \"amount\": 2442,\n    \"currency\": \"TLY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Lessee shall be under obligation to repair, by taking on costs, material and equipment such as doors, gates, sanitary installations, illumination elements, glass panels, heating and air-conditioning installations existing and available in Leasehold and fixtures handed over to itself within the frame of provisions of Annex-1 herewith and to have maintenance work performed as long as hereby lease contract remains valid and in effect.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Lightning, power, power for air-conditioning, water supply and telephone costs incurred in connection with leasehold shall be borne by lessee and costs of subscription relevant to such utilities shall be settled in line with system to be determined by Lessor. Such costs do not enclose joint use costs mentioned in Annex-1 and share contribution to management costs.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Lessee shall not hire leasehold to third parties as well as shall not leave leasehold to third parties for these latter to avail themselves of its use without seeking approval for in writing from Ankara Cyberpark. Practice to the contrary shall be left to the discretion and approval in writing of Ankara Cyberpark.\"\n    }\n  ]\n}"
+}

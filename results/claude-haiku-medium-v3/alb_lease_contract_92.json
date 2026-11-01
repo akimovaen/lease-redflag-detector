@@ -1,0 +1,54 @@
+{
+  "text_id": "alb_lease_contract_92",
+  "config": "claude-haiku-medium-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:48:57+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 12.11,
+  "input_tokens": 9012,
+  "output_tokens": 2680,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Li Yang",
+    "lessee": "Quan Toodou Network Science and Technology Co., Ltd.",
+    "premises_address": "Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing",
+    "area": {
+      "value": 436.54,
+      "unit": "sqm"
+    },
+    "start_date": "2009-08-11",
+    "end_date": "2011-08-10",
+    "rent": {
+      "amount": 43854.08,
+      "currency": "RMB",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "service_charges_limited",
+        "quote": "Party B must pay the rent to Party A in accordance with this Contract at the rent rate of RMB43,854.08/month, including the fees of heating and initial internet connection (change to any of the costs will not change the total amount of the rent)"
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Party A must pay the property management fees to the property management company of Jianwai SOHO on a monthly basis."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B intends to terminate this Contract, this Contract will become terminated automatically after the security deposit paid by Party B is retained by Party A;"
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Li Yang\",\"lessee\":\"Quan Toodou Network Science and Technology Co., Ltd.\",\"premises_address\":\"Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing\",\"area\":{\"value\":436.54,\"unit\":\"sqm\"},\"start_date\":\"2009-08-11\",\"end_date\":\"2011-08-10\",\"rent\":{\"amount\":43854.08,\"currency\":\"RMB\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"service_charges_limited\",\"quote\":\"Party B must pay the rent to Party A in accordance with this Contract at the rent rate of RMB43,854.08/month, including the fees of heating and initial internet connection (change to any of the costs will not change the total amount of the rent)\"},{\"type\":\"service_charges_limited\",\"quote\":\"Party A must pay the property management fees to the property management company of Jianwai SOHO on a monthly basis.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party B intends to terminate this Contract, this Contract will become terminated automatically after the security deposit paid by Party B is retained by Party A;\"}]}"
+}

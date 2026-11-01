@@ -1,0 +1,29 @@
+{
+  "document_type": "lease",
+  "lessor": "Milan Gottwald",
+  "lessee": "SENDIO s.r.o.",
+  "premises_address": "Cadastral area of Hodolany, municipality of Olomouc",
+  "area": null,
+  "start_date": "2008-07-01",
+  "end_date": "2009-06-30",
+  "rent": {
+    "amount": 10000000.0,
+    "currency": "CZK",
+    "period": "year"
+  },
+  "indexation": "none",
+  "red_flags": [
+    {
+      "type": "indexation_limited",
+      "quote": "The fixed amount of the Annual Rent, as specified in Art. IV (1) hereof is set as a fixed amount for the entire term of the lease, i.e. for the term of one year pursuant to Art. XI hereof, and may not be increased in any manner whatsoever by the Landlord during this period of time."
+    },
+    {
+      "type": "sublease_permitted",
+      "quote": "The Landlord agrees not to refuse the consent to the conclusion of the sublease contract without a serious reason."
+    },
+    {
+      "type": "tenant_break_option",
+      "quote": "during the thus-extended term of the lease, the Tenant shall be entitled to terminate this Contract."
+    }
+  ]
+}

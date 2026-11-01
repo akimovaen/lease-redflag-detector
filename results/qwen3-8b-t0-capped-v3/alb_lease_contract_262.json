@@ -1,0 +1,57 @@
+{
+  "text_id": "alb_lease_contract_262",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:24:20+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 28.866,
+  "input_tokens": 2647,
+  "output_tokens": 363,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "The Fifth Season Liyang Investment Management Co., Ltd.",
+    "lessee": "Quan Ju Xiang Catering",
+    "premises_address": "4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road",
+    "area": null,
+    "start_date": "2010-08-01",
+    "end_date": "2022-07-31",
+    "rent": {
+      "amount": 836000.0,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A is responsible for the damage of the main structure unless damage due to Party B or its customer."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Property management fee should be paid from the opening of the restaurant. The amount is charged by property management company."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Before the expiration of the contract, neither party can terminate the contract at will. The party willing to terminate should inform the other party one month in advance and cancel the contract after the permission of the other party, and pays the other party a compensation equivalent to half year’s rent."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Without Party A’s permission, Party B can not lease part or all, or exchange lease of this property."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"The Fifth Season Liyang Investment Management Co., Ltd.\",\n  \"lessee\": \"Quan Ju Xiang Catering\",\n  \"premises_address\": \"4th Floor of the Liyang 5th season department store at the intersection of Lowan road and Yucai road\",\n  \"area\": null,\n  \"start_date\": \"2010-08-01\",\n  \"end_date\": \"2022-07-31\",\n  \"rent\": {\n    \"amount\": 836000,\n    \"currency\": \"CNY\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A is responsible for the damage of the main structure unless damage due to Party B or its customer.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Property management fee should be paid from the opening of the restaurant. The amount is charged by property management company.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Before the expiration of the contract, neither party can terminate the contract at will. The party willing to terminate should inform the other party one month in advance and cancel the contract after the permission of the other party, and pays the other party a compensation equivalent to half year’s rent.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Without Party A’s permission, Party B can not lease part or all, or exchange lease of this property.\"\n    }\n  ]\n}"
+}

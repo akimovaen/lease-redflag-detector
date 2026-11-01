@@ -1,0 +1,36 @@
+{
+  "document_type": "lease",
+  "lessor": "S.C.I. FEDERALE GRAMONT",
+  "lessee": "Société COTY",
+  "premises_address": "8-14 rue Gramont, 14 rue du 4 Septembre, 75002 Paris",
+  "area": {
+    "value": 8050.25,
+    "unit": "sqm"
+  },
+  "start_date": "2006-01-01",
+  "end_date": "2015-02-28",
+  "rent": {
+    "amount": 3450000.0,
+    "currency": "EUR",
+    "period": "year"
+  },
+  "indexation": "index_linked",
+  "red_flags": [
+    {
+      "type": "tenant_break_option",
+      "quote": "The Lessee shall have the authority to give notice “at the end of the third triennial period and two months” by notifying the Lessor by an extrajudicial document, at least six months prior to the expiration for the current period."
+    },
+    {
+      "type": "sublease_permitted",
+      "quote": "However by derogation from the above paragraph, the Lessee shall have the authority to partially sublet the premises to one or more companies in which the Lessee holds at least 50% of their assets"
+    },
+    {
+      "type": "sublease_permitted",
+      "quote": "However, it may freely assign the right to the lease for all the rented premises to the buyer of its successor in business."
+    },
+    {
+      "type": "landlord_repairs",
+      "quote": "The Lessor must maintain, as its expense, all specific equipment, such as external access ways and green spaces, heating…in accordance with current legislation and provide them in good condition for use.” For this purpose…it must, in the same manner, proceed with the restoration of the paint and carpet in their entirety every five years, “if necessary”."
+    }
+  ]
+}

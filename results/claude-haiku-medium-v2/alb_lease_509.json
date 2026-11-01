@@ -1,0 +1,43 @@
+{
+  "text_id": "alb_lease_509",
+  "config": "claude-haiku-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:46:54+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 10.459,
+  "input_tokens": 19572,
+  "output_tokens": 2298,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Capital Business Parks Globeside Limited",
+    "lessee": "Icon Clinical Research (UK) Limited",
+    "premises_address": "the land and building known as Building Two, Globeside Business Park and shown for the purposes of identification edged red on the plan annexed",
+    "area": null,
+    "start_date": "2001-08-13",
+    "end_date": "2017-08-12",
+    "rent": {
+      "amount": 988350.0,
+      "currency": "GBP",
+      "period": "year"
+    },
+    "indexation": "market_review",
+    "red_flags": [
+      {
+        "type": "sublease_permitted",
+        "quote": "Notwithstanding Clause 4.16.1 the Tenant may share occupation of the whole or any part of the Premises with a Group Company PROVIDED THAT;"
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Capital Business Parks Globeside Limited\",\"lessee\":\"Icon Clinical Research (UK) Limited\",\"premises_address\":\"the land and building known as Building Two, Globeside Business Park and shown for the purposes of identification edged red on the plan annexed\",\"area\":null,\"start_date\":\"2001-08-13\",\"end_date\":\"2017-08-12\",\"rent\":{\"amount\":988350,\"currency\":\"GBP\",\"period\":\"year\"},\"indexation\":\"market_review\",\"red_flags\":[{\"type\":\"sublease_permitted\",\"quote\":\"Notwithstanding Clause 4.16.1 the Tenant may share occupation of the whole or any part of the Premises with a Group Company PROVIDED THAT;\"}]}"
+}

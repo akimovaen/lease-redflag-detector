@@ -1,0 +1,54 @@
+{
+  "text_id": "alb_lease_contract_92",
+  "config": "claude-sonnet-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:47:34+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 3.399,
+  "input_tokens": 8951,
+  "output_tokens": 446,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Li Yang",
+    "lessee": "Quan Toodou Network Science and Technology Co., Ltd.",
+    "premises_address": "Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing",
+    "area": {
+      "value": 436.54,
+      "unit": "sqm"
+    },
+    "start_date": "2009-08-11",
+    "end_date": "2011-08-10",
+    "rent": {
+      "amount": 43854.08,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "service_charges_limited",
+        "quote": "4.1 Party A must pay the property management fees to the property management company of Jianwai SOHO on a monthly basis."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "Party B shall have the right of priority in renewing this Contract for another term under the equivalent conditions (all terms and conditions of this Contract, other than the rate of rent, will not be changed, but the rate of rent in the renewed contract shall be no more than 125% of the initial rate of rent)"
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B intends to terminate this Contract, this Contract will become terminated automatically after the security deposit paid by Party B is retained by Party A;"
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Li Yang\",\"lessee\":\"Quan Toodou Network Science and Technology Co., Ltd.\",\"premises_address\":\"Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing\",\"area\":{\"value\":436.54,\"unit\":\"sqm\"},\"start_date\":\"2009-08-11\",\"end_date\":\"2011-08-10\",\"rent\":{\"amount\":43854.08,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"service_charges_limited\",\"quote\":\"4.1 Party A must pay the property management fees to the property management company of Jianwai SOHO on a monthly basis.\"},{\"type\":\"indexation_limited\",\"quote\":\"Party B shall have the right of priority in renewing this Contract for another term under the equivalent conditions (all terms and conditions of this Contract, other than the rate of rent, will not be changed, but the rate of rent in the renewed contract shall be no more than 125% of the initial rate of rent)\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party B intends to terminate this Contract, this Contract will become terminated automatically after the security deposit paid by Party B is retained by Party A;\"}]}"
+}

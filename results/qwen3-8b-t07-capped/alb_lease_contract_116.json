@@ -1,0 +1,73 @@
+{
+  "text_id": "alb_lease_contract_116",
+  "config": "qwen3-8b-t07-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T13:04:53+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 136.252,
+  "input_tokens": 10153,
+  "output_tokens": 938,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Tianjin Changhe Heli Investment Company (Limited partnership), Beijing Sales Business Segment",
+    "lessee": "Yatai Weilai Technology Development Beijing Branch, Shenzhen Yatai Weilai Educational Technology Development Co. Ltd.",
+    "premises_address": "Room 509, 5/F, GohighLanfeng Tower, #98 S.Sanhuan Rd., Chaoyang District, Beijing 100122",
+    "area": {
+      "value": 352.74,
+      "unit": "sqm"
+    },
+    "start_date": "2014-03-01",
+    "end_date": "2018-03-19",
+    "rent": {
+      "amount": 69739.64,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "On no occasion shall Zhongtulian claim any compensation due from Changhe on the ground of ambiguity over the Premise at delivery."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian may reflect intention to renew the Lease Period under a notice in writing (Renewal Notice) three (3) months prior to its end. At equal terms and conditions, Zhongtulian has the priority to renew the Lease Period; provided renewal details shall be caused to define under prior negotiation with Changhe together."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian shall be treated to waiver renewal so long as this Renewal Notice is late to issue or renewal agreement is failed to sign three (3) months on and before the current Lease Period at its expiry. In this case, the Contract shall end at its expiry."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:"
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:"
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:"
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:"
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:"
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Tianjin Changhe Heli Investment Company (Limited partnership), Beijing Sales Business Segment\",\n  \"lessee\": \"Yatai Weilai Technology Development Beijing Branch, Shenzhen Yatai Weilai Educational Technology Development Co. Ltd.\",\n  \"premises_address\": \"Room 509, 5/F, GohighLanfeng Tower, #98 S.Sanhuan Rd., Chaoyang District, Beijing 100122\",\n  \"area\": {\n    \"value\": 352.74,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2014-03-01\",\n  \"end_date\": \"2018-03-19\",\n  \"rent\": {\n    \"amount\": 69739.64,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"On no occasion shall Zhongtulian claim any compensation due from Changhe on the ground of ambiguity over the Premise at delivery.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Zhongtulian may reflect intention to renew the Lease Period under a notice in writing (Renewal Notice) three (3) months prior to its end. At equal terms and conditions, Zhongtulian has the priority to renew the Lease Period; provided renewal details shall be caused to define under prior negotiation with Changhe together.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Zhongtulian shall be treated to waiver renewal so long as this Renewal Notice is late to issue or renewal agreement is failed to sign three (3) months on and before the current Lease Period at its expiry. In this case, the Contract shall end at its expiry.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Zhongtulian may cancel this Contract ex parte since after Changhe has one of the events of default as follows. In this case, the Security Deposit and Rent at balance under the previous receipt shall be returned to Zhongtulian without bearing interests and Zhongtulian shall otherwise be compensated at liquidated damages, using the sum twice as much as the Security Deposit:\"\n    }\n  ]\n}"
+}

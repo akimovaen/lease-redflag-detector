@@ -1,0 +1,16 @@
+# qwen3-8b-t07 with the fixes for looping on the red flag list:
+# the decoding grammar allows at most 8 flags, and repeated tokens are penalized.
+name = "qwen3-8b-t07-capped"
+provider = "ollama"
+model = "qwen3:8b"
+prompt = "extraction/v1"
+max_tokens = 4000
+timeout_s = 900
+max_retries = 2
+context_tokens = 32768
+max_red_flags = 8
+
+[sampling]
+temperature = 0.7
+top_p = 0.8
+repeat_penalty = 1.1

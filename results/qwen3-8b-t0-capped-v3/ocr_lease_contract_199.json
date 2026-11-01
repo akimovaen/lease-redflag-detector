@@ -1,0 +1,25 @@
+{
+  "text_id": "ocr_lease_contract_199",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:48:20+00:00",
+  "status": "failed",
+  "error": "red_flags.0: quote not found verbatim in the text: '\"B\" shall bear the other repair expense.'\nred_flags.2: quote not found verbatim in the text: 'If \"B\" wishes to cancel the contract during the lease term, \"B\" shall notify \"A\" in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when'\nred_flags.3: quote not found verbatim in the text: '\"B\" shall not transfer or provide as mortgage the right of lease nor sublet the object matter of the lease to the 3rd party.'",
+  "latency_s": 71.617,
+  "input_tokens": 11009,
+  "output_tokens": 758,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.0: quote not found verbatim in the text: '\"B\" shall bear the other repair expense.'\nred_flags.2: quote not found verbatim in the text: 'If \"B\" wishes to cancel the contract during the lease term, \"B\" shall notify \"A\" in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when'\nred_flags.3: quote not found verbatim in the text: '\"B\" shall not transfer or provide as mortgage the right of lease nor sublet the object matter of the lease to the 3rd party.'",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Korea Institute of Design Promotion (KIDP)\",\n  \"lessee\": \"Leadis Technology Korea, Inc.\",\n  \"premises_address\": \"Room 802, 8th floor, Korea Design Center, 344-1, Yatap 1-dong, Bundang-gu, Seongnam, Kyunggi-do\",\n  \"area\": null,\n  \"start_date\": \"2004-03-25\",\n  \"end_date\": \"2006-03-24\",\n  \"rent\": {\n    \"amount\": 4204000,\n    \"currency\": \"KRW\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"\\\"B\\\" shall bear the other repair expense.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"\\\"B\\\" is not entitled to make use of guaranty money to pay rent or management expenses.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If \\\"B\\\" wishes to cancel the contract during the lease term, \\\"B\\\" shall notify \\\"A\\\" in writing 60 days in advance without fail. In this case, this contract is terminated on the 60th day from the day when \\\"A' receives the written notification,\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"\\\"B\\\" shall not transfer or provide as mortgage the right of lease nor sublet the object matter of the lease to the 3rd party.\"\n    }\n  ]\n}"
+}

@@ -1,0 +1,25 @@
+{
+  "text_id": "ocr_lease_contract_57",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:43:49+00:00",
+  "status": "failed",
+  "error": "red_flags.0: quote not found verbatim in the text: 'Party B has the right and obligation to reasonably use and actively maintain and repair the premise, and Party A has the right to supervise the use of the premise to make sure it is free of any damage'\nred_flags.2: quote not found verbatim in the text: 'If Party B fails to perform the lease due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Cont'\nred_flags.3: quote not found verbatim in the text: 'Party B shall obtain Party A’s prior consent regarding temporarily building fixtures to the site within the term of this Contract, and Party B undertakes that, upon the expiration of this Contract, th'",
+  "latency_s": 58.41,
+  "input_tokens": 5922,
+  "output_tokens": 857,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.0: quote not found verbatim in the text: 'Party B has the right and obligation to reasonably use and actively maintain and repair the premise, and Party A has the right to supervise the use of the premise to make sure it is free of any damage'\nred_flags.2: quote not found verbatim in the text: 'If Party B fails to perform the lease due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Cont'\nred_flags.3: quote not found verbatim in the text: 'Party B shall obtain Party A’s prior consent regarding temporarily building fixtures to the site within the term of this Contract, and Party B undertakes that, upon the expiration of this Contract, th'",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Beijing Shunfeng Runlin Technology and Trade Co., Ltd.\",\n  \"lessee\": \"Beijing Ninetown Sky Eco-Agriculture Co., Ltd.\",\n  \"premises_address\": \"south of Lianying Village, Quanying Town, Shunyi District, Beijing\",\n  \"area\": null,\n  \"start_date\": \"2010-03-01\",\n  \"end_date\": \"2013-02-28\",\n  \"rent\": {\n    \"amount\": 550000,\n    \"currency\": \"CNY\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party B has the right and obligation to reasonably use and actively maintain and repair the premise, and Party A has the right to supervise the use of the premise to make sure it is free of any damages or losses.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Party B shall bear by itself the expenses for telephone and broadband internet access. Party A shall assist in the clearing and management of the daily garbage and Party B shall bear the cost.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B fails to perform the lease due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Party B shall obtain Party A’s prior consent regarding temporarily building fixtures to the site within the term of this Contract, and Party B undertakes that, upon the expiration of this Contract, the fixtures shall be owned by Party A and that all temporary buildings shall be vacated.\"\n    }\n  ]\n}"
+}

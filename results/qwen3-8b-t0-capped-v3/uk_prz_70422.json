@@ -1,0 +1,48 @@
+{
+  "text_id": "uk_prz_70422",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-30T10:24:33+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 122.217,
+  "input_tokens": 16386,
+  "output_tokens": 223,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "PAТ «Центренерго»",
+    "lessee": "ТОВ «Екорісайклінг компані»",
+    "premises_address": "м. Українка, Обухівський район, вул. Промислова, 1",
+    "area": {
+      "value": 2043.5,
+      "unit": "sqm"
+    },
+    "start_date": "2025-10-28",
+    "end_date": "2026-04-04",
+    "rent": {
+      "amount": 0.0,
+      "currency": "UAH",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "indexation_limited",
+        "quote": "8.4"
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"PAТ «Центренерго»\",\n  \"lessee\": \"ТОВ «Екорісайклінг компані»\",\n  \"premises_address\": \"м. Українка, Обухівський район, вул. Промислова, 1\",\n  \"area\": {\n    \"value\": 2043.5,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2025-10-28\",\n  \"end_date\": \"2026-04-04\",\n  \"rent\": {\n    \"amount\": 0,\n    \"currency\": \"UAH\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"indexation_limited\",\n      \"quote\": \"8.4\"\n    }\n  ]\n}"
+}

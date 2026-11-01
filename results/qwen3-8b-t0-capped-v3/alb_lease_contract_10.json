@@ -1,0 +1,53 @@
+{
+  "text_id": "alb_lease_contract_10",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:23:52+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 43.28,
+  "input_tokens": 5728,
+  "output_tokens": 625,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.2: quote not found verbatim in the text: 'If Party B terminates the lease in advance without the consent of Party A，Party B should pay a penalty of twice the rent based on the days remaining in the contract.'",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Zhonghai Trust Co., Ltd.",
+    "lessee": "Shaanxi Tianren Organic Food Co., Ltd.",
+    "premises_address": "16th floor of National Development Bank Tower",
+    "area": null,
+    "start_date": "2008-07-01",
+    "end_date": "2009-06-30",
+    "rent": {
+      "amount": 45.0,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "In case the premise and attached facilities are damaged by quality problems, natural damages or disasters, Party A will be responsible for repair and must pay the relevant expenses."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Party B should bear all the fees incurred for water, electricity, gas and premises administration."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "During the rental, Party B is not allowed to lease all or part of the premises to a third party without the written consent of Party A."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Zhonghai Trust Co., Ltd.\",\n  \"lessee\": \"Shaanxi Tianren Organic Food Co., Ltd.\",\n  \"premises_address\": \"16th floor of National Development Bank Tower\",\n  \"area\": null,\n  \"start_date\": \"2008-07-01\",\n  \"end_date\": \"2009-06-30\",\n  \"rent\": {\n    \"amount\": 45.00,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"In case the premise and attached facilities are damaged by quality problems, natural damages or disasters, Party A will be responsible for repair and must pay the relevant expenses.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"Party B should bear all the fees incurred for water, electricity, gas and premises administration.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"During the rental, Party B is not allowed to lease all or part of the premises to a third party without the written consent of Party A.\"\n    }\n  ]\n}"
+}

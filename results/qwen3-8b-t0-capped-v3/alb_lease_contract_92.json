@@ -1,0 +1,57 @@
+{
+  "text_id": "alb_lease_contract_92",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:28:27+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 45.167,
+  "input_tokens": 4704,
+  "output_tokens": 425,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Li Yang",
+    "lessee": "Quan Toodou Network Science and Technology Co., Ltd.",
+    "premises_address": "Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing",
+    "area": null,
+    "start_date": "2009-08-11",
+    "end_date": "2011-08-10",
+    "rent": {
+      "amount": 43854.08,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party B shall at its own costs maintain and repair the facilities in the Leased Unit, so that such facilities will remain the clean and habitable conditions."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "The rent-free period shall be 30 days, as from August 11, 2009 to September 10, 2009. During the rent-free period, Party B is not required to pay the rent and the property management fees."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B fails to pay any due and payable rent for more than fifteen (15) days without justifiable reason, Party A may terminate this Contract."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Without the consent of Party A, Party B may not sublease or assign the Leased Unit or any part thereof to any third party, or jointly use the same with any third party."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Li Yang\",\n  \"lessee\": \"Quan Toodou Network Science and Technology Co., Ltd.\",\n  \"premises_address\": \"Room 2202 and Room 2206, 22/F, No. 18 Building, Jianwai SOHO, No. 39, Dong San Huan Middle Road, Chaoyang, Beijing\",\n  \"area\": null,\n  \"start_date\": \"2009-08-11\",\n  \"end_date\": \"2011-08-10\",\n  \"rent\": {\n    \"amount\": 43854.08,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party B shall at its own costs maintain and repair the facilities in the Leased Unit, so that such facilities will remain the clean and habitable conditions.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"The rent-free period shall be 30 days, as from August 11, 2009 to September 10, 2009. During the rent-free period, Party B is not required to pay the rent and the property management fees.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B fails to pay any due and payable rent for more than fifteen (15) days without justifiable reason, Party A may terminate this Contract.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Without the consent of Party A, Party B may not sublease or assign the Leased Unit or any part thereof to any third party, or jointly use the same with any third party.\"\n    }\n  ]\n}"
+}

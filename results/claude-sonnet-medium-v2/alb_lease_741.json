@@ -1,0 +1,50 @@
+{
+  "text_id": "alb_lease_741",
+  "config": "claude-sonnet-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:47:40+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 3.34,
+  "input_tokens": 23387,
+  "output_tokens": 295,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Iowa State University Research Park Corporation",
+    "lessee": "BioProtection Systems Corporation",
+    "premises_address": "Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3, 2901 South Loop Drive, Ames, IA 50010",
+    "area": {
+      "value": 2028.0,
+      "unit": "sqft"
+    },
+    "start_date": "2005-08-22",
+    "end_date": "2006-08-31",
+    "rent": {
+      "amount": 25350.0,
+      "currency": "USD",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "Landlord agrees to release Tenant from this lease obligation upon Tenant’s move into a larger facility at the ISU Research Park."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "Base Rent shall increase as set forth on the Summary Page."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Iowa State University Research Park Corporation\",\"lessee\":\"BioProtection Systems Corporation\",\"premises_address\":\"Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3, 2901 South Loop Drive, Ames, IA 50010\",\"area\":{\"value\":2028,\"unit\":\"sqft\"},\"start_date\":\"2005-08-22\",\"end_date\":\"2006-08-31\",\"rent\":{\"amount\":25350,\"currency\":\"USD\",\"period\":\"year\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"tenant_break_option\",\"quote\":\"Landlord agrees to release Tenant from this lease obligation upon Tenant’s move into a larger facility at the ISU Research Park.\"},{\"type\":\"indexation_limited\",\"quote\":\"Base Rent shall increase as set forth on the Summary Page.\"}]}"
+}

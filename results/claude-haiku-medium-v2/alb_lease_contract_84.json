@@ -1,0 +1,58 @@
+{
+  "text_id": "alb_lease_contract_84",
+  "config": "claude-haiku-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:46:29+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 11.645,
+  "input_tokens": 4917,
+  "output_tokens": 2444,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Shantou Yunjia Fashion Clothing Co., Ltd.",
+    "lessee": "Shantou Big Tree Toys Co., Ltd",
+    "premises_address": "South Part 1, Nanshe Area, Pengnan Industrial Park on North Yingbinbei Road in Waisha Town of Longhu District in Shantou City",
+    "area": {
+      "value": 1500.0,
+      "unit": "sqm"
+    },
+    "start_date": "2011-01-01",
+    "end_date": "2021-12-31",
+    "rent": {
+      "amount": 6000.0,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "1) Party A shall be responsible for the maintenance at the expenses of Party A for the items agreed on by both parties."
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A shall be responsible for the maintenance project that cost more than RMB 5,000 and Party B shall be responsible for the regular maintenance of property during the lease term."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "Party B shall have the right to refuse to pay Party A any other expense except rent."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "Party A and Party B agree that the monthly rent is RMB 4 per square meter."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Shantou Yunjia Fashion Clothing Co., Ltd.\",\"lessee\":\"Shantou Big Tree Toys Co., Ltd\",\"premises_address\":\"South Part 1, Nanshe Area, Pengnan Industrial Park on North Yingbinbei Road in Waisha Town of Longhu District in Shantou City\",\"area\":{\"value\":1500,\"unit\":\"sqm\"},\"start_date\":\"2011-01-01\",\"end_date\":\"2021-12-31\",\"rent\":{\"amount\":6000,\"currency\":\"CNY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"1) Party A shall be responsible for the maintenance at the expenses of Party A for the items agreed on by both parties.\"},{\"type\":\"landlord_repairs\",\"quote\":\"Party A shall be responsible for the maintenance project that cost more than RMB 5,000 and Party B shall be responsible for the regular maintenance of property during the lease term.\"},{\"type\":\"service_charges_limited\",\"quote\":\"Party B shall have the right to refuse to pay Party A any other expense except rent.\"},{\"type\":\"indexation_limited\",\"quote\":\"Party A and Party B agree that the monthly rent is RMB 4 per square meter.\"}]}"
+}

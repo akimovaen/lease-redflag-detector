@@ -1,0 +1,57 @@
+{
+  "text_id": "alb_lease_contract_201",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:23:08+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 21.532,
+  "input_tokens": 1637,
+  "output_tokens": 314,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Bozhou Fengyi Chinese Medicine Development and Research Institute",
+    "lessee": "Anhui Xuelingxian Pharmaceutical Co., Ltd.",
+    "premises_address": "East Liuge Village, Weiwu Road, Bozhou",
+    "area": null,
+    "start_date": "2008-08-01",
+    "end_date": "2023-07-31",
+    "rent": {
+      "amount": 1200000.0,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A takes charge of repairing of the house."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "The water & electricity fees shall be settled separately."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B has the priority to lease the house after the contract expires, and it can extend the lease term with negotiation of Party A if it cannot find the house promptly after the contract expires."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "Party B transfers, subleases, lends, jointly operates, buys share or exchanges the house with others;"
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Bozhou Fengyi Chinese Medicine Development and Research Institute\",\n  \"lessee\": \"Anhui Xuelingxian Pharmaceutical Co., Ltd.\",\n  \"premises_address\": \"East Liuge Village, Weiwu Road, Bozhou\",\n  \"area\": null,\n  \"start_date\": \"2008-08-01\",\n  \"end_date\": \"2023-07-31\",\n  \"rent\": {\n    \"amount\": 1200000,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A takes charge of repairing of the house.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"The water & electricity fees shall be settled separately.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B has the priority to lease the house after the contract expires, and it can extend the lease term with negotiation of Party A if it cannot find the house promptly after the contract expires.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"Party B transfers, subleases, lends, jointly operates, buys share or exchanges the house with others;\"\n    }\n  ]\n}"
+}

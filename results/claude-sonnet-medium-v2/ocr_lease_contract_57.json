@@ -1,0 +1,51 @@
+{
+  "text_id": "ocr_lease_contract_57",
+  "config": "claude-sonnet-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:47:47+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 4.227,
+  "input_tokens": 5707,
+  "output_tokens": 400,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Beijing Shunfeng Runlin Technology and Trade Co., Ltd.",
+    "lessee": "Beijing Ninetown Sky Eco-Agriculture Co., Ltd.",
+    "premises_address": "south of Lianying Village, Quanying Town, Shunyi District, Beijing",
+    "area": null,
+    "start_date": "2010-03-01",
+    "end_date": "2013-02-28",
+    "rent": {
+      "amount": 550000.0,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "indexation_limited",
+        "quote": "The first year: the rent of RMB 550,000 shall be paid before March 5 th; 2010;"
+      },
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A is obligated to maintain the cement road in good condition for passage within the boundary of the premise, and is in charge of the greening work within the boundary of the premise."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Beijing Shunfeng Runlin Technology and Trade Co., Ltd.\",\"lessee\":\"Beijing Ninetown Sky Eco-Agriculture Co., Ltd.\",\"premises_address\":\"south of Lianying Village, Quanying Town, Shunyi District, Beijing\",\"area\":null,\"start_date\":\"2010-03-01\",\"end_date\":\"2013-02-28\",\"rent\":{\"amount\":550000,\"currency\":\"CNY\",\"period\":\"year\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"indexation_limited\",\"quote\":\"The first year: the rent of RMB 550,000 shall be paid before March 5 th; 2010;\"},{\"type\":\"landlord_repairs\",\"quote\":\"Party A is obligated to maintain the cement road in good condition for passage within the boundary of the premise, and is in charge of the greening work within the boundary of the premise.\"},{\"type\":\"tenant_break_option\",\"quote\":\"If Party B fails to perform the lease‘due to its poor performance, it shall notify Party A in Writing one (1) month in advance. After obtaining the consent from Party A, Party B may terminate the Contract without incurring any liability.\"}]}"
+}

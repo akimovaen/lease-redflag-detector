@@ -1,0 +1,31 @@
+id,group,source,source_id,language,words,mvp_flags,dirt,ocr_noise,license,golden
+alb_lease_contract_201,A,ALeaseBERT,lease_contract_201,en,823,break_option;landlord_repairs;services_charges,,,CC BY-NC 4.0,yes
+alb_lease_contract_10,A,ALeaseBERT,lease_contract_10,en,1559,break_option;landlord_repairs;services_charges;sublease_permitted,,,CC BY-NC 4.0,
+alb_lease_contract_262,A,ALeaseBERT,lease_contract_262,en,1546,break_option;services_charges;sublease_permitted,,,CC BY-NC 4.0,
+alb_lease_contract_84,A,ALeaseBERT,lease_contract_84,en,1092,break_option;landlord_repairs;sublease_permitted,,,CC BY-NC 4.0,
+alb_lease_contract_30,A,ALeaseBERT,lease_contract_30,en,2998,landlord_repairs;reinstatement_clause;services_charges;sublease_permitted,encoding;template_blanks,,CC BY-NC 4.0,yes
+alb_lease_contract_112,A,ALeaseBERT,lease_contract_112,en,3765,break_option;landlord_repairs;reinstatement_clause;services_charges;sublease_permitted,template_blanks,,CC BY-NC 4.0,
+alb_lease_contract_259,A,ALeaseBERT,lease_contract_259,en,2976,break_option;landlord_repairs;reinstatement_clause;services_charges;sublease_permitted,,,CC BY-NC 4.0,yes
+alb_lease_contract_92,A,ALeaseBERT,lease_contract_92,en,3099,break_option;reinstatement_clause;services_charges,,,CC BY-NC 4.0,
+alb_lease_contract_234,A,ALeaseBERT,lease_contract_234,en,2821,break_option;landlord_repairs;reinstatement_clause;services_charges;sublease_permitted,,,CC BY-NC 4.0,
+alb_lease_562,A,ALeaseBERT,lease_562,en,6990,break_option;services_charges;sublease_permitted,mixed_lang,,CC BY-NC 4.0,yes
+alb_lease_509,A,ALeaseBERT,lease_509,en,8199,reinstatement_clause;services_charges;sublease_permitted,,,CC BY-NC 4.0,
+alb_lease_741,A,ALeaseBERT,lease_741,en,9293,landlord_repairs;reinstatement_clause;services_charges;sublease_permitted,,,CC BY-NC 4.0,
+alb_lease_contract_116,A,ALeaseBERT,lease_contract_116,en,7067,reinstatement_clause;services_charges;sublease_permitted,mixed_lang,,CC BY-NC 4.0,
+alb_lease_contract_121,A,ALeaseBERT,lease_contract_121,en,9556,landlord_repairs;services_charges;sublease_permitted,,,CC BY-NC 4.0,
+alb_lease_contract_54,A,ALeaseBERT,lease_contract_54,en,7673,landlord_repairs;services_charges;sublease_permitted,mixed_lang,,CC BY-NC 4.0,yes
+ocr_lease_contract_57,B,ALeaseBERT,lease_contract_57,en,1461,break_option;landlord_repairs;services_charges,broken_layout;ocr,light,CC BY-NC 4.0,
+ocr_lease_contract_275,B,ALeaseBERT,lease_contract_275,en,1954,break_option;services_charges;sublease_permitted,broken_layout;ocr,medium,CC BY-NC 4.0,
+ocr_lease_contract_11,B,ALeaseBERT,lease_contract_11,en,1950,break_option;landlord_repairs;reinstatement_clause;services_charges,broken_layout;ocr,heavy,CC BY-NC 4.0,yes
+ocr_lease_contract_242,B,ALeaseBERT,lease_contract_242,en,3839,break_option;landlord_repairs;services_charges;sublease_permitted,broken_layout;ocr,light,CC BY-NC 4.0,
+ocr_lease_contract_199,B,ALeaseBERT,lease_contract_199,en,2996,break_option;landlord_repairs;reinstatement_clause;services_charges;sublease_permitted,broken_layout;ocr,medium,CC BY-NC 4.0,yes
+uk_prz_70422,C,Prozorro.Sale,RLE001-UA-20251021-70422,uk,8737,,broken_layout;ocr,,"public information, published on Prozorro.Sale",
+uk_prz_38360,C,Prozorro.Sale,RLE001-UA-20251201-38360,uk,8386,,broken_layout;mixed_lang;ocr,,"public information, published on Prozorro.Sale",
+uk_prz_91885,C,Prozorro.Sale,RLE001-UA-20251201-91885,uk,3719,,broken_layout;ocr,,"public information, published on Prozorro.Sale",yes
+uk_prz_29282,C,Prozorro.Sale,RLE001-UA-20251113-29282,uk,6744,,broken_layout;ocr;template_blanks,,"public information, published on Prozorro.Sale",
+uk_prz_60729,C,Prozorro.Sale,RLE001-UA-20251211-60729,uk,6341,,broken_layout;mixed_lang;ocr;template_blanks,,"public information, published on Prozorro.Sale",
+uk_prz_41041,C,Prozorro.Sale,RLE001-UA-20251215-41041,uk,6241,,broken_layout;ocr,,"public information, published on Prozorro.Sale",
+uk_prz_ce9dfd29,C,Prozorro.Sale,ce9dfd295c7c41f79a5918e1230cdd3b,uk,6928,,broken_layout;ocr;template_blanks,,"public information, published on Prozorro.Sale",
+uk_prz_31134a62,C,Prozorro.Sale,31134a620c094278ba5ba56d8364cffb,uk,4590,,broken_layout;ocr;template_blanks,,"public information, published on Prozorro.Sale",
+uk_prz_c9bfc288,C,Prozorro.Sale,c9bfc288f1ab4c7692fcdb8bc0729520,uk,2267,,broken_layout;ocr,,"public information, published on Prozorro.Sale",yes
+uk_template,C,project author,ua_nonresidential_lease_template,uk,512,,template_blanks,,MIT,yes

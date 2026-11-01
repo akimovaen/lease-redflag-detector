@@ -1,0 +1,50 @@
+{
+  "text_id": "alb_lease_741",
+  "config": "claude-haiku-medium-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:49:07+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 9.942,
+  "input_tokens": 23448,
+  "output_tokens": 2209,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Iowa State University Research Park Corporation",
+    "lessee": "BioProtection Systems Corporation",
+    "premises_address": "Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3",
+    "area": {
+      "value": 2028.0,
+      "unit": "sqft"
+    },
+    "start_date": "2005-08-22",
+    "end_date": "2006-08-31",
+    "rent": {
+      "amount": 25350.0,
+      "currency": "USD",
+      "period": "year"
+    },
+    "indexation": null,
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Landlord shall subject to reimbursement as Operating Costs under Section 5 above maintain the roof, foundation, heating, ventilating and air conditioning system, common areas, exterior grounds and the structural soundness of the exterior walls (including windows, glass, plate glass, door or entries) of the Building in good repair, reasonable wear and tear excepted."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Landlord agrees to release Tenant from this lease obligation upon Tenant’s move into a larger facility at the ISU Research Park."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Iowa State University Research Park Corporation\",\"lessee\":\"BioProtection Systems Corporation\",\"premises_address\":\"Suite 3360, Wayne R. Moore Technology Transfer Center, Building #3\",\"area\":{\"value\":2028,\"unit\":\"sqft\"},\"start_date\":\"2005-08-22\",\"end_date\":\"2006-08-31\",\"rent\":{\"amount\":25350,\"currency\":\"USD\",\"period\":\"year\"},\"indexation\":null,\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Landlord shall subject to reimbursement as Operating Costs under Section 5 above maintain the roof, foundation, heating, ventilating and air conditioning system, common areas, exterior grounds and the structural soundness of the exterior walls (including windows, glass, plate glass, door or entries) of the Building in good repair, reasonable wear and tear excepted.\"},{\"type\":\"tenant_break_option\",\"quote\":\"Landlord agrees to release Tenant from this lease obligation upon Tenant’s move into a larger facility at the ISU Research Park.\"}]}"
+}

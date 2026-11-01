@@ -1,0 +1,54 @@
+{
+  "text_id": "alb_lease_contract_121",
+  "config": "claude-haiku-medium-v2",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "extraction/v2",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "effort": "medium"
+  },
+  "max_red_flags": null,
+  "created_at": "2026-10-28T14:47:03+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 15.805,
+  "input_tokens": 23231,
+  "output_tokens": 3893,
+  "stop_reason": "end_turn",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Ankara Teknoloji Gelistirme Bölgesi Kurucu ve Isletici Anonim Sirketi",
+    "lessee": "Synplicity Arastirma Gelistirme Ltd. Sti.",
+    "premises_address": "Office of 111 sqm mentioned in the floor plan attached, with number A308, Cyberplaza A Blok 3.Kat",
+    "area": {
+      "value": 111.0,
+      "unit": "sqm"
+    },
+    "start_date": "2005-08-15",
+    "end_date": "2007-08-15",
+    "rent": {
+      "amount": 2442.0,
+      "currency": "TRY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Lessor shall be obligated to keep in working order leasehold in the course of lease term so that Lessee benefits from and with this purpose in mind shall be under obligation of refurbishing, repairing and maintaining in good order bearing walls, roofs, boiler of heating system used jointly, pumps, water supply and\npower supply installations, main water trunks, ductworks and similar fixtures."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "All and any taxes, duties, dues, stamp duties, funds, premiums, commissions, charges, tuition fees, inspection, control, measurement, determination fees, damages, haulage costs, notification costs and all payments of similar nature to be made in connection with the using, running, working of the freehold, and from use made by Lessee, to the exception of tax on chattel real and interests, fines for delay, payment due to arrears, penalties, damages, costs, expenditures, all debts arising from writs issued or from liabilities followed by any office of bailiff or becoming in effect as a result of arbitration award, with interests and costs relevant thereto shall be payable by Lessee."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "In case the parties come to term on having hereby lease term completed and on starting a new term of lease, the new rent may be raised at most at the rate of 5 per cent on the basis of US dollar per year to be added to rent payable for and within the previous term."
+      }
+    ]
+  },
+  "raw": "{\"document_type\":\"lease\",\"lessor\":\"Ankara Teknoloji Gelistirme Bölgesi Kurucu ve Isletici Anonim Sirketi\",\"lessee\":\"Synplicity Arastirma Gelistirme Ltd. Sti.\",\"premises_address\":\"Office of 111 sqm mentioned in the floor plan attached, with number A308, Cyberplaza A Blok 3.Kat\",\"area\":{\"value\":111,\"unit\":\"sqm\"},\"start_date\":\"2005-08-15\",\"end_date\":\"2007-08-15\",\"rent\":{\"amount\":2442,\"currency\":\"TRY\",\"period\":\"month\"},\"indexation\":\"none\",\"red_flags\":[{\"type\":\"landlord_repairs\",\"quote\":\"Lessor shall be obligated to keep in working order leasehold in the course of lease term so that Lessee benefits from and with this purpose in mind shall be under obligation of refurbishing, repairing and maintaining in good order bearing walls, roofs, boiler of heating system used jointly, pumps, water supply and\\npower supply installations, main water trunks, ductworks and similar fixtures.\"},{\"type\":\"service_charges_limited\",\"quote\":\"All and any taxes, duties, dues, stamp duties, funds, premiums, commissions, charges, tuition fees, inspection, control, measurement, determination fees, damages, haulage costs, notification costs and all payments of similar nature to be made in connection with the using, running, working of the freehold, and from use made by Lessee, to the exception of tax on chattel real and interests, fines for delay, payment due to arrears, penalties, damages, costs, expenditures, all debts arising from writs issued or from liabilities followed by any office of bailiff or becoming in effect as a result of arbitration award, with interests and costs relevant thereto shall be payable by Lessee.\"},{\"type\":\"indexation_limited\",\"quote\":\"In case the parties come to term on having hereby lease term completed and on starting a new term of lease, the new rent may be raised at most at the rate of 5 per cent on the basis of US dollar per year to be added to rent payable for and within the previous term.\"}]}"
+}

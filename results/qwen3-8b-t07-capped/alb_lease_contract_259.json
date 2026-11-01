@@ -1,0 +1,73 @@
+{
+  "text_id": "alb_lease_contract_259",
+  "config": "qwen3-8b-t07-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T12:54:32+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 50.183,
+  "input_tokens": 4084,
+  "output_tokens": 614,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "China National Precision Machinery I&E Corp. Beijing Aerospace CPMIEC Building",
+    "lessee": "Fortune Software (Beijing) Co., Ltd.",
+    "premises_address": "Room 626, 6th Floor Beijing Aerospace CPMIEC Building, No.30 Haidian South Road, Haidian District Beijing",
+    "area": {
+      "value": 190.71,
+      "unit": "sqm"
+    },
+    "start_date": "2009-07-30",
+    "end_date": "2010-07-29",
+    "rent": {
+      "amount": 20596.68,
+      "currency": "CNY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall have the priority right upon the same conditions."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall make written application for lease renewal within 2 months prior to expiration of the term."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "The rent for renewal and other fees shall be determined through negotiations."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall not request to offset its due payment by the paid deposit."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Party B’s deposit can not offset Party A’s economic losses and reasonable fees and expenses under the circumstance of Article 4 section 3, Party B shall pay the outstanding amount within 10 days of receiving Party A’s notice. Otherwise, Party A shall have the right to terminate the Contract, and to claim for such outstanding amount and the overdue payment (5‰ per day)."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B shall be responsible for any result incurred therefrom."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In case Party B’s overdue payment in aggregate (including without limitation room rate, incidental expense, overdue fine, etc.) exceeds 65% of the deposit. Party B shall be responsible for any result incurred therefrom."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "Party B may install small switchboard (including headquarter PBX) in the leased unit or to apply for special exterior line due to business needs, it shall make application to the building and provide technique specifications, network license and relevant materials. A complimentary agreement on the issue shall be executed separately."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"China National Precision Machinery I&E Corp. Beijing Aerospace CPMIEC Building\",\n  \"lessee\": \"Fortune Software (Beijing) Co., Ltd.\",\n  \"premises_address\": \"Room 626, 6th Floor Beijing Aerospace CPMIEC Building, No.30 Haidian South Road, Haidian District Beijing\",\n  \"area\": {\n    \"value\": 190.71,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2009-07-30\",\n  \"end_date\": \"2010-07-29\",\n  \"rent\": {\n    \"amount\": 20596.68,\n    \"currency\": \"CNY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall have the priority right upon the same conditions.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall make written application for lease renewal within 2 months prior to expiration of the term.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The rent for renewal and other fees shall be determined through negotiations.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall not request to offset its due payment by the paid deposit.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Party B’s deposit can not offset Party A’s economic losses and reasonable fees and expenses under the circumstance of Article 4 section 3, Party B shall pay the outstanding amount within 10 days of receiving Party A’s notice. Otherwise, Party A shall have the right to terminate the Contract, and to claim for such outstanding amount and the overdue payment (5‰ per day).\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B shall be responsible for any result incurred therefrom.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In case Party B’s overdue payment in aggregate (including without limitation room rate, incidental expense, overdue fine, etc.) exceeds 65% of the deposit. Party B shall be responsible for any result incurred therefrom.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"Party B may install small switchboard (including headquarter PBX) in the leased unit or to apply for special exterior line due to business needs, it shall make application to the building and provide technique specifications, network license and relevant materials. A complimentary agreement on the issue shall be executed separately.\"\n    }\n  ]\n}"
+}

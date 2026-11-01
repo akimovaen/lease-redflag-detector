@@ -1,0 +1,70 @@
+{
+  "text_id": "alb_lease_contract_121",
+  "config": "qwen3-8b-t07-capped",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v1",
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T13:07:36+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 162.556,
+  "input_tokens": 12627,
+  "output_tokens": 881,
+  "stop_reason": "stop",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Ankara Teknoloji Gelistirme Bölgesi Kurucu ve Isletici Anonim Sirketi (Ankara Cyberpark)",
+    "lessee": "Synplicity Arastirma Gelistirme Ltd. Sti.",
+    "premises_address": "Cyberplaza A Blok 3.Kat No: A308, Bilkent/ANKARA",
+    "area": null,
+    "start_date": "2005-08-15",
+    "end_date": "2007-08-15",
+    "rent": {
+      "amount": 2442.0,
+      "currency": "TLY",
+      "period": "month"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "indexation_limited",
+        "quote": "In the event Lessee defaults in making payment of rent in accordance with the provisions of the Annex-1 to hereby Contract and fails to make payment of rent, together with default interest to accrue on the basis of the Clause 33 of hereby Contract, within a term of 30 days to be granted within the frame of hereby Contract by Ankara Cyberpark, this latter shall be entitled to immediately terminate hereby Contract."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In case the parties come to term on having hereby lease term completed and on starting a new term of lease, the new rent may be raised at most at the rate of 5 per cent on the basis of US dollar per year to be added to rent payable for and within the previous term."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In the event Lessee defaults repeatedly within a term of six months to pay rents in accordance with the provisions of Annex-1 of hereby Contract, then Ankara Cyberpark shall be authorized to terminate contract at once."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "If Lessee acts at variance with provisions regarding maintenance and repair of the Contract herein and irrespective of caution made to itself together with a grant of term of fifteen days, keeps on defaulting obligations on maintenance and repair borne by itself, Ankara Cyberpark shall be authorized to terminate Contract."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In the event leasehold becomes damaged and is brought under a condition that would make its employment impracticable for purposes which hereby Contract pursues, then Ankara Cyberpark shall be authorized to terminate Contract if a desire in this way is expressed or may choose to act in accordance with provisions of Clause 19 of hereby Agreement."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In the event Ankara Cyberpark terminates Contract on the basis of any one or several of rights of contract termination, leasehold shall be returned and handed over to Ankara Cyberpark within fifteen days with costs of dismantling, haulage, transport insurance, conveyance and handling borne by Lessee."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In the event Ankara Cyberpark chooses to terminate contract by banking on any or several of rights of termination mentioned in clauses 32, 33, 34, 35, 36 and 37 of hereby Contract, all rents not yet due in accordance with Annex-1 of hereby Contract shall become due and accelerated and Lessee shall be obligated to pay all at once all rents becoming due within 15 (fifteen) days."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "In the event Ankara Cyberpark terminates Contract on the basis of any one or several of rights of contract termination, leasehold shall be returned and handed over to Ankara Cyberpark within fifteen days with costs of dismantling, haul, transport insurance, conveyance and handling borne by Lessee."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Ankara Teknoloji Gelistirme Bölgesi Kurucu ve Isletici Anonim Sirketi (Ankara Cyberpark)\",\n  \"lessee\": \"Synplicity Arastirma Gelistirme Ltd. Sti.\",\n  \"premises_address\": \"Cyberplaza A Blok 3.Kat No: A308, Bilkent/ANKARA\",\n  \"area\": null,\n  \"start_date\": \"2005-08-15\",\n  \"end_date\": \"2007-08-15\",\n  \"rent\": {\n    \"amount\": 2442,\n    \"currency\": \"TLY\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"indexation_limited\",\n      \"quote\": \"In the event Lessee defaults in making payment of rent in accordance with the provisions of the Annex-1 to hereby Contract and fails to make payment of rent, together with default interest to accrue on the basis of the Clause 33 of hereby Contract, within a term of 30 days to be granted within the frame of hereby Contract by Ankara Cyberpark, this latter shall be entitled to immediately terminate hereby Contract.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In case the parties come to term on having hereby lease term completed and on starting a new term of lease, the new rent may be raised at most at the rate of 5 per cent on the basis of US dollar per year to be added to rent payable for and within the previous term.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In the event Lessee defaults repeatedly within a term of six months to pay rents in accordance with the provisions of Annex-1 of hereby Contract, then Ankara Cyberpark shall be authorized to terminate contract at once.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"If Lessee acts at variance with provisions regarding maintenance and repair of the Contract herein and irrespective of caution made to itself together with a grant of term of fifteen days, keeps on defaulting obligations on maintenance and repair borne by itself, Ankara Cyberpark shall be authorized to terminate Contract.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In the event leasehold becomes damaged and is brought under a condition that would make its employment impracticable for purposes which hereby Contract pursues, then Ankara Cyberpark shall be authorized to terminate Contract if a desire in this way is expressed or may choose to act in accordance with provisions of Clause 19 of hereby Agreement.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In the event Ankara Cyberpark terminates Contract on the basis of any one or several of rights of contract termination, leasehold shall be returned and handed over to Ankara Cyberpark within fifteen days with costs of dismantling, haulage, transport insurance, conveyance and handling borne by Lessee.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In the event Ankara Cyberpark chooses to terminate contract by banking on any or several of rights of termination mentioned in clauses 32, 33, 34, 35, 36 and 37 of hereby Contract, all rents not yet due in accordance with Annex-1 of hereby Contract shall become due and accelerated and Lessee shall be obligated to pay all at once all rents becoming due within 15 (fifteen) days.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"In the event Ankara Cyberpark terminates Contract on the basis of any one or several of rights of contract termination, leasehold shall be returned and handed over to Ankara Cyberpark within fifteen days with costs of dismantling, haul, transport insurance, conveyance and handling borne by Lessee.\"\n    }\n  ]\n}"
+}

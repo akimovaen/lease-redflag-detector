@@ -1,0 +1,53 @@
+{
+  "text_id": "alb_lease_contract_84",
+  "config": "qwen3-8b-t0-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-10-28T15:24:45+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 24.941,
+  "input_tokens": 1964,
+  "output_tokens": 369,
+  "stop_reason": "stop",
+  "attempts": 1,
+  "first_error": null,
+  "output": {
+    "document_type": "lease",
+    "lessor": "Shantou Yunjia Fashion Clothing Co., Ltd.",
+    "lessee": "Shantou Big Tree Toys Co., Ltd",
+    "premises_address": "South Part 1, Nanshe Area, Pengnan Industrial Park on North Yingbinbei Road in Waisha Town of Longhu District in Shantou City",
+    "area": null,
+    "start_date": "2011-01-01",
+    "end_date": "2021-12-31",
+    "rent": {
+      "amount": 72000.0,
+      "currency": "CNY",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "Party A shall be responsible for the maintenance project that cost more than RMB 5,000 and Party B shall be responsible for the regular maintenance of property during the lease term."
+      },
+      {
+        "type": "tenant_break_option",
+        "quote": "After expiration of this lease contract, if Party A decides to continue leasing out the property, Party B has the right of first refusal to lease the property. When the contract expires and Party B fails to find another location to move to, Party B shall negotiate with Party A to extend the lease term."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "If Party B subleases the rented space to any other party without the consent of Party A, Party A has the right to request Party B to stop the sublease and terminate this contract."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Shantou Yunjia Fashion Clothing Co., Ltd.\",\n  \"lessee\": \"Shantou Big Tree Toys Co., Ltd\",\n  \"premises_address\": \"South Part 1, Nanshe Area, Pengnan Industrial Park on North Yingbinbei Road in Waisha Town of Longhu District in Shantou City\",\n  \"area\": null,\n  \"start_date\": \"2011-01-01\",\n  \"end_date\": \"2021-12-31\",\n  \"rent\": {\n    \"amount\": 72000,\n    \"currency\": \"CNY\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"Party A shall be responsible for the maintenance project that cost more than RMB 5,000 and Party B shall be responsible for the regular maintenance of property during the lease term.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"After expiration of this lease contract, if Party A decides to continue leasing out the property, Party B has the right of first refusal to lease the property. When the contract expires and Party B fails to find another location to move to, Party B shall negotiate with Party A to extend the lease term.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"If Party B subleases the rented space to any other party without the consent of Party A, Party A has the right to request Party B to stop the sublease and terminate this contract.\"\n    }\n  ]\n}"
+}
