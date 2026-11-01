@@ -81,6 +81,7 @@ All rows below use the full pipeline (schema, quote and date validation, one rep
 | claude-haiku-5-5 | v3 | effort medium | 30 / 10 | 0.96 | 0.80 | 0.80 | 0.80 | 100 | 3 | 10.8 | 14.9 | 2.89 |
 | qwen3:8b | v1 | t0, capped | 20 / 7 | 0.25 | 0.50 | 0.11 | 0.18 | 40 | 65 | 89.6 | 162.6 | 0 |
 | qwen3:8b | v3 | t0, capped | 30 / 10 | 0.39 | 0.39 | 0.35 | 0.37 | 53 | 60 | 92.3 | 321.7 | 0 |
+| qwen3:8b | v3 | t07, capped | 30 / 10 | 0.29 | 0.47 | 0.35 | 0.40 | 50 | 60 | 87.9 | 352.9 | 0 |
 
 "Capped" is the fix for looping described in error 1 below: at most 8 red flags in the
 decoding grammar and `repeat_penalty` 1.1. The qwen3:8b v1 run was not repeated on group
@@ -88,9 +89,19 @@ C to save about an hour of local compute.
 
 ### Sampling on the local model
 
-These runs predate the quote check and group C, so their outputs were validated against
-the schema only, on 20 texts and 7 golden ones; compare them with each other, not with
-the table above. Results of commit `9741669`.
+The two v3 rows above are the sampling comparison: same prompt, pipeline and 30 texts,
+only temperature and top_p differ.
+
+- **No measurable difference.** Of the 10 golden texts, t0 returns a valid output on 5
+  and t07 on 4; the other outputs are identical in status. The gap in field accuracy
+  (0.39 vs 0.29) is that one text, `uk_prz_91885`, failing the quote check at t07: a
+  failed output counts as wrong on all 9 fields. Flag F1 (0.37 vs 0.40) and latency
+  are within the run-to-run noise of a 10-text set.
+- **The quote check, not sampling, limits qwen3:8b.** At either setting half of its
+  outputs fail it even after the repair (error 3 below).
+
+Earlier runs on prompt v1 showed the same picture before the quote check and group C
+existed (schema validation only, 20 texts, 7 golden; results of commit `9741669`):
 
 | Config | Field acc. | Flag F1 | % valid | p50, s | p95, s |
 |---|---|---|---|---|---|
@@ -99,8 +110,12 @@ the table above. Results of commit `9741669`.
 | qwen3:8b t0, capped | 0.83 | 0.50 | 100 | 54 | 127 |
 | qwen3:8b t07, capped | 0.83 | 0.51 | 100 | 60 | 138 |
 
-Temperature and top_p made no measurable difference. Constraining the structure of the
-output did: valid outputs went from 25% to 100% and latency fell four times.
+Temperature and top_p made no difference there either; constraining the structure of
+the output did: valid outputs went from 25% to 100% and latency fell four times.
+`results/qwen3-8b-t0`, `-t07` and `-t07-capped` still hold these v1 runs, while
+`results/qwen3-8b-t0-capped` was rerun later with the quote check, so in
+[results/metrics.md](results/metrics.md) only the v3 pair compares sampling on equal
+terms.
 
 ### Ukrainian leases
 

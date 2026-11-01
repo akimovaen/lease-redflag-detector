@@ -306,5 +306,33 @@
       "rent": 0.8571428571428571,
       "indexation": 0.8571428571428571
     }
+  },
+  {
+    "config": "qwen3-8b-t07-capped-v3",
+    "model": "qwen3:8b",
+    "prompt": "extraction/v3",
+    "sampling": "temperature=0.7, top_p=0.8, repeat_penalty=1.1",
+    "texts": 30,
+    "golden_texts": 10,
+    "valid_pct": 50.0,
+    "repaired_pct": 60.0,
+    "field_accuracy": 0.28888888888888886,
+    "flag_precision": 0.4666666666666667,
+    "flag_recall": 0.35,
+    "flag_f1": 0.4,
+    "latency_p50_s": 87.8825,
+    "latency_p95_s": 352.9269499999999,
+    "cost_per_1000_usd": 0.0,
+    "per_field": {
+      "document_type": 0.4,
+      "lessor": 0.3,
+      "lessee": 0.3,
+      "premises_address": 0.3,
+      "area": 0.1,
+      "start_date": 0.3,
+      "end_date": 0.3,
+      "rent": 0.3,
+      "indexation": 0.3
+    }
   }
 ]

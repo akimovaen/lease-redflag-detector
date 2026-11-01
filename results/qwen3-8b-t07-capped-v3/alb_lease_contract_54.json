@@ -1,0 +1,57 @@
+{
+  "text_id": "alb_lease_contract_54",
+  "config": "qwen3-8b-t07-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-11-01T16:53:35+00:00",
+  "status": "ok",
+  "error": null,
+  "latency_s": 162.455,
+  "input_tokens": 23199,
+  "output_tokens": 1347,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.2: quote not found verbatim in the text: 'If the purchase agreement on which the Parties are negotiating at the time of conclusion hereof (as described in more detail in Art. XV (4) hereof) does not come into effect by July 1, 2009 for reason'\nred_flags.3: quote not found verbatim in the text: 'The fixed amount of the Annual Rent... may not be increased in any manner whatsoever by the Landlord during this period of time. The Parties have agreed that the thus-specified Annual Rent shall not b'",
+  "output": {
+    "document_type": "lease",
+    "lessor": "Milan Gottwald, Tax Id. No.: CZ 7502195327, residing at: Náklo 334, Postal Code: 783 32",
+    "lessee": "SENDIO s.r.o., Id. No.: 281 64 440, Tax Id. No.: CZ28164440, with its registered office at: Hranice, Olomoucká 306, Postal Code: 753 01",
+    "premises_address": "cadastral area of Hodolany, the municipality of Olomouc, part of municipality: Hodolany, registered in the Land Registry kept by the Cadastral Authority for the Olomouc Region, Olomouc cadastral workplace, on title sheet No. 2978",
+    "area": null,
+    "start_date": "2008-07-01",
+    "end_date": "2009-06-30",
+    "rent": {
+      "amount": 10000000.0,
+      "currency": "CZK",
+      "period": "year"
+    },
+    "indexation": "none",
+    "red_flags": [
+      {
+        "type": "landlord_repairs",
+        "quote": "The Tenant shall be obliged to maintain the Subject of the Lease so as to prevent any damage thereto."
+      },
+      {
+        "type": "service_charges_limited",
+        "quote": "The Rent does not include payments for performances related to the use of the Subject of the Lease, including, without limitation, payments for supplies of water, gas, steam, electricity, telecommunication services and discharge of wastewater, etc."
+      },
+      {
+        "type": "sublease_permitted",
+        "quote": "The Tenant shall be entitled to sublease the Subject of the Lease only with the prior written consent of the Landlord. The Landlord agrees not to refuse the consent to the conclusion of the sublease contract without a serious reason."
+      },
+      {
+        "type": "indexation_limited",
+        "quote": "The fixed amount of the Annual Rent, as specified in Art. IV (1) hereof is set as a fixed amount for the entire term of the lease, i.e. for the term of one year pursuant to Art. XI hereof, and may not be increased in any manner whatsoever by the Landlord during this period of time. The Parties have agreed that the thus-specified Annual Rent shall not be increased by the Landlord in any manner whatsoever, even in the case of gradual extension of the Subject of the Lease pursuant to Art. XII hereof and/or in case of full clearance of the relevant premises used as of the date of conclusion hereof by any of the Further Tenants or Other Tenants, which shall result solely in the relevant increase in the Monthly Rent to the extent of the monthly rent paid by the tenant who cleared the relevant premises, while maintaining the set Annual Rent."
+      }
+    ]
+  },
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Milan Gottwald, Tax Id. No.: CZ 7502195327, residing at: Náklo 334, Postal Code: 783 32\",\n  \"lessee\": \"SENDIO s.r.o., Id. No.: 281 64 440, Tax Id. No.: CZ28164440, with its registered office at: Hranice, Olomoucká 306, Postal Code: 753 01\",\n  \"premises_address\": \"cadastral area of Hodolany, the municipality of Olomouc, part of municipality: Hodolany, registered in the Land Registry kept by the Cadastral Authority for the Olomouc Region, Olomouc cadastral workplace, on title sheet No. 2978\",\n  \"area\": null,\n  \"start_date\": \"2008-07-01\",\n  \"end_date\": \"2009-06-30\",\n  \"rent\": {\n    \"amount\": 10000000.00,\n    \"currency\": \"CZK\",\n    \"period\": \"year\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"landlord_repairs\",\n      \"quote\": \"The Tenant shall be obliged to maintain the Subject of the Lease so as to prevent any damage thereto.\"\n    },\n    {\n      \"type\": \"service_charges_limited\",\n      \"quote\": \"The Rent does not include payments for performances related to the use of the Subject of the Lease, including, without limitation, payments for supplies of water, gas, steam, electricity, telecommunication services and discharge of wastewater, etc.\"\n    },\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The Tenant shall be entitled to sublease the Subject of the Lease only with the prior written consent of the Landlord. The Landlord agrees not to refuse the consent to the conclusion of the sublease contract without a serious reason.\"\n    },\n    {\n      \"type\": \"indexation_limited\",\n      \"quote\": \"The fixed amount of the Annual Rent, as specified in Art. IV (1) hereof is set as a fixed amount for the entire term of the lease, i.e. for the term of one year pursuant to Art. XI hereof, and may not be increased in any manner whatsoever by the Landlord during this period of time. The Parties have agreed that the thus-specified Annual Rent shall not be increased by the Landlord in any manner whatsoever, even in the case of gradual extension of the Subject of the Lease pursuant to Art. XII hereof and/or in case of full clearance of the relevant premises used as of the date of conclusion hereof by any of the Further Tenants or Other Tenants, which shall result solely in the relevant increase in the Monthly Rent to the extent of the monthly rent paid by the tenant who cleared the relevant premises, while maintaining the set Annual Rent.\"\n    }\n  ]\n}"
+}

@@ -1,0 +1,25 @@
+{
+  "text_id": "uk_prz_38360",
+  "config": "qwen3-8b-t07-capped-v3",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "prompt": "extraction/v3",
+  "repair_prompt": "repair/v1",
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "repeat_penalty": 1.1
+  },
+  "max_red_flags": 8,
+  "created_at": "2026-11-01T17:03:24+00:00",
+  "status": "failed",
+  "error": "red_flags.0: quote not found verbatim in the text: 'The lessee is not allowed to sublet the premises without prior written consent from the lessor.'\nred_flags.1: quote not found verbatim in the text: \"The tenant has a right to terminate the lease with 90 days' notice if there are material breaches of the lease conditions.\"",
+  "latency_s": 141.103,
+  "input_tokens": 17426,
+  "output_tokens": 614,
+  "stop_reason": "stop",
+  "attempts": 2,
+  "first_error": "red_flags.0: quote not found verbatim in the text: 'No, the lessee is not allowed to sublet the premises without prior written consent from the lessor.'\nred_flags.1: quote not found verbatim in the text: \"The tenant has a right to terminate the lease with 90 days' notice if there are material breaches of the lease conditions.\"",
+  "output": null,
+  "raw": "{\n  \"document_type\": \"lease\",\n  \"lessor\": \"Акціонерне товариство «Українська залізниця» (філія «Вокзальна компанія»)\",\n  \"lessee\": \"ТОВ «Віват Глобал Трейд»\",\n  \"premises_address\": \"м. Ужгород, вул. Станційна, 9\",\n  \"area\": {\n    \"value\": 45.2,\n    \"unit\": \"sqm\"\n  },\n  \"start_date\": \"2025-03-30\",\n  \"end_date\": \"2026-03-30\",\n  \"rent\": {\n    \"amount\": 12000,\n    \"currency\": \"UAH\",\n    \"period\": \"month\"\n  },\n  \"indexation\": \"none\",\n  \"red_flags\": [\n    {\n      \"type\": \"sublease_permitted\",\n      \"quote\": \"The lessee is not allowed to sublet the premises without prior written consent from the lessor.\"\n    },\n    {\n      \"type\": \"tenant_break_option\",\n      \"quote\": \"The tenant has a right to terminate the lease with 90 days' notice if there are material breaches of the lease conditions.\"\n    }\n  ]\n}"
+}

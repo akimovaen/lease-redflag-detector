@@ -15,6 +15,7 @@ Field accuracy and red flags are scored on the golden texts a config was run on 
 | qwen3-8b-t0-capped-v3 | qwen3:8b | extraction/v3 | temperature=0.0, top_p=1.0, repeat_penalty=1.1 | 30 / 10 | 0.39 | 0.39 | 0.35 | 0.37 | 53 | 60 | 92.3 | 321.7 | 0.00 |
 | qwen3-8b-t07 | qwen3:8b | extraction/v1 | temperature=0.7, top_p=0.8 | 20 / 7 | 0.25 | 0.50 | 0.11 | 0.18 | 25 | — | 252.8 | 367.0 | 0.00 |
 | qwen3-8b-t07-capped | qwen3:8b | extraction/v1 | temperature=0.7, top_p=0.8, repeat_penalty=1.1 | 20 / 7 | 0.83 | 0.53 | 0.50 | 0.51 | 100 | — | 60.2 | 137.6 | 0.00 |
+| qwen3-8b-t07-capped-v3 | qwen3:8b | extraction/v3 | temperature=0.7, top_p=0.8, repeat_penalty=1.1 | 30 / 10 | 0.29 | 0.47 | 0.35 | 0.40 | 50 | 60 | 87.9 | 352.9 | 0.00 |
 
 ## Accuracy per field
 
@@ -31,3 +32,4 @@ Field accuracy and red flags are scored on the golden texts a config was run on 
 | qwen3-8b-t0-capped-v3 | 0.50 | 0.50 | 0.50 | 0.40 | 0.10 | 0.40 | 0.40 | 0.40 | 0.30 |
 | qwen3-8b-t07 | 0.29 | 0.29 | 0.29 | 0.29 | 0.14 | 0.29 | 0.29 | 0.14 | 0.29 |
 | qwen3-8b-t07-capped | 1.00 | 0.86 | 1.00 | 0.71 | 0.43 | 1.00 | 0.71 | 0.86 | 0.86 |
+| qwen3-8b-t07-capped-v3 | 0.40 | 0.30 | 0.30 | 0.30 | 0.10 | 0.30 | 0.30 | 0.30 | 0.30 |
