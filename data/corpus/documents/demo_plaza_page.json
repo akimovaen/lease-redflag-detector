@@ -1,0 +1,191 @@
+{
+ "id": "demo_plaza_page",
+ "title": "Бізнес-центр «Демо Плаза»: сторінка на сайті",
+ "blocks": [
+  {
+   "kind": "heading",
+   "text": "Бізнес-центр «Демо Плаза»",
+   "level": 1,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "Сучасний офісний центр класу B+ у 7 хвилинах пішки від станції метро. Вигадана компанія і вигаданий об'єкт: сторінку створено для навчального проєкту.",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "heading",
+   "text": "Об'єкт у цифрах",
+   "level": 2,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "18 400 кв. м орендованої площі",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "14 поверхів",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "від 80 до 2 500 кв. м — площа офісів",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "220 паркомісць у підземному паркінгу",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "2 генератори та резервне водопостачання: офіс працює під час відключень",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "heading",
+   "text": "Чому орендарі обирають «Демо Плазу»",
+   "level": 2,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "heading",
+   "text": "Ставка в гривні",
+   "level": 3,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "Орендна ставка встановлюється в гривні, без прив'язки до курсу валют. Ви плануєте бюджет без валютних ризиків, а ставка змінюється лише раз на рік — на рівень офіційної інфляції.",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "heading",
+   "text": "Гнучкі умови оренди*",
+   "level": 3,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "Ми розуміємо, що бізнес змінюється. Тому пропонуємо договори від 3 років з можливістю дострокового виходу, розширення площі в межах бізнес-центру та суборенди для компаній вашої групи.",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "heading",
+   "text": "Прозорі експлуатаційні витрати",
+   "level": 3,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "Експлуатаційні витрати від 95 грн за кв. м на місяць. Щороку ми надаємо кожному орендарю звіт про фактичні витрати будівлі.",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "heading",
+   "text": "Офіс під ключ",
+   "level": 3,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "Облаштуємо офіс за вашим плануванням і передамо його готовим до роботи. На наші роботи діє гарантія.",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "heading",
+   "text": "Інфраструктура",
+   "level": 2,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "Ресепшн і контроль доступу 24/7",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "Кав'ярня та їдальня на першому поверсі",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "Конференц-зал на 120 місць",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "Велопарковка і душові",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "list_item",
+   "text": "Укриття в підземному паркінгу",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "heading",
+   "text": "Залишити заявку",
+   "level": 2,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "* Умови оренди, зокрема дострокового розірвання та суборенди, визначаються договором оренди та погоджуються з кожним орендарем індивідуально. Інформація на сайті не є публічною офертою.",
+   "level": 0,
+   "rows": [],
+   "page": null
+  }
+ ],
+ "meta": {
+  "path": "data/corpus/sources/demo_plaza_page.html",
+  "type": "marketing",
+  "access": "public",
+  "status": "current",
+  "date": "2026-03-01",
+  "source": "project author",
+  "license": "MIT (written for this project)",
+  "format": "html"
+ }
+}

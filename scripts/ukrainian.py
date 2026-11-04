@@ -29,6 +29,8 @@ from xml.etree import ElementTree
 import scan
 from PIL import Image
 
+from lease_redflag_detector.rag.clean import pseudonymize
+
 ROOT = Path(__file__).resolve().parent.parent
 PROZORRO = ROOT / "data/raw/prozorro"
 TEMPLATES = ROOT / "data/raw/templates"
@@ -95,15 +97,6 @@ SOURCES = [
     ),
 ]
 
-PHONE = re.compile(
-    r"(?<!\d)(\+?38)?[\s(]*0\d{2}[)\s-]*\d{3}[\s-]?\d{2}[\s-]?\d{2}(?!\d)"
-)
-EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
-# OCR often reads the Latin "UA" of an IBAN as Cyrillic letters ("ЦА", "УА", "иА").
-IBAN = re.compile(r"(?<!\w)(?:UA|ЦА|УА|UА|иА)\s?\d{2}(?:\s?\d){25}(?!\d)")
-# A 10-digit individual tax number (RNOKPP); company codes (EDRPOU) have 8 digits.
-TAX_NUMBER = re.compile(r"(?<!\d)\d{10}(?!\d)")
-
 
 def pdf_text_layer(pdf: Path) -> str:
     result = subprocess.run(
@@ -169,19 +162,6 @@ def load_pseudonyms() -> dict[str, str]:
         return {}
     pairs = json.loads(PSEUDONYMS.read_text(encoding="utf-8"))
     return dict(sorted(pairs.items(), key=lambda pair: -len(pair[0])))
-
-
-def pseudonymize(text: str, pseudonyms: dict[str, str]) -> str:
-    for stem, replacement in pseudonyms.items():
-        text = re.sub(
-            rf"(?<!\w){re.escape(stem)}(\w*)",
-            lambda m, r=replacement: r + m.group(1),
-            text,
-        )
-    text = EMAIL.sub("[email]", text)
-    text = IBAN.sub("UA[IBAN]", text)
-    text = PHONE.sub("[phone]", text)
-    return TAX_NUMBER.sub("[tax number]", text)
 
 
 def clean(text: str) -> str:

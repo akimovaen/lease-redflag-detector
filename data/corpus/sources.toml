@@ -1,0 +1,208 @@
+# Documents of the RAG corpus and their metadata.
+#
+# `type`:   policy, clause_library, lease, lease_draft, law, marketing, research,
+#           minutes, newsletter
+# `access`: who may see the document (public, internal, confidential); a retrieval
+#           filter, e.g. answers for a tenant-facing assistant use public ones only.
+# `status`: current or outdated (a superseded policy, a repealed law).
+# `sections`: for long acts, the headings to keep (with everything under them).
+# Contracts from Prozorro.Sale (`auction`) get their title, parties and date from the
+# procedure record; the path is data/raw/prozorro/<auction>/contract.pdf.
+
+# Documents of the (fictional) landlord, written for this project: MIT License.
+
+[[document]]
+id = "policy_2026"
+path = "data/corpus/sources/landlord_policy_2026.docx"
+title = "Політика укладення договорів оренди нежитлових приміщень, версія 2.0"
+type = "policy"
+access = "internal"
+status = "current"
+version = "2.0"
+date = "2026-01-01"
+
+[[document]]
+id = "policy_2024"
+path = "data/corpus/sources/landlord_policy_2024.docx"
+title = "Політика укладення договорів оренди нежитлових приміщень, версія 1.0"
+type = "policy"
+access = "internal"
+status = "outdated"
+version = "1.0"
+date = "2024-02-01"
+replaced_by = "policy_2026"
+
+[[document]]
+id = "clause_library_2026"
+path = "data/corpus/sources/clause_library_2026.docx"
+title = "Бібліотека погоджених формулювань договору оренди, версія 2.0"
+type = "clause_library"
+access = "internal"
+status = "current"
+version = "2.0"
+date = "2026-01-01"
+
+[[document]]
+id = "committee_minutes_2026_03"
+path = "data/corpus/sources/commercial_committee_minutes_2026_03.docx"
+title = "Протокол засідання комерційного комітету № 3/2026"
+type = "minutes"
+access = "confidential"
+status = "current"
+date = "2026-03-12"
+
+[[document]]
+id = "market_research_2025"
+path = "data/corpus/sources/market_research_2025.pdf"
+title = "Ринок офісної нерухомості Києва: підсумки 2025 року"
+type = "research"
+access = "internal"
+status = "current"
+date = "2026-02-01"
+
+[[document]]
+id = "demo_city_brochure"
+path = "data/corpus/sources/demo_city_brochure.pdf"
+title = "ТРЦ «Демо Сіті»: пропозиція для орендарів, 2026"
+type = "marketing"
+access = "public"
+status = "current"
+date = "2026-01-15"
+
+[[document]]
+id = "demo_plaza_page"
+path = "data/corpus/sources/demo_plaza_page.html"
+title = "Бізнес-центр «Демо Плаза»: сторінка на сайті"
+type = "marketing"
+access = "public"
+status = "current"
+date = "2026-03-01"
+
+[[document]]
+id = "staff_newsletter_2026_04"
+path = "data/corpus/sources/staff_newsletter_2026_04.md"
+title = "Новини «Демо Нерухомості», квітень 2026"
+type = "newsletter"
+access = "internal"
+status = "current"
+date = "2026-04-30"
+
+[[document]]
+id = "tenant_draft_lease"
+path = "data/corpus/sources/tenant_draft_lease.docx"
+title = "Проєкт договору оренди нежитлового приміщення від орендаря"
+type = "lease_draft"
+access = "internal"
+status = "current"
+date = "2026-02-26"
+
+# Legislation from zakon.rada.gov.ua (scripts/fetch_laws.py). Official documents are
+# not objects of copyright in Ukraine.
+
+[[document]]
+id = "civil_code"
+path = "data/raw/laws/civil_code.html"
+title = "Цивільний кодекс України: глава 58 «Найм (оренда)» і стаття 533"
+type = "law"
+access = "public"
+status = "current"
+sections = ["Глава 58", "Стаття 533."]
+
+[[document]]
+id = "law_157_ix"
+path = "data/raw/laws/law_157_ix.html"
+title = "Закон України «Про оренду державного та комунального майна» № 157-IX"
+type = "law"
+access = "public"
+status = "current"
+
+[[document]]
+id = "cmu_483_2020"
+path = "data/raw/laws/cmu_483_2020.html"
+title = "Порядок передачі в оренду державного та комунального майна (постанова КМУ № 483)"
+type = "law"
+access = "public"
+status = "current"
+sections = ["ПОРЯДОК передачі в оренду"]
+
+[[document]]
+id = "cmu_630_2021"
+path = "data/raw/laws/cmu_630_2021.html"
+title = "Методика розрахунку орендної плати за державне майно (постанова КМУ № 630)"
+type = "law"
+access = "public"
+status = "current"
+sections = ["МЕТОДИКА"]
+
+[[document]]
+id = "law_543_96"
+path = "data/raw/laws/law_543_96.html"
+title = "Закон України «Про відповідальність за несвоєчасне виконання грошових зобов'язань»"
+type = "law"
+access = "public"
+status = "current"
+
+[[document]]
+id = "law_2269_xii"
+path = "data/raw/laws/law_2269_xii.html"
+title = "Закон України «Про оренду державного та комунального майна» № 2269-XII (1992)"
+type = "law"
+access = "public"
+status = "outdated"
+replaced_by = "law_157_ix"
+
+[[document]]
+id = "commercial_code"
+path = "data/raw/laws/commercial_code.html"
+title = "Господарський кодекс України: статті 283–291 про оренду"
+type = "law"
+access = "public"
+status = "outdated"
+sections = [
+    "Стаття 283.", "Стаття 284.", "Стаття 285.", "Стаття 286.", "Стаття 287.",
+    "Стаття 288.", "Стаття 289.", "Стаття 290.", "Стаття 291.",
+]
+
+# Signed leases from Prozorro.Sale (scripts/fetch_prozorro.py), pseudonymized.
+# Commercial leases under the Civil Code; JSC Ukrtelecom uses one template for all.
+
+[[document]]
+auction = "CLE001-UA-20250120-06288"
+[[document]]
+auction = "CLE001-UA-20250318-46419"
+[[document]]
+auction = "CLE001-UA-20250404-65217"
+[[document]]
+auction = "CLE001-UA-20250411-70940"
+[[document]]
+auction = "CLE001-UA-20250412-63631"
+[[document]]
+auction = "CLE001-UA-20250428-58000"
+[[document]]
+auction = "CLE001-UA-20250428-75286"
+[[document]]
+auction = "CLP001-UA-20250303-14500"
+[[document]]
+auction = "CLP001-UA-20250303-23903"
+[[document]]
+auction = "CLE001-UA-20230412-83432"
+[[document]]
+auction = "CLE001-UA-20221121-37032"
+[[document]]
+auction = "CLD001-UA-20230227-56855"
+[[document]]
+auction = "CLE001-UA-20240607-55572"
+[[document]]
+auction = "CLE001-UA-20230411-35532"
+[[document]]
+auction = "CLE001-UA-20240814-92441"
+[[document]]
+auction = "CLD001-UA-20240502-67632"
+
+# Leases of state property under Law 157-IX (also in the stage 1 dataset).
+[[document]]
+auction = "RLE001-UA-20251201-38360"
+[[document]]
+auction = "RLE001-UA-20251113-29282"
+[[document]]
+auction = "RLE001-UA-20251211-60729"
