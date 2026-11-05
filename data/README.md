@@ -87,6 +87,77 @@ Changes made to the Prozorro.Sale texts:
 Only contracts with a legal entity as the tenant are downloaded automatically; most
 Prozorro.Sale procedures with an individual tenant mask their documents anyway.
 
+## RAG corpus
+
+`corpus/` holds the documents of stage 2, the knowledge base of the RAG system: 35
+Ukrainian documents, listed with their metadata in `corpus/sources.toml`.
+
+```
+corpus/
+  authored/      # Markdown sources of the documents written for the project
+  sources/       # those documents in their corpus formats (DOCX, PDF, HTML, MD)
+  documents/     # every document after ingestion: blocks with structure, metadata
+  manifest.csv   # one row per document
+  chunks.jsonl   # chunks for the index (see the README, Chunking)
+```
+
+| Group | Documents | Format | Source and license |
+|---|---|---|---|
+| Landlord's documents | leasing policy 2026 and 2024, clause library, committee minutes | DOCX | written for the project, MIT |
+| | market study, mall brochure | PDF | written for the project, MIT |
+| | business centre web page | HTML | written for the project, MIT |
+| | staff newsletter | Markdown | written for the project, MIT |
+| Tenant's draft lease | `tenant_draft_lease` (the stage 1 `uk_template`) | DOCX | project author, MIT |
+| Legislation | Civil Code (ch. 58, art. 533), Law 157-IX, CMU resolutions 483 and 630, Law 543/96-VR; repealed: Law 2269-XII, Commercial Code (art. 283–291) | HTML | [zakon.rada.gov.ua](https://zakon.rada.gov.ua); official documents are not objects of copyright (art. 8 of the Law "On Copyright and Related Rights") |
+| Signed leases | 16 commercial leases under the Civil Code (9 by JSC Ukrtelecom on one template), 3 leases of state property | PDF | [Prozorro.Sale](https://prozorro.sale), public information |
+
+The landlord, ТОВ «Демо Нерухомість», its buildings and its tenants are fictional. Its
+documents are written so that a RAG system has something to get wrong: the 2024 policy
+differs from the 2026 one in most numbers; the web page, the brochure and the
+newsletter promise tenants more than the policy allows; the market study quotes
+market terms, not the company's; the minutes record one deal's exceptions.
+
+Metadata used by retrieval filters, per document and per chunk:
+
+| Field | Values |
+|---|---|
+| `type` | policy, clause_library, minutes, research, marketing, newsletter, lease_draft, law, lease |
+| `access` | public, internal, confidential |
+| `status` | current, outdated (with `replaced_by`) |
+| `date`, `version` | the edition date; for laws, the date of the latest amendment |
+| `near_duplicate_of`, `similarity` | the most similar earlier document, if word 3-gram Jaccard ≥ 0.3 |
+| `landlord`, `tenant`, `city`, `regime` | for leases; `regime` is `civil_code` or `law_157_ix` |
+
+Ingestion (`make corpus`, `src/lease_redflag_detector/rag/ingest.py`):
+
+- **Extraction with structure.** DOCX: heading, list and quote styles, tables; contracts
+  typed without styles get headings from numbered titles in capitals. PDF: headings from
+  font sizes, tables with pdfplumber; contracts by clause numbering. A missing or broken
+  text layer (one Ukrtelecom contract has OCR that read Cyrillic as Latin) goes to OCR,
+  as do the scans. HTML: the structure of zakon.rada.gov.ua (book, section, chapter,
+  paragraph, article; older acts typed as `<pre>`); other pages by h1–h4, p, li, table.
+- **Cleaning.** Running headers and footers, page numbers, site menus, cookie banners,
+  forms, editorial notes "{Із змінами …}" and signature blocks are dropped; hyphenated
+  line ends joined; Latin look-alike letters inside Cyrillic words fixed; OCR noise from
+  stamps dropped; Unicode normalized. In the scanned contracts OCR also read whole words
+  as Latin (`CTOPIH`, `TOBAPHCTBO`, where `H` stands for both `Н` and `И`): such a word
+  is replaced by the Cyrillic reading that is a word of the corpus vocabulary, unless it
+  stands next to English text; codes and Roman numerals (`IBAN`, `UA`, `IX`) stay. This
+  fixes about 2,000 words, three in four of the misread ones; the rest are misread
+  beyond look-alikes (`IIPABA` for `ПРАВА`). Table rows that OCR read as lines in
+  capitals are not taken for headings.
+- **Pseudonymization** of the leases, as for group C below, extended to OCR-garbled
+  IBANs, phone numbers and e-mail addresses. Notaries, signatories and contact persons
+  are replaced; company names, which are public, are kept. Author metadata is removed
+  from the DOCX files.
+- **Deduplication.** Exact duplicates (sha256 of the normalized text) are dropped;
+  near duplicates are kept, since each lease has its own parties and terms, and marked.
+
+Rebuilding needs the laws (`scripts/fetch_laws.py`), the leases
+(`scripts/fetch_prozorro.py --auction <id> …` for the ids in `sources.toml`), Poppler
+and Tesseract with the Ukrainian model for OCR, and the pseudonym list in `raw/`.
+`scripts/render_corpus.py` renders the authored documents from Markdown.
+
 ## Golden set
 
 `golden/<id>.json` holds the reference output for a text, in the `LeaseAbstract` schema

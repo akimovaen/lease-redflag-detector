@@ -22,8 +22,13 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from lease_redflag_detector.rag.clean import clean_blocks, normalize, pseudonymize
-from lease_redflag_detector.rag.document import Document
+from lease_redflag_detector.rag.clean import (
+    clean_blocks,
+    normalize,
+    pseudonymize,
+    vocabulary,
+)
+from lease_redflag_detector.rag.document import Block, Document
 from lease_redflag_detector.rag.extract import extract, select_sections
 from lease_redflag_detector.rag.ocr import ocr_pdf
 
@@ -143,22 +148,31 @@ def load_sources() -> list[dict]:
     return sources
 
 
-def build_document(meta: dict, pseudonyms: dict[str, str]) -> Document:
+def extract_blocks(meta: dict) -> list[Block]:
     path = ROOT / meta["path"]
     # Contracts are structured by their clause numbers, other PDFs by font sizes.
     styled = meta["type"] not in ("lease", "lease_draft")
     blocks = extract(path, ocr=ocr_pdf, styled=styled)
     if sections := meta.get("sections"):
         blocks = select_sections(blocks, sections)
-    blocks = clean_blocks(blocks)
-    if meta["type"] == "lease":
+    return blocks
+
+
+def build_document(
+    meta: dict, blocks: list[Block], pseudonyms: dict[str, str], words: set[str]
+) -> Document:
+    """Clean extracted blocks; OCR'd contracts get whole Latin words read as Cyrillic
+    by the corpus vocabulary `words`, before pseudonymization looks for names."""
+    lease = meta["type"] == "lease"
+    blocks = clean_blocks(blocks, words if lease else None)
+    if lease:
         for block in blocks:
             block.text = pseudonymize(block.text, pseudonyms)
             block.rows = [
                 [pseudonymize(c, pseudonyms) for c in row] for row in block.rows
             ]
     extra = {k: v for k, v in meta.items() if k not in ("id", "title", "sections")}
-    extra["format"] = path.suffix.lstrip(".").lower()
+    extra["format"] = Path(meta["path"]).suffix.lstrip(".").lower()
     return Document(id=meta["id"], title=meta["title"], blocks=blocks, meta=extra)
 
 
@@ -192,20 +206,32 @@ def main() -> None:
         pseudonyms = json.loads(PSEUDONYMS.read_text(encoding="utf-8"))
     DOCUMENTS.mkdir(parents=True, exist_ok=True)
 
-    documents: list[Document] = []
-    hashes: dict[str, str] = {}
+    extracted: list[tuple[dict, list[Block] | Document]] = []
     for meta in load_sources():
         if args.only and meta["id"] not in args.only:
-            documents.append(Document.load(DOCUMENTS / f"{meta['id']}.json"))
+            extracted.append((meta, Document.load(DOCUMENTS / f"{meta['id']}.json")))
+        else:
+            extracted.append((meta, extract_blocks(meta)))
+    words = vocabulary(
+        normalize(block.text)
+        for _, item in extracted
+        for block in (item.blocks if isinstance(item, Document) else item)
+    )
+
+    documents: list[Document] = []
+    hashes: dict[str, str] = {}
+    for meta, item in extracted:
+        if isinstance(item, Document):
+            documents.append(item)
             continue
-        document = build_document(meta, pseudonyms)
+        document = build_document(meta, item, pseudonyms, words)
         if (duplicate := hashes.get(document.content_hash)) is not None:
             print(f"{document.id:<28} skipped: same text as {duplicate}")
             continue
         hashes[document.content_hash] = document.id
         documents.append(document)
-        words = len(document.text.split())
-        print(f"{document.id:<28} {len(document.blocks):>5} blocks {words:>7} words")
+        n_words = len(document.text.split())
+        print(f"{document.id:<28} {len(document.blocks):>5} blocks {n_words:>7} words")
 
     mark_near_duplicates(documents)
     with MANIFEST.open("w", newline="", encoding="utf-8") as f:

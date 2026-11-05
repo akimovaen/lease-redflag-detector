@@ -300,3 +300,38 @@ local runs cost no API fees.
 - Snap near-verbatim quotes to the exact span of the text, so that local models can
   pass the quote check without loosening it.
 - Repeat each config several times to measure variance before comparing prompts.
+
+# Report — stage 2: RAG
+
+An assistant for the lawyer of a landlord that answers questions and proposes redlines
+from the leasing policy, the clause library and the law, with a citation for every
+claim. The scenario, the corpus and the chunking are described in the
+[README](README.md#stage-2-rag); results are added as the stage goes on.
+
+## Limitations
+
+### Document structure comes from hand-written rules
+
+Headings, and with them the section path that every chunk is cited by, are found by
+rules written for the sources of this corpus: the markup of zakon.rada.gov.ua, DOCX
+heading styles, font sizes in typeset PDFs, and in scanned contracts numbered titles in
+capitals, with filters for party names, stamps and table rows. The pipeline calls no
+model: it is deterministic, free and covered by tests, and anyone can rebuild the
+corpus without an API key.
+
+The rules were tuned by reading their output on these 35 documents, so they fit these
+documents. A new kind of source, such as another legislation site, a contract laid out
+differently or a worse scan, can produce headings that are noise, and the rules have to
+be extended for it. On the current corpus the residue is visible already: 27 headings
+of scanned contracts keep OCR errors beyond Latin look-alikes ("IIPABA СТОРІН"), a
+section number "3." is sometimes read as the letter "З", and documents without headings
+(the CMU 630 methodology) are cited by the clause numbers in their text only.
+
+The alternative is to find the structure with a model at run time: an LLM, or a
+multimodal model reading each page of a scan, or a document layout tool built on ML
+models (Docling, Unstructured, LlamaParse). It copes better with new formats, but costs
+API fees or compute and is less predictable: the same document can be split
+differently from run to run, which makes chunks and citations unstable between
+rebuilds. For 35 documents and a $5 budget the rules are the better trade-off; a
+corpus that grows with new sources would need the model-based approach, or at least a
+model as a fallback for documents the rules structure poorly.

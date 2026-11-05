@@ -26,6 +26,7 @@ from lease_redflag_detector.rag.document import Block, table_markdown
 
 CYRILLIC = re.compile(r"[а-яіїєґА-ЯІЇЄҐ]")
 LETTER = re.compile(r"[^\W\d_]")
+BARE_NUMBER = re.compile(r"^\d{1,2}(\.\d{1,2}){1,3}\.?$")
 # A clause number at the start of a line: "1.", "2.3.", "4.1.2".
 CLAUSE = re.compile(r"^\d{1,2}(\.\d{1,2}){1,3}\.?\s")
 # A section heading of a contract: "1. ПРЕДМЕТ ДОГОВОРУ", "РОЗДІЛ 2. ОРЕНДНА ПЛАТА".
@@ -84,8 +85,11 @@ def repeated_lines(lines: list[str], min_count: int = 3) -> set[str]:
 
 def is_plain_heading(line: str) -> bool:
     """A heading of a contract without styles: a numbered section title in capitals or
-    an unnumbered title line, but not a numbered clause."""
-    if len(line) > 90 or CLAUSE.match(line):
+    an unnumbered title line, but not a numbered clause or a row of a table OCR read
+    as text ("27 | ВАРНА СТІЙКА 31.10.2005 010000057252/0000")."""
+    if len(line) > 90 or CLAUSE.match(line) or "|" in line:
+        return False
+    if sum(ch.isdigit() for ch in line) >= 6:
         return False
     numbered = SECTION.match(line) and len(LETTER.findall(line)) >= 6
     return bool(numbered or is_title_line(line))
@@ -110,7 +114,8 @@ def plain_text_blocks(text: str, page_breaks: bool = True) -> list[Block]:
             current.clear()
 
     for raw in lines:
-        line = " ".join(raw.split())
+        # Table borders OCR read as "|" at the ends of a line.
+        line = " ".join(raw.split()).strip(" |")
         if not line:
             blank_before = True
             continue
@@ -123,12 +128,14 @@ def plain_text_blocks(text: str, page_breaks: bool = True) -> list[Block]:
                 blocks[-1].text += " " + line  # a title split over two lines
             else:
                 blocks.append(Block("heading", line, level=level))
-        elif CLAUSE.match(line):
+        elif CLAUSE.match(line) or BARE_NUMBER.match(line):
             flush()
             current.append(line)
         else:
-            ends_sentence = bool(current) and current[-1].rstrip().endswith(
-                (".", ";", ":")
+            ends_sentence = (
+                bool(current)
+                and current[-1].rstrip().endswith((".", ";", ":"))
+                and not BARE_NUMBER.match(current[-1])  # "9.1." on a line of its own
             )
             if blank_before and ends_sentence:
                 flush()
@@ -456,7 +463,9 @@ def rada_pre(pre: Tag) -> list[Block]:
 
 
 def rada_table(table: Tag) -> list[Block]:
-    """A data table as a table block; a layout table (formulas) as its paragraphs."""
+    """A data table as a table block; a layout table (a formula and its legend, an
+    approval stamp) as its paragraphs. A data table has several rows of two or more
+    cells: "Потенційний орендар | Перелік документів"."""
     rows = []
     for row in table.find_all("tr"):
         cells = [
@@ -466,7 +475,8 @@ def rada_table(table: Tag) -> list[Block]:
             rows.append(cells)
     if not rows or table.find("img") is not None:
         return []
-    if max(sum(bool(cell) for cell in row) for row in rows) >= 3:
+    filled = [sum(bool(cell) for cell in row) for row in rows]
+    if max(filled) >= 3 or sum(n >= 2 for n in filled) >= 3:
         return [Block("table", table_markdown(rows), rows=rows)]
     return [
         Block("paragraph", cell)
