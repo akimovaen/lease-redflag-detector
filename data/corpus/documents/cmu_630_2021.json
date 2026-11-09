@@ -1111,6 +1111,7 @@
  "meta": {
   "path": "data/raw/laws/cmu_630_2021.html",
   "type": "law",
+  "regime": "law_157_ix",
   "access": "public",
   "status": "current",
   "source": "zakon.rada.gov.ua",

@@ -335,3 +335,30 @@ differently from run to run, which makes chunks and citations unstable between
 rebuilds. For 35 documents and a $5 budget the rules are the better trade-off; a
 corpus that grows with new sources would need the model-based approach, or at least a
 model as a fallback for documents the rules structure poorly.
+
+### Exact search, no approximate index
+
+Neither index is built for scale; both are exact.
+
+- **Vectors.** Qdrant runs in local mode (`QdrantClient(path=...)`), the Python
+  implementation inside `qdrant-client` rather than the Qdrant server. It keeps the
+  points in SQLite and, on a search, computes the cosine of the query against every
+  vector that passes the metadata filter: one matrix product over 1,206 × 768 numbers
+  (about 3.7 MB), well under a millisecond. No HNSW graph is built; the HNSW settings
+  the collection reports are a stub kept for API compatibility.
+- **BM25.** bm25s precomputes the BM25 weight of every (lemma, chunk) pair into a
+  sparse matrix, so a query sums the rows of its lemmas. The index lives in memory and
+  is rebuilt on every start, which takes seconds, mostly for lemmatization. Filters
+  are applied to the scores afterwards.
+
+At this size exact search is the right choice: it is fast, and it cannot miss a
+nearest neighbour, which an approximate index such as HNSW trades for speed. Even the
+Qdrant server scans small segments in full instead of using HNSW.
+
+Exact vector search stops being enough at tens to hundreds of thousands of chunks,
+e.g. if every signed lease of the landlord went into the corpus. The move is to the
+Qdrant server (Docker) with an HNSW index and payload indexes on the filter fields
+(`type`, `status`, `regime`), so that the filters are applied while the graph is
+walked; `Retriever` changes only in how it connects and creates the collection. The
+BM25 index would be saved to disk instead of rebuilt, and holds up without changes to
+about a million chunks.

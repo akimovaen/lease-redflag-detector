@@ -228,3 +228,6 @@ data/raw/*
 
 # Local Ukrainian translations to help golden set labeling
 data/processed/golden_hints/*.uk.md
+# Stage 2: embedding cache and the local Qdrant index, rebuilt from the chunks
+data/processed/embeddings/
+data/processed/qdrant/

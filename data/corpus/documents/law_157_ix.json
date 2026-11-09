@@ -3688,6 +3688,7 @@
  "meta": {
   "path": "data/raw/laws/law_157_ix.html",
   "type": "law",
+  "regime": "law_157_ix",
   "access": "public",
   "status": "current",
   "source": "zakon.rada.gov.ua",

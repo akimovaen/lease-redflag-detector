@@ -1,0 +1,146 @@
+# Retrieval set: questions of the landlord's lawyer and the passages that answer them.
+#
+# Each piece of evidence is a document id and a short quote copied word for word from
+# that document. A retrieved chunk is relevant if it belongs to the document and
+# contains the quote (case, spaces and list markers ignored), so the same set scores
+# structural and fixed-size chunks alike. Quotes are kept short, so that one of the
+# overlapping fixed windows holds each of them whole.
+#
+# kind:
+#   policy      the answer is in the landlord's policy or clause library
+#   law         the answer is in an act
+#   combined    the answer needs both the policy and the law
+#   precedent   the answer is in the committee minutes
+#   paraphrase  the question is worded unlike the document ("компенсувати ремонт"
+#               for "поліпшення")
+#   outdated    the 2024 policy or a repealed act answers it differently: the
+#               default filter (documents in force) must leave them out
+#
+# Searches use the default filters (documents in force) unless `all_versions = true`.
+
+[[question]]
+id = "r01"
+kind = "policy"
+question = "Як за нашою базовою позицією індексується орендна плата?"
+evidence = [
+  { doc = "policy_2026", quote = "індексується на більший із двох показників: ІСЦ за попередній календарний рік або 3 %" },
+]
+
+[[question]]
+id = "r02"
+kind = "policy"
+question = "Орендар пропонує обмежити щорічну індексацію 6 %. Чи можемо ми це погодити?"
+evidence = [
+  { doc = "policy_2026", quote = "граничний розмір щорічної індексації — не менше 10 %" },
+  { doc = "clause_library_2026", quote = "Граничний розмір не може бути меншим за 10 %" },
+]
+
+[[question]]
+id = "r03"
+kind = "policy"
+question = "Орендар просить зафіксувати курс євро на весь строк договору."
+evidence = [
+  { doc = "policy_2026", quote = "фіксований курс на весь строк договору або валютний коридор вужчий за 10 %" },
+]
+
+[[question]]
+id = "r04"
+kind = "law"
+question = "За яким курсом перераховується сума в гривні, якщо плату визначено в еквіваленті іноземної валюти, а договір курс не встановлює?"
+evidence = [
+  { doc = "civil_code", quote = "за офіційним курсом відповідної валюти на день платежу" },
+]
+
+[[question]]
+id = "r05"
+kind = "outdated"
+question = "Орендар офісу хоче право достроково відмовитися від договору через 12 місяців. Що ми можемо запропонувати?"
+evidence = [
+  { doc = "policy_2026", quote = "не раніше ніж через 24 місяці від початку оренди для офісних" },
+  { doc = "clause_library_2026", quote = "Орендар має право одноразово відмовитися від Договору" },
+]
+
+[[question]]
+id = "r06"
+kind = "combined"
+question = "Чи може орендар передати частину приміщення в суборенду без нашої згоди?"
+evidence = [
+  { doc = "civil_code", quote = "можливе лише за згодою наймодавця" },
+  { doc = "policy_2026", quote = "лише за попередньою письмовою згодою Компанії" },
+]
+
+[[question]]
+id = "r07"
+kind = "law"
+question = "Хто за законом проводить капітальний ремонт орендованого приміщення?"
+evidence = [
+  { doc = "civil_code", quote = "Капітальний ремонт речі, переданої у найм, провадиться наймодавцем за його рахунок" },
+]
+
+[[question]]
+id = "r08"
+kind = "combined"
+question = "Що буде, якщо орендар продовжить користуватися приміщенням після закінчення строку договору?"
+evidence = [
+  { doc = "civil_code", quote = "договір вважається поновленим на строк, який був раніше встановлений договором" },
+  { doc = "policy_2026", quote = "застосування статті 764 Цивільного кодексу України виключається договором" },
+]
+
+[[question]]
+id = "r09"
+kind = "combined"
+question = "Який максимальний розмір пені можна встановити за прострочення орендної плати?"
+evidence = [
+  { doc = "law_543_96", quote = "не може перевищувати подвійної облікової ставки Національного банку України" },
+  { doc = "policy_2026", quote = "пеню в розмірі подвійної облікової ставки НБУ" },
+]
+
+[[question]]
+id = "r10"
+kind = "law"
+question = "Коли орендодавець може відмовитися від договору, якщо орендар не платить?"
+evidence = [
+  { doc = "civil_code", quote = "не вносить плату за найм речі протягом трьох місяців підряд" },
+]
+
+[[question]]
+id = "r11"
+kind = "outdated"
+question = "Якого розміру забезпечувальний платіж ми вимагаємо від орендаря?"
+evidence = [
+  { doc = "policy_2026", quote = "у розмірі орендної плати та експлуатаційних витрат за 3 місяці" },
+]
+
+[[question]]
+id = "r12"
+kind = "precedent"
+question = "Чи погоджували ми вже комусь граничний розмір індексації нижче 10 %?"
+evidence = [
+  { doc = "committee_minutes_2026_03", quote = "погодити граничний розмір індексації 7 % на рік як відступ для якірного орендаря" },
+]
+
+[[question]]
+id = "r13"
+kind = "paraphrase"
+question = "Орендар хоче, щоб після закінчення оренди ми компенсували йому вартість ремонту, який він зробив у приміщенні."
+evidence = [
+  { doc = "policy_2026", quote = "Невідокремлювані поліпшення переходять у власність Компанії без компенсації їх вартості" },
+  { doc = "civil_code", quote = "наймач має право на відшкодування вартості необхідних витрат" },
+]
+
+[[question]]
+id = "r14"
+kind = "policy"
+question = "Яке формулювання про строк розгляду запиту на суборенду ми можемо запропонувати орендарю?"
+evidence = [
+  { doc = "clause_library_2026", quote = "протягом 15 (п'ятнадцяти) робочих днів від дня його отримання" },
+]
+
+[[question]]
+id = "r15"
+kind = "paraphrase"
+question = "Орендар каже, що на нашому сайті обіцяно ставку без прив'язки до курсу валют. Яка наша позиція щодо валюти орендної плати?"
+evidence = [
+  { doc = "policy_2026", quote = "орендна плата визначається в євро" },
+  { doc = "demo_plaza_page", quote = "без прив'язки до курсу валют" },
+]

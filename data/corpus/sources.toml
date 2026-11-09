@@ -5,6 +5,10 @@
 # `access`: who may see the document (public, internal, confidential); a retrieval
 #           filter, e.g. answers for a tenant-facing assistant use public ones only.
 # `status`: current or outdated (a superseded policy, a repealed law).
+# `regime`: the lease regime a document governs or follows: `law_157_ix` for state and
+#           municipal property, `civil_code` for other leases (set on Prozorro leases
+#           from the auction type). The landlord leases private property, so the
+#           state-property acts are kept out of its redline search.
 # `sections`: for long acts, the headings to keep (with everything under them).
 # Contracts from Prozorro.Sale (`auction`) get their title, parties and date from the
 # procedure record; the path is data/raw/prozorro/<auction>/contract.pdf.
@@ -113,6 +117,7 @@ id = "law_157_ix"
 path = "data/raw/laws/law_157_ix.html"
 title = "Закон України «Про оренду державного та комунального майна» № 157-IX"
 type = "law"
+regime = "law_157_ix"
 access = "public"
 status = "current"
 
@@ -121,6 +126,7 @@ id = "cmu_483_2020"
 path = "data/raw/laws/cmu_483_2020.html"
 title = "Порядок передачі в оренду державного та комунального майна (постанова КМУ № 483)"
 type = "law"
+regime = "law_157_ix"
 access = "public"
 status = "current"
 sections = ["ПОРЯДОК передачі в оренду"]
@@ -130,6 +136,7 @@ id = "cmu_630_2021"
 path = "data/raw/laws/cmu_630_2021.html"
 title = "Методика розрахунку орендної плати за державне майно (постанова КМУ № 630)"
 type = "law"
+regime = "law_157_ix"
 access = "public"
 status = "current"
 sections = ["МЕТОДИКА"]
@@ -147,6 +154,7 @@ id = "law_2269_xii"
 path = "data/raw/laws/law_2269_xii.html"
 title = "Закон України «Про оренду державного та комунального майна» № 2269-XII (1992)"
 type = "law"
+regime = "law_157_ix"
 access = "public"
 status = "outdated"
 replaced_by = "law_157_ix"

@@ -6543,6 +6543,7 @@
  "meta": {
   "path": "data/raw/laws/cmu_483_2020.html",
   "type": "law",
+  "regime": "law_157_ix",
   "access": "public",
   "status": "current",
   "source": "zakon.rada.gov.ua",

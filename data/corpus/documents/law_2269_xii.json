@@ -1637,6 +1637,7 @@
  "meta": {
   "path": "data/raw/laws/law_2269_xii.html",
   "type": "law",
+  "regime": "law_157_ix",
   "access": "public",
   "status": "outdated",
   "replaced_by": "law_157_ix",
