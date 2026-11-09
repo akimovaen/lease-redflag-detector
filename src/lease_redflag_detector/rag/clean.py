@@ -141,8 +141,9 @@ def clean_blocks(blocks: list[Block], words: set[str] | None = None) -> list[Blo
 
 # Pseudonymization
 
+# "+380 99 4001135" puts a space between the 0 and the operator code.
 PHONE = re.compile(
-    r"(?<!\d)(\+?38)?[\s(]*0\d{2}[)\s-]*\d{3}[\s-]?\d{2}[\s-]?\d{2}(?!\d)"
+    r"(?<!\d)(\+?38)?[\s(]*0[\s(]*\d{2}[)\s-]*\d{3}[\s-]?\d{2}[\s-]?\d{2}(?!\d)"
 )
 # Phone numbers OCR garbled (an extra digit, odd spacing) still follow a label.
 LABELED_PHONE = re.compile(

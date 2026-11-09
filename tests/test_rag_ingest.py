@@ -78,6 +78,14 @@ def test_pseudonymize_masks_ocr_garbled_details():
     assert "[email]" in masked and "pinchuk" not in masked
 
 
+def test_pseudonymize_masks_phones_with_a_space_after_the_zero():
+    text = "по телефону за номером +380 99 4001135, +380 50 3867658 уповноважено"
+    masked = pseudonymize(text, {})
+    assert masked == "по телефону за номером [phone], [phone] уповноважено"
+    # Inventory numbers inside longer digit runs are not phones.
+    assert pseudonymize("010000057252/0000", {}) == "010000057252/0000"
+
+
 def test_plain_text_contract_structure():
     text = (
         "ДОГОВІР ОРЕНДИ\n"
