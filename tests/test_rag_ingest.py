@@ -1,4 +1,7 @@
+import docx
 from bs4 import BeautifulSoup
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 
 from lease_redflag_detector.rag.clean import (
     clean_blocks,
@@ -9,6 +12,8 @@ from lease_redflag_detector.rag.clean import (
 )
 from lease_redflag_detector.rag.document import Block
 from lease_redflag_detector.rag.extract import (
+    append_table,
+    docx_blocks,
     is_plain_heading,
     plain_text_blocks,
     rada_table,
@@ -56,7 +61,21 @@ def test_clean_drops_ocr_noise():
         Block("paragraph", "Ї, 22h pany) pS"),
         Block("paragraph", "Орендар сплачує плату."),
     ]
-    assert [b.text for b in clean_blocks(blocks)] == ["Орендар сплачує плату."]
+    assert [b.text for b in clean_blocks(blocks, ocr=True)] == [
+        "Орендар сплачує плату."
+    ]
+
+
+def test_clean_keeps_short_structural_blocks():
+    texts = ["1.5. Терміни:", "Вирішили:", "орендар;", "3.1 | Пеня:", "11. ІНШЕ"]
+    noise = ["LE 2:", "*/;", "3.1.1. wo 3.4, О2 © AL."]
+    blocks = [Block("paragraph", text) for text in texts + noise]
+    assert [b.text for b in clean_blocks(blocks, ocr=True)] == texts
+
+
+def test_clean_drops_nothing_from_born_digital_text():
+    blocks = [Block("paragraph", "Конфіденційно"), Block("paragraph", "Орендар:")]
+    assert len(clean_blocks(blocks)) == 2
 
 
 def test_pseudonymize_in_one_pass_and_in_capitals():
@@ -151,3 +170,38 @@ def test_rada_two_column_table_is_data():
     [block] = rada_table(table)
     assert block.kind == "table"
     assert block.rows[2] == ["2. Релігійна організація", "статут організації"]
+
+
+def numbered(paragraph, num_id: int) -> None:
+    """Give a paragraph Word's numbering directly, without a list style."""
+    num_pr = OxmlElement("w:numPr")
+    for tag, value in [("w:ilvl", 0), ("w:numId", num_id)]:
+        element = OxmlElement(tag)
+        element.set(qn("w:val"), str(value))
+        num_pr.append(element)
+    paragraph._p.get_or_add_pPr().append(num_pr)
+
+
+def test_docx_list_items_made_with_word_numbering(tmp_path):
+    document = docx.Document()
+    numbered(document.add_paragraph("6.1. Орендодавець зобов’язаний:"), 0)
+    numbered(document.add_paragraph("передати Приміщення;"), 1)
+    document.add_paragraph("Звичайний абзац.")
+    path = tmp_path / "lease.docx"
+    document.save(path)
+    assert [b.kind for b in docx_blocks(path)] == [
+        "paragraph",  # numId 0: numbering switched off
+        "list_item",
+        "paragraph",
+    ]
+
+
+def test_table_broken_by_a_page_break_is_joined():
+    header = ["Умова", "Частка"]
+    blocks: list[Block] = []
+    append_table(blocks, [header, ["Розірвання", "62 %"]], page=1)
+    append_table(blocks, [header, ["Суборенда", "35 %"]], page=2)
+    append_table(blocks, [["Клас", "Ставка"], ["A", "20"]], page=2)
+    assert len(blocks) == 2
+    assert blocks[0].rows == [header, ["Розірвання", "62 %"], ["Суборенда", "35 %"]]
+    assert "Суборенда" in blocks[0].text and blocks[0].page == 1

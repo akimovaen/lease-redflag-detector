@@ -149,7 +149,7 @@ Compared with fixed windows of 350 tokens and 50 tokens of overlap, on six docum
 | | Structural | Fixed size |
 |---|---|---|
 | Sections and clauses kept whole in one chunk | 100% | 89% |
-| Chunks starting in the middle of a sentence | 5% | 78% |
+| Chunks starting in the middle of a sentence | 5% | 81% |
 | Chunks that can be cited by section | 98% | 0% |
 
 The first row is 100% for the structural chunker by construction, since it never cuts a

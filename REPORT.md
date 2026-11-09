@@ -343,7 +343,7 @@ Neither index is built for scale; both are exact.
 - **Vectors.** Qdrant runs in local mode (`QdrantClient(path=...)`), the Python
   implementation inside `qdrant-client` rather than the Qdrant server. It keeps the
   points in SQLite and, on a search, computes the cosine of the query against every
-  vector that passes the metadata filter: one matrix product over 1,206 × 768 numbers
+  vector that passes the metadata filter: one matrix product over 1,209 × 768 numbers
   (about 3.7 MB), well under a millisecond. No HNSW graph is built; the HNSW settings
   the collection reports are a stub kept for API compatibility.
 - **BM25.** bm25s precomputes the BM25 weight of every (lemma, chunk) pair into a

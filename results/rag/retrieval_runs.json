@@ -6,7 +6,7 @@
    "lease_35532#012",
    "lease_56855#016",
    "clause_library_2026#004",
-   "policy_2026#003",
+   "policy_2026#004",
    "clause_library_2026#005",
    "tenant_draft_lease#004",
    "lease_38360#006",
@@ -16,13 +16,13 @@
    "lease_92441#005",
    "clause_library_2026#002",
    "clause_library_2026#003",
-   "policy_2026#003",
+   "policy_2026#004",
    "clause_library_2026#004",
    "lease_65217#007",
    "lease_56855#016",
-   "committee_minutes_2026_03#004",
    "lease_60729#028",
-   "clause_library_2026#023"
+   "clause_library_2026#023",
+   "committee_minutes_2026_03#004"
   ],
   "r03": [
    "lease_83432#040",
@@ -30,7 +30,7 @@
    "lease_83432#022",
    "lease_83432#008",
    "lease_83432#009",
-   "policy_2026#004",
+   "policy_2026#005",
    "lease_56855#040",
    "lease_83432#034",
    "clause_library_2026#010",
@@ -40,7 +40,7 @@
    "clause_library_2026#010",
    "civil_code#000",
    "clause_library_2026#008",
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#011",
    "clause_library_2026#009",
    "cmu_630_2021#001",
@@ -49,31 +49,31 @@
    "lease_35532#013"
   ],
   "r05": [
-   "policy_2026#005",
+   "policy_2026#006",
    "clause_library_2026#013",
    "clause_library_2026#026",
    "lease_75286#019",
    "tenant_draft_lease#008",
-   "policy_2026#010",
+   "policy_2026#011",
    "lease_14500#004",
    "lease_29282#024",
    "lease_60729#032",
    "lease_58000#025"
   ],
   "r06": [
-   "policy_2026#006",
+   "policy_2026#007",
    "cmu_483_2020#120",
    "clause_library_2026#014",
    "law_157_ix#059",
-   "committee_minutes_2026_03#003",
    "clause_library_2026#016",
+   "committee_minutes_2026_03#003",
    "cmu_483_2020#121",
    "lease_37032#005",
    "lease_75286#011",
    "lease_23903#014"
   ],
   "r07": [
-   "policy_2026#007",
+   "policy_2026#008",
    "lease_35532#015",
    "clause_library_2026#018",
    "civil_code#018",
@@ -88,7 +88,7 @@
    "cmu_483_2020#105",
    "lease_63631#026",
    "civil_code#006",
-   "policy_2026#010",
+   "policy_2026#011",
    "cmu_483_2020#101",
    "lease_46419#025",
    "clause_library_2026#031",
@@ -100,7 +100,7 @@
    "tenant_draft_lease#007",
    "lease_92441#005",
    "lease_56855#040",
-   "policy_2026#003",
+   "policy_2026#004",
    "lease_56855#018",
    "clause_library_2026#026",
    "lease_63631#018",
@@ -112,17 +112,17 @@
    "clause_library_2026#026",
    "clause_library_2026#013",
    "lease_60729#032",
-   "policy_2026#005",
+   "policy_2026#006",
    "law_157_ix#054",
    "civil_code#024",
    "lease_29282#006",
-   "policy_2026#009",
+   "policy_2026#010",
    "lease_38360#021",
    "lease_38360#026"
   ],
   "r11": [
    "clause_library_2026#030",
-   "policy_2026#010",
+   "policy_2026#011",
    "lease_14500#007",
    "lease_83432#016",
    "lease_65217#003",
@@ -134,7 +134,7 @@
   ],
   "r12": [
    "clause_library_2026#004",
-   "policy_2026#003",
+   "policy_2026#004",
    "clause_library_2026#002",
    "lease_35532#012",
    "committee_minutes_2026_03#002",
@@ -160,9 +160,9 @@
    "clause_library_2026#017",
    "clause_library_2026#014",
    "cmu_483_2020#120",
-   "policy_2026#006",
-   "committee_minutes_2026_03#003",
+   "policy_2026#007",
    "lease_56855#042",
+   "committee_minutes_2026_03#003",
    "law_157_ix#059",
    "cmu_483_2020#121",
    "clause_library_2026#015",
@@ -183,31 +183,31 @@
  },
  "structural / bm25": {
   "r01": [
-   "policy_2026#003",
+   "policy_2026#004",
    "policy_2026#001",
    "lease_60729#011",
    "lease_35532#012",
-   "policy_2026#004",
+   "policy_2026#005",
    "cmu_630_2021#003",
    "cmu_630_2021#002",
    "cmu_630_2021#006",
-   "policy_2026#008",
+   "policy_2026#009",
    "lease_65217#007"
   ],
   "r02": [
    "tenant_draft_lease#004",
    "demo_city_brochure#003",
    "clause_library_2026#004",
-   "policy_2026#003",
+   "policy_2026#004",
    "demo_plaza_page#003",
    "staff_newsletter_2026_04#001",
    "committee_minutes_2026_03#004",
-   "policy_2026#011",
-   "policy_2026#002",
+   "policy_2026#012",
+   "policy_2026#003",
    "market_research_2025#005"
   ],
   "r03": [
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#011",
    "clause_library_2026#010",
    "clause_library_2026#008",
@@ -222,7 +222,7 @@
    "civil_code#000",
    "clause_library_2026#010",
    "clause_library_2026#011",
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#009",
    "clause_library_2026#008",
    "demo_plaza_page#002",
@@ -233,7 +233,7 @@
   "r05": [
    "demo_city_brochure#003",
    "committee_minutes_2026_03#002",
-   "policy_2026#005",
+   "policy_2026#006",
    "market_research_2025#004",
    "clause_library_2026#012",
    "clause_library_2026#013",
@@ -243,19 +243,19 @@
    "lease_75286#019"
   ],
   "r06": [
-   "policy_2026#006",
+   "policy_2026#007",
    "clause_library_2026#014",
    "law_157_ix#059",
    "cmu_483_2020#120",
    "demo_plaza_page#005",
    "law_157_ix#010",
    "staff_newsletter_2026_04#001",
-   "committee_minutes_2026_03#003",
    "clause_library_2026#016",
+   "committee_minutes_2026_03#003",
    "cmu_483_2020#121"
   ],
   "r07": [
-   "policy_2026#007",
+   "policy_2026#008",
    "cmu_483_2020#113",
    "civil_code#018",
    "lease_35532#015",
@@ -295,7 +295,7 @@
    "clause_library_2026#012",
    "civil_code#047",
    "civil_code#005",
-   "policy_2026#005",
+   "policy_2026#006",
    "lease_92441#010",
    "lease_75286#019",
    "law_157_ix#035",
@@ -306,24 +306,24 @@
    "clause_library_2026#030",
    "lease_56855#022",
    "lease_56855#023",
-   "policy_2026#010",
+   "policy_2026#011",
    "lease_56855#040",
    "clause_library_2026#013",
-   "policy_2026#009",
+   "policy_2026#010",
    "clause_library_2026#027",
    "staff_newsletter_2026_04#001",
-   "policy_2026#005"
+   "policy_2026#006"
   ],
   "r12": [
    "committee_minutes_2026_03#004",
-   "policy_2026#011",
+   "policy_2026#012",
    "clause_library_2026#004",
    "committee_minutes_2026_03#002",
+   "policy_2026#004",
    "policy_2026#003",
    "market_research_2025#004",
    "staff_newsletter_2026_04#001",
-   "policy_2026#008",
-   "policy_2026#002",
+   "policy_2026#009",
    "market_research_2025#005"
   ],
   "r13": [
@@ -341,7 +341,7 @@
   "r14": [
    "clause_library_2026#017",
    "committee_minutes_2026_03#003",
-   "policy_2026#006",
+   "policy_2026#007",
    "clause_library_2026#014",
    "demo_plaza_page#003",
    "clause_library_2026#025",
@@ -352,7 +352,7 @@
   ],
   "r15": [
    "demo_plaza_page#002",
-   "policy_2026#004",
+   "policy_2026#005",
    "demo_plaza_page#005",
    "clause_library_2026#010",
    "clause_library_2026#009",
@@ -366,19 +366,19 @@
  "structural / hybrid": {
   "r01": [
    "lease_60729#011",
-   "policy_2026#003",
+   "policy_2026#004",
    "lease_35532#012",
-   "policy_2026#001",
    "clause_library_2026#002",
    "cmu_630_2021#006",
+   "lease_65217#007",
    "lease_63631#007",
-   "lease_56855#016",
    "cmu_630_2021#003",
-   "lease_65217#007"
+   "lease_56855#016",
+   "cmu_630_2021#002"
   ],
   "r02": [
    "clause_library_2026#004",
-   "policy_2026#003",
+   "policy_2026#004",
    "committee_minutes_2026_03#004",
    "tenant_draft_lease#004",
    "clause_library_2026#002",
@@ -389,13 +389,13 @@
    "lease_63631#009"
   ],
   "r03": [
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#010",
    "clause_library_2026#011",
    "lease_83432#034",
    "clause_library_2026#009",
-   "lease_38360#009",
    "tenant_draft_lease#003",
+   "lease_38360#009",
    "lease_83432#025",
    "lease_56855#009",
    "lease_83432#040"
@@ -404,7 +404,7 @@
    "clause_library_2026#010",
    "civil_code#000",
    "clause_library_2026#011",
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#008",
    "clause_library_2026#009",
    "demo_plaza_page#002",
@@ -413,7 +413,7 @@
    "cmu_483_2020#035"
   ],
   "r05": [
-   "policy_2026#005",
+   "policy_2026#006",
    "clause_library_2026#013",
    "lease_75286#019",
    "tenant_draft_lease#008",
@@ -422,22 +422,22 @@
    "lease_06288#028",
    "lease_83432#042",
    "lease_14500#026",
-   "policy_2026#009"
+   "policy_2026#010"
   ],
   "r06": [
-   "policy_2026#006",
+   "policy_2026#007",
    "clause_library_2026#014",
    "cmu_483_2020#120",
    "law_157_ix#059",
-   "committee_minutes_2026_03#003",
    "clause_library_2026#016",
+   "committee_minutes_2026_03#003",
    "cmu_483_2020#121",
    "lease_37032#005",
    "clause_library_2026#015",
    "lease_23903#014"
   ],
   "r07": [
-   "policy_2026#007",
+   "policy_2026#008",
    "lease_35532#015",
    "cmu_483_2020#113",
    "civil_code#018",
@@ -458,7 +458,7 @@
    "lease_56855#042",
    "lease_23903#024",
    "law_157_ix#054",
-   "policy_2026#010"
+   "policy_2026#011"
   ],
   "r09": [
    "tenant_draft_lease#007",
@@ -474,7 +474,7 @@
   ],
   "r10": [
    "civil_code#024",
-   "policy_2026#005",
+   "policy_2026#006",
    "clause_library_2026#026",
    "clause_library_2026#013",
    "clause_library_2026#012",
@@ -482,11 +482,11 @@
    "lease_23903#025",
    "lease_06288#028",
    "lease_38360#021",
-   "policy_2026#009"
+   "policy_2026#010"
   ],
   "r11": [
    "clause_library_2026#030",
-   "policy_2026#010",
+   "policy_2026#011",
    "lease_56855#022",
    "lease_83432#016",
    "lease_38360#010",
@@ -498,15 +498,15 @@
   ],
   "r12": [
    "clause_library_2026#004",
-   "policy_2026#003",
+   "policy_2026#004",
    "committee_minutes_2026_03#004",
    "committee_minutes_2026_03#002",
    "clause_library_2026#002",
    "lease_35532#012",
    "clause_library_2026#003",
-   "policy_2026#002",
    "market_research_2025#004",
-   "market_research_2025#005"
+   "market_research_2025#005",
+   "policy_2026#012"
   ],
   "r13": [
    "clause_library_2026#033",
@@ -523,8 +523,8 @@
   "r14": [
    "clause_library_2026#017",
    "clause_library_2026#014",
+   "policy_2026#007",
    "committee_minutes_2026_03#003",
-   "policy_2026#006",
    "clause_library_2026#015",
    "law_157_ix#059",
    "clause_library_2026#016",
@@ -534,7 +534,7 @@
   ],
   "r15": [
    "demo_plaza_page#002",
-   "policy_2026#004",
+   "policy_2026#005",
    "lease_83432#012",
    "clause_library_2026#009",
    "clause_library_2026#008",
@@ -542,36 +542,36 @@
    "clause_library_2026#011",
    "lease_23903#005",
    "lease_06288#004",
-   "lease_14500#005"
+   "lease_92441#004"
   ]
  },
  "structural / hybrid_rerank": {
   "r01": [
-   "policy_2026#003",
+   "policy_2026#004",
    "clause_library_2026#002",
    "lease_35532#012",
-   "policy_2026#001",
    "lease_60729#011",
    "lease_56855#016",
    "lease_65217#007",
    "lease_63631#007",
    "law_157_ix#049",
-   "policy_2026#008"
+   "policy_2026#009",
+   "cmu_630_2021#006"
   ],
   "r02": [
    "committee_minutes_2026_03#004",
-   "policy_2026#011",
+   "policy_2026#012",
    "clause_library_2026#004",
-   "policy_2026#003",
+   "policy_2026#004",
    "committee_minutes_2026_03#002",
-   "policy_2026#002",
    "lease_92441#005",
    "clause_library_2026#002",
    "staff_newsletter_2026_04#001",
-   "tenant_draft_lease#004"
+   "tenant_draft_lease#004",
+   "clause_library_2026#006"
   ],
   "r03": [
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#011",
    "clause_library_2026#010",
    "lease_83432#034",
@@ -584,9 +584,9 @@
   ],
   "r04": [
    "civil_code#000",
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#010",
-   "policy_2026#003",
+   "policy_2026#004",
    "clause_library_2026#008",
    "clause_library_2026#011",
    "tenant_draft_lease#003",
@@ -596,32 +596,32 @@
   ],
   "r05": [
    "committee_minutes_2026_03#002",
-   "policy_2026#005",
+   "policy_2026#006",
    "clause_library_2026#013",
    "market_research_2025#004",
    "tenant_draft_lease#008",
    "clause_library_2026#012",
    "lease_55572#014",
-   "policy_2026#009",
+   "policy_2026#010",
    "lease_75286#019",
    "lease_23903#025"
   ],
   "r06": [
-   "policy_2026#006",
+   "policy_2026#007",
    "clause_library_2026#014",
    "cmu_483_2020#120",
    "law_157_ix#059",
    "clause_library_2026#015",
    "lease_37032#005",
-   "committee_minutes_2026_03#003",
    "lease_60729#006",
+   "committee_minutes_2026_03#003",
    "lease_23903#014",
    "cmu_483_2020#128"
   ],
   "r07": [
    "law_157_ix#056",
    "cmu_483_2020#113",
-   "policy_2026#007",
+   "policy_2026#008",
    "clause_library_2026#018",
    "civil_code#018",
    "lease_35532#015",
@@ -640,12 +640,12 @@
    "law_157_ix#054",
    "lease_56855#015",
    "lease_56855#042",
-   "policy_2026#010"
+   "policy_2026#011"
   ],
   "r09": [
    "lease_56855#040",
    "lease_83432#025",
-   "policy_2026#009",
+   "policy_2026#010",
    "tenant_draft_lease#007",
    "lease_46419#017",
    "clause_library_2026#026",
@@ -660,20 +660,20 @@
    "clause_library_2026#026",
    "lease_56855#042",
    "law_157_ix#054",
-   "policy_2026#005",
+   "policy_2026#006",
    "lease_38360#021",
    "civil_code#005",
-   "policy_2026#009",
+   "policy_2026#010",
    "lease_38360#026"
   ],
   "r11": [
    "clause_library_2026#030",
-   "policy_2026#010",
+   "policy_2026#011",
    "lease_56855#022",
    "lease_38360#010",
    "clause_library_2026#013",
    "lease_56855#040",
-   "policy_2026#005",
+   "policy_2026#006",
    "lease_83432#013",
    "lease_38360#011",
    "cmu_483_2020#122"
@@ -681,14 +681,14 @@
   "r12": [
    "clause_library_2026#004",
    "committee_minutes_2026_03#004",
-   "policy_2026#011",
+   "policy_2026#012",
    "committee_minutes_2026_03#002",
-   "policy_2026#003",
-   "policy_2026#002",
+   "policy_2026#004",
    "market_research_2025#005",
+   "policy_2026#003",
    "lease_65217#007",
-   "market_research_2025#004",
-   "lease_35532#012"
+   "lease_35532#012",
+   "market_research_2025#004"
   ],
   "r13": [
    "cmu_483_2020#105",
@@ -704,7 +704,7 @@
   ],
   "r14": [
    "clause_library_2026#017",
-   "policy_2026#006",
+   "policy_2026#007",
    "committee_minutes_2026_03#003",
    "clause_library_2026#014",
    "law_157_ix#059",
@@ -716,8 +716,8 @@
   ],
   "r15": [
    "demo_plaza_page#002",
+   "policy_2026#005",
    "policy_2026#004",
-   "policy_2026#003",
    "clause_library_2026#008",
    "clause_library_2026#010",
    "cmu_630_2021#001",
@@ -735,8 +735,8 @@
    "policy_2026#003",
    "clause_library_2026#002",
    "clause_library_2026#000",
-   "cmu_630_2021#008",
    "lease_56855#015",
+   "cmu_630_2021#008",
    "lease_60729#011",
    "lease_38360#006"
   ],
@@ -745,8 +745,8 @@
    "lease_92441#004",
    "lease_46419#008",
    "policy_2026#002",
-   "lease_56855#015",
    "lease_38360#006",
+   "lease_56855#015",
    "lease_38360#007",
    "lease_70940#007",
    "lease_23903#007",
@@ -754,15 +754,15 @@
   ],
   "r03": [
    "lease_83432#014",
-   "lease_06288#040",
    "policy_2026#004",
+   "lease_06288#040",
    "clause_library_2026#003",
    "lease_83432#003",
    "lease_65217#029",
    "lease_63631#018",
-   "lease_56855#037",
    "lease_83432#034",
-   "lease_83432#011"
+   "lease_83432#021",
+   "lease_56855#037"
   ],
   "r04": [
    "policy_2026#004",
@@ -771,79 +771,79 @@
    "clause_library_2026#003",
    "clause_library_2026#002",
    "lease_35532#014",
+   "law_543_96#000",
    "civil_code#000",
    "lease_38360#007",
-   "lease_83432#011",
-   "lease_60729#012"
+   "lease_83432#011"
   ],
   "r05": [
    "policy_2026#005",
-   "policy_2026#010",
    "policy_2026#011",
    "lease_06288#019",
+   "policy_2026#010",
    "lease_14500#025",
    "lease_46419#025",
    "clause_library_2026#008",
    "lease_63631#026",
    "lease_38360#019",
-   "lease_60729#024"
+   "lease_56855#032"
   ],
   "r06": [
    "cmu_483_2020#140",
    "policy_2026#006",
    "cmu_483_2020#139",
    "law_157_ix#065",
-   "law_157_ix#064",
    "lease_46419#015",
+   "law_157_ix#064",
    "lease_46419#014",
+   "policy_2026#005",
    "lease_37032#003",
-   "lease_37032#004",
-   "lease_23903#014"
+   "lease_37032#004"
   ],
   "r07": [
-   "lease_35532#017",
    "policy_2026#007",
+   "lease_35532#017",
    "cmu_483_2020#131",
    "law_157_ix#062",
    "lease_58000#017",
+   "lease_56855#024",
    "lease_70940#018",
    "lease_46419#010",
    "lease_63631#019",
-   "lease_56855#024",
    "civil_code#006"
   ],
   "r08": [
    "lease_63631#019",
    "cmu_483_2020#117",
-   "policy_2026#010",
    "lease_58000#017",
    "lease_14500#018",
    "lease_55572#013",
+   "law_157_ix#059",
    "lease_46419#024",
-   "law_157_ix#066",
-   "lease_70940#024",
-   "cmu_483_2020#154"
+   "law_157_ix#067",
+   "policy_2026#010",
+   "lease_70940#024"
   ],
   "r09": [
    "lease_46419#008",
    "lease_92441#004",
    "lease_63631#018",
-   "policy_2026#003",
    "lease_83432#021",
+   "policy_2026#003",
    "lease_75286#012",
    "lease_63631#004",
    "lease_70940#008",
-   "clause_library_2026#001",
-   "lease_63631#008"
+   "lease_56855#039",
+   "clause_library_2026#001"
   ],
   "r10": [
    "lease_60729#030",
-   "policy_2026#010",
    "policy_2026#005",
    "lease_65217#028",
    "lease_63631#026",
    "lease_67632#014",
    "lease_70940#025",
+   "policy_2026#010",
    "clause_library_2026#004",
    "lease_38360#025",
    "lease_67632#013"
@@ -855,17 +855,17 @@
    "lease_92441#004",
    "lease_70940#006",
    "lease_46419#006",
-   "policy_2026#010",
+   "lease_83432#014",
    "lease_63631#007",
-   "clause_library_2026#009",
-   "lease_14500#004"
+   "lease_83432#011",
+   "clause_library_2026#009"
   ],
   "r12": [
    "clause_library_2026#001",
    "policy_2026#002",
    "lease_35532#013",
-   "market_research_2025#002",
    "policy_2026#003",
+   "committee_minutes_2026_03#002",
    "lease_70940#007",
    "clause_library_2026#000",
    "lease_46419#007",
@@ -879,8 +879,8 @@
    "lease_63631#018",
    "lease_63631#019",
    "lease_75286#012",
-   "policy_2026#007",
    "lease_06288#003",
+   "policy_2026#007",
    "lease_46419#017",
    "lease_23903#012"
   ],
@@ -890,9 +890,9 @@
    "clause_library_2026#004",
    "cmu_483_2020#141",
    "cmu_483_2020#140",
-   "law_157_ix#065",
    "committee_minutes_2026_03#001",
-   "law_157_ix#064",
+   "law_157_ix#065",
+   "policy_2026#005",
    "lease_56855#040",
    "cmu_483_2020#093"
   ],
@@ -901,12 +901,12 @@
    "lease_38360#006",
    "lease_06288#006",
    "lease_83432#010",
+   "policy_2026#004",
    "lease_63631#004",
    "lease_63631#006",
-   "lease_14500#006",
-   "lease_65217#006",
    "lease_83432#011",
-   "lease_70940#006"
+   "lease_14500#006",
+   "lease_65217#006"
   ]
  },
  "fixed / bm25": {
@@ -930,8 +930,8 @@
    "demo_city_brochure#000",
    "staff_newsletter_2026_04#000",
    "demo_plaza_page#000",
-   "clause_library_2026#000",
    "policy_2026#002",
+   "clause_library_2026#000",
    "committee_minutes_2026_03#002"
   ],
   "r03": [
@@ -940,8 +940,8 @@
    "clause_library_2026#002",
    "tenant_draft_lease#001",
    "policy_2026#003",
-   "tenant_draft_lease#000",
    "staff_newsletter_2026_04#001",
+   "tenant_draft_lease#000",
    "cmu_483_2020#146",
    "cmu_483_2020#147",
    "lease_37032#006"
@@ -965,22 +965,22 @@
    "policy_2026#005",
    "demo_plaza_page#000",
    "committee_minutes_2026_03#001",
-   "policy_2026#004",
    "clause_library_2026#003",
    "committee_minutes_2026_03#002",
-   "lease_06288#028"
+   "lease_06288#028",
+   "lease_58000#024"
   ],
   "r06": [
    "policy_2026#006",
    "policy_2026#005",
    "clause_library_2026#004",
+   "law_157_ix#065",
    "clause_library_2026#005",
    "demo_plaza_page#000",
-   "law_157_ix#065",
    "staff_newsletter_2026_04#000",
-   "law_157_ix#064",
    "cmu_483_2020#139",
-   "cmu_483_2020#140"
+   "cmu_483_2020#140",
+   "cmu_483_2020#150"
   ],
   "r07": [
    "policy_2026#007",
@@ -988,23 +988,23 @@
    "lease_35532#009",
    "civil_code#006",
    "lease_35532#017",
-   "law_157_ix#062",
    "cmu_483_2020#135",
+   "law_157_ix#062",
    "lease_55572#007",
    "lease_55572#004",
-   "policy_2026#006"
+   "lease_56855#024"
   ],
   "r08": [
    "cmu_483_2020#122",
    "cmu_483_2020#117",
    "civil_code#002",
-   "lease_56855#040",
    "lease_55572#014",
    "lease_55572#013",
+   "lease_56855#040",
+   "law_157_ix#031",
    "lease_56855#011",
    "clause_library_2026#010",
-   "lease_56855#014",
-   "lease_56855#010"
+   "lease_56855#014"
   ],
   "r09": [
    "lease_83432#021",
@@ -1022,8 +1022,8 @@
    "civil_code#009",
    "lease_92441#009",
    "clause_library_2026#004",
-   "civil_code#002",
    "law_157_ix#039",
+   "civil_code#002",
    "policy_2026#005",
    "civil_code#012",
    "lease_75286#018",
@@ -1037,8 +1037,8 @@
    "policy_2026#010",
    "lease_56855#037",
    "policy_2026#009",
-   "lease_56855#038",
    "lease_35532#018",
+   "lease_56855#038",
    "clause_library_2026#004",
    "policy_2026#005"
   ],
@@ -1049,10 +1049,10 @@
    "policy_2026#003",
    "policy_2026#002",
    "committee_minutes_2026_03#001",
-   "policy_2026#008",
    "market_research_2025#002",
+   "policy_2026#008",
    "lease_35532#013",
-   "staff_newsletter_2026_04#000"
+   "market_research_2025#001"
   ],
   "r13": [
    "demo_city_brochure#001",
@@ -1071,12 +1071,12 @@
    "policy_2026#006",
    "committee_minutes_2026_03#001",
    "clause_library_2026#004",
-   "committee_minutes_2026_03#002",
    "clause_library_2026#008",
    "lease_37032#012",
    "committee_minutes_2026_03#000",
    "lease_38360#044",
-   "policy_2026#000"
+   "policy_2026#000",
+   "committee_minutes_2026_03#002"
   ],
   "r15": [
    "demo_plaza_page#000",
@@ -1099,20 +1099,20 @@
    "lease_60729#011",
    "cmu_630_2021#003",
    "cmu_630_2021#008",
+   "policy_2026#001",
    "lease_38360#006",
    "cmu_630_2021#002",
-   "policy_2026#001",
    "lease_56855#016"
   ],
   "r02": [
    "clause_library_2026#001",
    "policy_2026#002",
    "policy_2026#003",
+   "tenant_draft_lease#001",
    "committee_minutes_2026_03#002",
    "lease_46419#008",
-   "lease_56855#015",
    "clause_library_2026#000",
-   "market_research_2025#002",
+   "lease_56855#015",
    "lease_35532#013",
    "clause_library_2026#002"
   ],
@@ -1120,48 +1120,48 @@
    "policy_2026#004",
    "clause_library_2026#003",
    "clause_library_2026#002",
-   "lease_65217#029",
-   "tenant_draft_lease#000",
-   "lease_83432#034",
-   "lease_83432#021",
    "lease_56855#008",
+   "lease_83432#021",
+   "lease_65217#029",
+   "lease_83432#034",
    "lease_67632#002",
-   "lease_83432#029"
+   "lease_63631#027",
+   "lease_83432#014"
   ],
   "r04": [
    "policy_2026#004",
    "policy_2026#003",
    "cmu_630_2021#001",
    "clause_library_2026#002",
-   "civil_code#000",
    "clause_library_2026#003",
+   "civil_code#000",
    "cmu_630_2021#002",
-   "lease_83432#011",
    "lease_83432#010",
+   "lease_83432#011",
    "lease_56855#017"
   ],
   "r05": [
    "policy_2026#005",
    "clause_library_2026#004",
+   "lease_06288#028",
    "lease_46419#025",
    "lease_63631#026",
-   "lease_06288#028",
    "committee_minutes_2026_03#000",
    "lease_14500#025",
    "lease_58000#024",
    "lease_75286#018",
-   "clause_library_2026#008"
+   "lease_06288#019"
   ],
   "r06": [
    "policy_2026#006",
    "law_157_ix#065",
    "cmu_483_2020#140",
-   "cmu_483_2020#139",
-   "law_157_ix#064",
    "policy_2026#005",
+   "cmu_483_2020#139",
    "clause_library_2026#004",
    "clause_library_2026#005",
    "lease_37032#004",
+   "law_157_ix#064",
    "cmu_483_2020#141"
   ],
   "r07": [
@@ -1170,8 +1170,8 @@
    "lease_35532#017",
    "law_157_ix#062",
    "civil_code#006",
-   "lease_35532#009",
    "lease_56855#024",
+   "lease_35532#009",
    "cmu_483_2020#132",
    "cmu_483_2020#135",
    "lease_35532#016"
@@ -1180,13 +1180,13 @@
    "cmu_483_2020#117",
    "lease_55572#013",
    "cmu_483_2020#122",
+   "law_157_ix#059",
    "clause_library_2026#010",
    "lease_56855#040",
-   "policy_2026#010",
    "lease_46419#024",
    "lease_70940#024",
-   "law_157_ix#059",
-   "lease_23903#024"
+   "policy_2026#010",
+   "lease_56855#013"
   ],
   "r09": [
    "lease_83432#021",
@@ -1196,9 +1196,9 @@
    "policy_2026#009",
    "lease_14500#017",
    "lease_75286#012",
-   "policy_2026#002",
    "lease_37032#008",
-   "lease_70940#008"
+   "lease_70940#008",
+   "lease_58000#008"
   ],
   "r10": [
    "policy_2026#005",
@@ -1206,8 +1206,8 @@
    "lease_63631#026",
    "lease_65217#028",
    "lease_70940#025",
-   "lease_38360#019",
    "lease_23903#025",
+   "lease_38360#019",
    "policy_2026#009",
    "lease_14500#026",
    "clause_library_2026#008"
@@ -1215,31 +1215,31 @@
   "r11": [
    "lease_56855#021",
    "clause_library_2026#009",
-   "policy_2026#010",
    "lease_56855#020",
    "lease_38360#010",
+   "policy_2026#010",
+   "lease_83432#011",
    "lease_63631#004",
    "lease_56855#037",
-   "lease_83432#011",
    "lease_46419#008",
    "lease_63631#007"
   ],
   "r12": [
    "clause_library_2026#001",
+   "committee_minutes_2026_03#002",
    "policy_2026#002",
    "policy_2026#003",
-   "committee_minutes_2026_03#002",
    "lease_35532#013",
-   "market_research_2025#002",
    "committee_minutes_2026_03#001",
-   "clause_library_2026#000",
    "market_research_2025#001",
+   "market_research_2025#002",
+   "clause_library_2026#000",
    "lease_70940#007"
   ],
   "r13": [
    "lease_56855#021",
-   "lease_83432#015",
    "clause_library_2026#010",
+   "lease_83432#015",
    "lease_23903#017",
    "demo_city_brochure#001",
    "lease_75286#002",
@@ -1253,23 +1253,23 @@
    "policy_2026#006",
    "clause_library_2026#004",
    "committee_minutes_2026_03#001",
-   "committee_minutes_2026_03#002",
-   "law_157_ix#065",
    "clause_library_2026#008",
-   "law_157_ix#064",
+   "law_157_ix#065",
    "cmu_483_2020#141",
-   "lease_14500#025"
+   "policy_2026#005",
+   "lease_14500#025",
+   "law_157_ix#064"
   ],
   "r15": [
    "policy_2026#004",
    "lease_83432#010",
    "policy_2026#003",
-   "clause_library_2026#002",
    "lease_83432#011",
+   "clause_library_2026#002",
    "cmu_630_2021#001",
    "cmu_630_2021#008",
-   "lease_14500#004",
    "lease_06288#004",
+   "lease_14500#004",
    "lease_63631#003"
   ]
  },
@@ -1278,7 +1278,7 @@
    "policy_2026#002",
    "lease_35532#013",
    "policy_2026#003",
-   "clause_library_2026#001",
+   "tenant_draft_lease#001",
    "lease_60729#011",
    "clause_library_2026#002",
    "clause_library_2026#000",
@@ -1300,14 +1300,14 @@
   ],
   "r03": [
    "policy_2026#004",
-   "policy_2026#003",
    "clause_library_2026#002",
    "clause_library_2026#003",
+   "policy_2026#003",
    "lease_65217#029",
-   "lease_83432#029",
+   "civil_code#000",
    "tenant_draft_lease#001",
-   "tenant_draft_lease#000",
    "lease_83432#034",
+   "tenant_draft_lease#000",
    "lease_83432#014"
   ],
   "r04": [
@@ -1324,27 +1324,27 @@
   ],
   "r05": [
    "committee_minutes_2026_03#000",
-   "policy_2026#005",
    "clause_library_2026#004",
-   "policy_2026#004",
+   "policy_2026#005",
    "committee_minutes_2026_03#001",
    "clause_library_2026#003",
-   "committee_minutes_2026_03#002",
    "clause_library_2026#008",
-   "tenant_draft_lease#002",
-   "policy_2026#009"
+   "policy_2026#009",
+   "policy_2026#011",
+   "lease_75286#018",
+   "tenant_draft_lease#002"
   ],
   "r06": [
    "policy_2026#006",
+   "law_157_ix#065",
    "cmu_483_2020#139",
    "cmu_483_2020#140",
    "clause_library_2026#004",
    "clause_library_2026#005",
    "lease_37032#005",
-   "policy_2026#005",
    "lease_37032#004",
-   "committee_minutes_2026_03#001",
-   "law_157_ix#065"
+   "policy_2026#005",
+   "committee_minutes_2026_03#001"
   ],
   "r07": [
    "law_157_ix#062",
@@ -1361,20 +1361,20 @@
   "r08": [
    "clause_library_2026#010",
    "civil_code#002",
-   "lease_56855#014",
    "cmu_483_2020#122",
    "lease_56855#011",
+   "lease_56855#014",
    "lease_63631#019",
    "cmu_483_2020#117",
    "lease_58000#017",
    "lease_14500#018",
-   "policy_2026#010"
+   "lease_75286#019"
   ],
   "r09": [
    "policy_2026#009",
    "lease_83432#021",
-   "lease_14500#017",
    "lease_56855#037",
+   "lease_14500#017",
    "lease_70940#017",
    "lease_35532#018",
    "lease_46419#017",
@@ -1389,10 +1389,10 @@
    "lease_83432#036",
    "policy_2026#009",
    "clause_library_2026#008",
+   "lease_60729#030",
    "lease_65217#028",
    "lease_38360#025",
-   "lease_06288#029",
-   "lease_58000#025"
+   "lease_06288#029"
   ],
   "r11": [
    "policy_2026#010",
@@ -1400,10 +1400,10 @@
    "lease_56855#020",
    "lease_56855#021",
    "lease_38360#010",
-   "lease_56855#038",
    "lease_56855#037",
-   "clause_library_2026#010",
    "policy_2026#005",
+   "clause_library_2026#010",
+   "lease_56855#038",
    "clause_library_2026#004"
   ],
   "r12": [
@@ -1412,34 +1412,34 @@
    "committee_minutes_2026_03#001",
    "policy_2026#003",
    "policy_2026#011",
-   "committee_minutes_2026_03#000",
-   "market_research_2025#001",
    "market_research_2025#002",
-   "lease_35532#013",
-   "policy_2026#002"
+   "market_research_2025#001",
+   "committee_minutes_2026_03#000",
+   "policy_2026#002",
+   "lease_35532#013"
   ],
   "r13": [
    "clause_library_2026#010",
    "cmu_483_2020#122",
    "lease_56855#021",
-   "cmu_483_2020#138",
    "lease_83432#015",
-   "lease_56855#014",
+   "cmu_483_2020#138",
    "policy_2026#007",
    "lease_63631#019",
+   "lease_56855#014",
    "lease_70940#012",
    "lease_06288#040"
   ],
   "r14": [
    "clause_library_2026#005",
    "policy_2026#006",
-   "committee_minutes_2026_03#001",
    "clause_library_2026#004",
+   "committee_minutes_2026_03#001",
+   "law_157_ix#065",
    "committee_minutes_2026_03#002",
    "law_157_ix#064",
    "cmu_483_2020#140",
    "lease_37032#012",
-   "law_157_ix#065",
    "law_157_ix#075"
   ],
   "r15": [
@@ -1451,37 +1451,37 @@
    "cmu_630_2021#001",
    "civil_code#000",
    "cmu_630_2021#002",
-   "tenant_draft_lease#001",
-   "lease_83432#010"
+   "lease_83432#010",
+   "tenant_draft_lease#001"
   ]
  },
  "structural / hybrid_rerank / all versions": {
   "r01": [
    "policy_2024#002",
-   "policy_2026#003",
+   "policy_2026#004",
    "clause_library_2026#002",
    "lease_35532#012",
    "policy_2024#001",
-   "policy_2026#001",
    "lease_60729#011",
    "lease_56855#016",
    "lease_65217#007",
-   "lease_63631#007"
+   "lease_63631#007",
+   "law_157_ix#049"
   ],
   "r02": [
    "committee_minutes_2026_03#004",
-   "policy_2026#011",
+   "policy_2026#012",
    "clause_library_2026#004",
-   "policy_2026#003",
+   "policy_2026#004",
    "policy_2024#002",
-   "policy_2026#002",
    "lease_92441#005",
    "clause_library_2026#002",
    "staff_newsletter_2026_04#001",
-   "tenant_draft_lease#004"
+   "tenant_draft_lease#004",
+   "clause_library_2026#006"
   ],
   "r03": [
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#011",
    "clause_library_2026#010",
    "lease_83432#034",
@@ -1494,9 +1494,9 @@
   ],
   "r04": [
    "civil_code#000",
-   "policy_2026#004",
+   "policy_2026#005",
    "clause_library_2026#010",
-   "policy_2026#003",
+   "policy_2026#004",
    "clause_library_2026#008",
    "clause_library_2026#011",
    "policy_2024#002",
@@ -1507,17 +1507,17 @@
   "r05": [
    "committee_minutes_2026_03#002",
    "policy_2024#003",
-   "policy_2026#005",
+   "policy_2026#006",
    "clause_library_2026#013",
    "market_research_2025#004",
    "tenant_draft_lease#008",
    "clause_library_2026#012",
    "lease_55572#014",
-   "policy_2026#009",
+   "policy_2026#010",
    "lease_75286#019"
   ],
   "r06": [
-   "policy_2026#006",
+   "policy_2026#007",
    "policy_2024#004",
    "clause_library_2026#014",
    "cmu_483_2020#120",
@@ -1526,14 +1526,14 @@
    "law_2269_xii#033",
    "commercial_code#005",
    "lease_37032#005",
-   "committee_minutes_2026_03#003"
+   "lease_60729#006"
   ],
   "r07": [
    "law_2269_xii#029",
    "law_157_ix#056",
    "cmu_483_2020#113",
    "policy_2024#005",
-   "policy_2026#007",
+   "policy_2026#008",
    "clause_library_2026#018",
    "civil_code#018",
    "lease_35532#015",
@@ -1555,14 +1555,14 @@
   "r09": [
    "lease_56855#040",
    "lease_83432#025",
-   "policy_2026#009",
+   "policy_2026#010",
    "tenant_draft_lease#007",
    "lease_46419#017",
    "clause_library_2026#026",
    "policy_2024#007",
    "lease_70940#016",
    "lease_60729#015",
-   "lease_58000#016"
+   "lease_23903#016"
   ],
   "r10": [
    "civil_code#024",
@@ -1571,34 +1571,34 @@
    "lease_56855#042",
    "law_157_ix#054",
    "policy_2024#003",
-   "policy_2026#005",
+   "policy_2026#006",
    "lease_38360#021",
    "civil_code#005",
-   "policy_2026#009"
+   "policy_2026#010"
   ],
   "r11": [
    "clause_library_2026#030",
-   "policy_2026#010",
+   "policy_2026#011",
    "lease_56855#022",
    "policy_2024#007",
    "lease_38360#010",
    "clause_library_2026#013",
    "lease_56855#040",
-   "policy_2026#005",
+   "policy_2026#006",
    "lease_83432#013",
    "lease_38360#011"
   ],
   "r12": [
    "clause_library_2026#004",
    "committee_minutes_2026_03#004",
-   "policy_2026#011",
+   "policy_2026#012",
    "committee_minutes_2026_03#002",
-   "policy_2026#003",
+   "policy_2026#004",
    "policy_2024#002",
-   "policy_2026#002",
    "market_research_2025#005",
+   "policy_2026#003",
    "lease_65217#007",
-   "market_research_2025#004"
+   "lease_35532#012"
   ],
   "r13": [
    "law_2269_xii#038",
@@ -1614,7 +1614,7 @@
   ],
   "r14": [
    "clause_library_2026#017",
-   "policy_2026#006",
+   "policy_2026#007",
    "committee_minutes_2026_03#003",
    "clause_library_2026#014",
    "law_157_ix#059",
@@ -1626,9 +1626,9 @@
   ],
   "r15": [
    "demo_plaza_page#002",
-   "policy_2026#004",
+   "policy_2026#005",
    "policy_2024#002",
-   "policy_2026#003",
+   "policy_2026#004",
    "clause_library_2026#008",
    "clause_library_2026#010",
    "cmu_630_2021#001",

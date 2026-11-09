@@ -10,7 +10,9 @@ module normalizes the remaining text:
   ("CTOPIH", "TOBAPHCTBO", with "H" for both "Н" and "И"): such a word is replaced only
   when one of its Cyrillic readings is a word of the corpus vocabulary, so real Latin
   words ("UA", "IBAN", "IX") stay as they are;
-- blocks that are OCR noise from stamps and signatures ("Ї, 22h pany) pS") dropped.
+- in OCR text, blocks that are noise from stamps and signatures ("Ї, 22h pany) pS")
+  dropped. A short block that opens a clause or a list ("1.5. Терміни:", "Вирішили:",
+  "орендар;") is structure, not noise, and is kept.
 
 Pseudonymization replaces the surnames of people with other surnames of the same
 ending and masks e-mail addresses, phone numbers, IBANs and individual tax numbers.
@@ -119,22 +121,32 @@ def normalize(text: str, words: set[str] | None = None) -> str:
     return SPACES.sub(" ", text).strip()
 
 
+# A block that is part of the structure however short: it starts with a clause number
+# ("1.5.", "3.1 |") or introduces or continues a list ("Терміни:", "орендар;").
+STRUCTURAL = re.compile(r"^\d{1,3}(?:\.\d{1,3})*\.?\s|[:;]$")
+
+
 def is_noise(block: Block) -> bool:
-    """A paragraph with no real words: OCR of a stamp, a signature or a scan edge."""
+    """A paragraph with no real words: OCR of a stamp, a signature or a scan edge.
+    A structural block needs one real word, two for any other."""
     if block.kind != "paragraph":
         return False
     words = [w for w in WORD.findall(block.text) if len(w) >= 3]
     real = [w for w in words if CYRILLIC.search(w) and not LATIN.search(w)]
-    return len(real) < 2 and len(block.text) < 80
+    needed = 1 if STRUCTURAL.search(block.text) else 2
+    return len(real) < needed and len(block.text) < 80
 
 
-def clean_blocks(blocks: list[Block], words: set[str] | None = None) -> list[Block]:
-    """Normalize blocks and drop noise; `words` is the vocabulary for `fix_script`."""
+def clean_blocks(
+    blocks: list[Block], words: set[str] | None = None, ocr: bool = False
+) -> list[Block]:
+    """Normalize blocks, and drop noise if the text is `ocr`; `words` is the vocabulary
+    for `fix_script`. Born-digital text has no stamps, so nothing is dropped from it."""
     cleaned = []
     for block in blocks:
         block.text = normalize(block.text, words)
         block.rows = [[normalize(cell, words) for cell in row] for row in block.rows]
-        if block.text and not is_noise(block):
+        if block.text and not (ocr and is_noise(block)):
             cleaned.append(block)
     return cleaned
 

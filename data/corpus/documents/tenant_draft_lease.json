@@ -11,7 +11,21 @@
   },
   {
    "kind": "paragraph",
+   "text": "м. ____________ «_» __________ 2026 року",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
    "text": "Орендодавець: ________________________________, що діє на підставі ____________________, надалі — «Орендодавець», з однієї сторони,",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "та",
    "level": 0,
    "rows": [],
    "page": null
@@ -227,14 +241,14 @@
    "page": null
   },
   {
-   "kind": "paragraph",
+   "kind": "list_item",
    "text": "передати Приміщення у стані, придатному для використання;",
    "level": 0,
    "rows": [],
    "page": null
   },
   {
-   "kind": "paragraph",
+   "kind": "list_item",
    "text": "забезпечити можливість користування загальними зонами (за наявності).",
    "level": 0,
    "rows": [],
@@ -248,21 +262,21 @@
    "page": null
   },
   {
-   "kind": "paragraph",
+   "kind": "list_item",
    "text": "використовувати Приміщення відповідно до його призначення;",
    "level": 0,
    "rows": [],
    "page": null
   },
   {
-   "kind": "paragraph",
+   "kind": "list_item",
    "text": "своєчасно сплачувати орендну плату та інші платежі;",
    "level": 0,
    "rows": [],
    "page": null
   },
   {
-   "kind": "paragraph",
+   "kind": "list_item",
    "text": "дотримуватись правил експлуатації будівлі.",
    "level": 0,
    "rows": [],
@@ -332,14 +346,14 @@
    "page": null
   },
   {
-   "kind": "paragraph",
+   "kind": "list_item",
    "text": "Додаток №1 — План приміщення;",
    "level": 0,
    "rows": [],
    "page": null
   },
   {
-   "kind": "paragraph",
+   "kind": "list_item",
    "text": "Додаток №2 — Акт приймання-передачі.",
    "level": 0,
    "rows": [],
@@ -356,6 +370,20 @@
    "kind": "heading",
    "text": "10. РЕКВІЗИТИ ТА ПІДПИСИ СТОРІН",
    "level": 2,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "Орендодавець:",
+   "level": 0,
+   "rows": [],
+   "page": null
+  },
+  {
+   "kind": "paragraph",
+   "text": "Орендар:",
+   "level": 0,
    "rows": [],
    "page": null
   }

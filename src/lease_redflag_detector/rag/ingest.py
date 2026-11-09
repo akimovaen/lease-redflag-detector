@@ -162,9 +162,10 @@ def build_document(
     meta: dict, blocks: list[Block], pseudonyms: dict[str, str], words: set[str]
 ) -> Document:
     """Clean extracted blocks; OCR'd contracts get whole Latin words read as Cyrillic
-    by the corpus vocabulary `words`, before pseudonymization looks for names."""
+    by the corpus vocabulary `words` and OCR noise dropped, before pseudonymization
+    looks for names."""
     lease = meta["type"] == "lease"
-    blocks = clean_blocks(blocks, words if lease else None)
+    blocks = clean_blocks(blocks, words if lease else None, ocr=lease)
     if lease:
         for block in blocks:
             block.text = pseudonymize(block.text, pseudonyms)

@@ -4,8 +4,10 @@ items, block quotes and tables.
 - PDF: the text layer, read with pdfplumber. Documents typeset with larger heading
   fonts get their headings from the font size; scans and plain contracts get them from
   the numbering of the clauses. A missing or broken text layer (a scan, or OCR that
-  read Cyrillic as Latin) falls back to OCR text.
-- DOCX: paragraph styles (Heading N, List Bullet, Quote) and tables, in body order.
+  read Cyrillic as Latin) falls back to OCR text. A table broken by a page break is
+  joined back into one.
+- DOCX: paragraph styles (Heading N, List Bullet, Quote), list items made with Word's
+  numbering, and tables, in body order.
 - HTML: zakon.rada.gov.ua acts get their structure from the site's markup (books,
   sections, chapters, articles); other pages from h1–h4, p, li and table, without the
   site chrome (menus, cookie banner, forms, footer).
@@ -245,9 +247,7 @@ def styled_pdf_blocks(pdf, body_size: int, heading_sizes: list[int]) -> list[Blo
                     [" ".join((cell or "").split()) for cell in row]
                     for row in obj.extract()
                 ]
-                blocks.append(
-                    Block("table", table_markdown(rows), rows=rows, page=page_number)
-                )
+                append_table(blocks, rows, page_number)
                 last_bottom = obj.bbox[3]
                 continue
             text = obj["text"].strip()
@@ -275,6 +275,24 @@ def styled_pdf_blocks(pdf, body_size: int, heading_sizes: list[int]) -> list[Blo
             last_bottom = obj["bottom"]
     flush()
     return blocks
+
+
+def append_table(blocks: list[Block], rows: list[list[str]], page: int) -> None:
+    """Add a table, or continue the table that the previous page ended with: a table
+    broken by a page break repeats its header row on the next page."""
+    previous = blocks[-1] if blocks else None
+    if (
+        previous is not None
+        and previous.kind == "table"
+        and previous.page is not None
+        and previous.page < page
+        and rows
+        and rows[0] == previous.rows[0]
+    ):
+        previous.rows += rows[1:]
+        previous.text = table_markdown(previous.rows)
+        return
+    blocks.append(Block("table", table_markdown(rows), rows=rows, page=page))
 
 
 # DOCX
@@ -313,9 +331,19 @@ def docx_blocks(path: Path) -> list[Block]:
             # Contracts typed without heading styles: "1. ПРЕДМЕТ ДОГОВОРУ".
             level = 1 if not blocks and re.match(r"(?i)договір", text) else 2
             blocks.append(Block("heading", text, level=level))
+        elif is_numbered(paragraph):
+            blocks.append(Block("list_item", text))
         else:
             blocks.append(Block("paragraph", text))
     return blocks
+
+
+def is_numbered(paragraph) -> bool:
+    """A list item made with Word's numbering rather than a list style. `numId` 0
+    switches the numbering off."""
+    p_pr = paragraph._p.pPr
+    num_pr = p_pr.numPr if p_pr is not None else None
+    return num_pr is not None and num_pr.numId is not None and num_pr.numId.val != 0
 
 
 # HTML

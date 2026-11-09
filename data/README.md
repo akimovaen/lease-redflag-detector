@@ -130,16 +130,18 @@ Metadata used by retrieval filters, per document and per chunk:
 
 Ingestion (`make corpus`, `src/lease_redflag_detector/rag/ingest.py`):
 
-- **Extraction with structure.** DOCX: heading, list and quote styles, tables; contracts
-  typed without styles get headings from numbered titles in capitals. PDF: headings from
-  font sizes, tables with pdfplumber; contracts by clause numbering. A missing or broken
+- **Extraction with structure.** DOCX: heading, list and quote styles, list items made
+  with Word's numbering, tables; contracts typed without styles get headings from
+  numbered titles in capitals. PDF: headings from font sizes, tables with pdfplumber
+  (a table broken by a page break joined back); contracts by clause numbering. A missing or broken
   text layer (one Ukrtelecom contract has OCR that read Cyrillic as Latin) goes to OCR,
   as do the scans. HTML: the structure of zakon.rada.gov.ua (book, section, chapter,
   paragraph, article; older acts typed as `<pre>`); other pages by h1–h4, p, li, table.
 - **Cleaning.** Running headers and footers, page numbers, site menus, cookie banners,
   forms, editorial notes "{Із змінами …}" and signature blocks are dropped; hyphenated
-  line ends joined; Latin look-alike letters inside Cyrillic words fixed; OCR noise from
-  stamps dropped; Unicode normalized. In the scanned contracts OCR also read whole words
+  line ends joined; Latin look-alike letters inside Cyrillic words fixed; in the contracts, OCR noise
+  from stamps dropped, but not a short block that opens a clause or a list
+  (`1.5. Терміни:`, `Вирішили:`, `орендар;`); Unicode normalized. In the scanned contracts OCR also read whole words
   as Latin (`CTOPIH`, `TOBAPHCTBO`, where `H` stands for both `Н` and `И`): such a word
   is replaced by the Cyrillic reading that is a word of the corpus vocabulary, unless it
   stands next to English text; codes and Roman numerals (`IBAN`, `UA`, `IX`) stay. This
