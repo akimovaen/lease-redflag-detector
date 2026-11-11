@@ -31,10 +31,11 @@ from lease_redflag_detector.rag.retrieve import Filters, Hit, Retriever, load_ch
 STATE_PROPERTY = ["law_157_ix"]
 # Fewer reranked candidates than in the general search: one kind of source is searched.
 RERANK_CANDIDATES = 15
-# The reranker's sigmoid score below which a hit is not relevant. On the first red flags
-# unrelated minutes scored up to 0.004, a related item packed with others 0.02.
-# To be tuned on the red flag retrieval set.
-MIN_SCORE = 0.05
+# The reranker's sigmoid score below which a hit is not relevant. On the red flag
+# retrieval set unrelated minutes scored up to 0.007 (two at 0.014 and 0.068), while
+# the right law article scored as low as 0.01 and a precedent 0.015; minutes on the
+# flag's topic that are not its precedent score 0.1-0.25, so no threshold drops them.
+MIN_SCORE = 0.01
 
 
 @dataclass(frozen=True)
@@ -46,7 +47,7 @@ class Role:
 
 ROLES = (
     Role("position", 3, Filters(types=["policy"])),
-    Role("wording", 2, Filters(types=["clause_library"])),
+    Role("wording", 3, Filters(types=["clause_library"])),
     Role("law", 3, Filters(types=["law"], exclude_regimes=STATE_PROPERTY)),
     Role("precedent", 2, Filters(types=["minutes"])),
     Role(

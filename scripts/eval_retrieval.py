@@ -9,8 +9,8 @@ Every red flag is searched three ways:
    windows (computed here from the documents), and once more with reranking but
    without the default filter, to show what the filter keeps out.
 2. **By role** (`rag/redline_search.py`): each role with its own filter and k, with
-   and without the type description in the query. The scored roles return 3 + 2 + 3
-   + 2 = 10 chunks, the same budget as the one list.
+   and without the type description in the query. The scored roles return at most
+   3 + 3 + 3 + 2 = 11 chunks, about the budget of the one list (10).
 3. **Thresholds**: the role search scored without a threshold and cut at several
    reranker scores, for the recall of each role and the share of flags with no
    precedent whose precedent slot comes back empty.
