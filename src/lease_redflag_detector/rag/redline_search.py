@@ -84,18 +84,23 @@ TOPICS = {
 }
 
 
-def build_query(red_flag: RedFlag) -> str:
-    return f"{red_flag.quote}\n{TOPICS[red_flag.type]}"
+def build_query(red_flag: RedFlag, topic: bool = True) -> str:
+    """The clause, followed by the description of its red flag type unless `topic` is
+    false (the evaluation compares the two)."""
+    return f"{red_flag.quote}\n{TOPICS[red_flag.type]}" if topic else red_flag.quote
 
 
 class RedlineSearch:
-    def __init__(self, retriever: Retriever, min_score: float = MIN_SCORE):
+    def __init__(
+        self, retriever: Retriever, min_score: float = MIN_SCORE, topic: bool = True
+    ):
         self.retriever = retriever
         self.min_score = min_score
+        self.topic = topic
 
     def search(self, red_flag: RedFlag) -> dict[str, list[Hit]]:
         """The hits for every role, best first; a role may come back empty."""
-        query = build_query(red_flag)
+        query = build_query(red_flag, self.topic)
         return {
             role.name: [
                 hit
