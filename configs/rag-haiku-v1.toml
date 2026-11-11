@@ -1,0 +1,11 @@
+# Redline proposals: the stage 1 production model.
+name = "rag-haiku-v1"
+provider = "anthropic"
+model = "claude-haiku-5-5"
+prompt = "rag/v1"
+max_tokens = 8000
+timeout_s = 180
+max_retries = 3
+
+[sampling]
+effort = "medium"

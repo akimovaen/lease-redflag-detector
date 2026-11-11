@@ -1,0 +1,41 @@
+{
+ "name": "haiku-v1",
+ "note": "Перший прогін генерації: Haiku, промпт v1",
+ "date": "2026-11-11T12:25:17",
+ "commit": "4b76516",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "rag-haiku-v1",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "rag/v1",
+  "max_tokens": 8000,
+  "timeout_s": 180.0,
+  "max_retries": 3,
+  "context_tokens": null,
+  "max_red_flags": null,
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "rag/v1",
+ "partial": false,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "207fb6de69b7"
+ },
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "558f6f8f5647"
+ },
+ "context_tokens": 6000,
+ "flags": 22,
+ "ok": 22,
+ "repaired": 0,
+ "input_tokens": 194675,
+ "output_tokens": 98072,
+ "cost_usd": 0.0685035,
+ "cost_per_1000_usd": 3.113795454545454,
+ "latency_p50_s": 28.064999999999998
+}

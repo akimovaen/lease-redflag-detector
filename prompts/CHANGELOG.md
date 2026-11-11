@@ -49,3 +49,42 @@ end date before start date), with `{errors}` replaced by the problems found.
 
 Lists the problems and asks for the complete corrected answer: quotes copied character
 for character, a red flag left out if its exact wording cannot be found, no repeats.
+
+## rag
+
+Redline proposals for a red flag from the chunks of the role search
+(`src/lease_redflag_detector/rag/redline.py`). The answer schema is `Redline` in the
+same module. `rag/repair_v1` is the repair message, as in stage 1.
+
+### v3 — fixes from the lawyer's review of the expected answers
+
+| Change | Error in v2 |
+|---|---|
+| The notes under a library wording are the company's position: a limit for a deviation (the lowest cap the general director may approve for an anchor tenant) binds everyone | f07: a 6 % cap was said to be within the general director's power, although the note to Ф-2.3 sets 7 % as the lowest |
+| For a concession, keep the tenant's clause and change only what differs | f10: a related-party sublease with notice "in advance" was rewritten from scratch instead of fixing the notice period |
+| Sublease or transfer without consent to any third party is high risk; to persons linked to the tenant it stays at the default | the lawyer rated unrestricted sublease (f09, f21) high, not the default medium |
+
+The approval text for beyond_concessions in `redline.py` now says the general director
+approves only within the limits of the policy and the clause library.
+
+### v2 — risk levels and gaps from the first run of v1
+
+| Change | Error in v1 (Haiku, 22 red flags) |
+|---|---|
+| Keep the default risk unless the clause clearly fits another level of policy 1.7; critical only as in its examples; breaking several criteria of 1.6 or the precedent criterion does not raise the level | risk differed from the expected one in 9 of 22 answers, 8 times higher: "all four criteria are touched, so critical", sublease raised to high for the precedent criterion |
+| Gaps only for points that change the verdict or the changed clause; facts of the deal missing from the clause are not gaps | every answer had 2–5 gaps, mostly minor details and the unknown term or type of premises |
+
+The expected answers these errors are counted against were a draft not yet reviewed
+by the lawyer.
+
+### v1 — baseline
+
+Use only the sources and cite them; the roles of the sources and their order when
+they disagree (law, the policy in force, committee decisions, market practice); five
+verdicts by the three levels of the policy plus "beyond concessions" and "not
+covered"; the risk level from the default of the red flag type and policy 1.6–1.7;
+the changed clause from the approved wording with deal values kept as placeholders.
+Before the first recorded run two fixes were made on three red flags: at most five
+short findings (answers were cut off at 4000 tokens), conflicts only between sources,
+no invented dates; and gaps for what the sources do not settle, since a claim without
+a source failed validation.

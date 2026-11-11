@@ -1,0 +1,41 @@
+{
+ "name": "haiku-v3",
+ "note": "Промпт v3: межі відступів з бібліотеки, мінімальна правка для поступки, ризик суборенди без згоди; f04 у гривнях",
+ "date": "2026-11-11T14:51:12",
+ "commit": "4b76516",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "rag-haiku-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "rag/v3",
+  "max_tokens": 8000,
+  "timeout_s": 180.0,
+  "max_retries": 3,
+  "context_tokens": null,
+  "max_red_flags": null,
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "rag/v3",
+ "partial": false,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "795b9b0538ca"
+ },
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "558f6f8f5647"
+ },
+ "context_tokens": 6000,
+ "flags": 22,
+ "ok": 22,
+ "repaired": 1,
+ "input_tokens": 214940,
+ "output_tokens": 80635,
+ "cost_usd": 0.0618115,
+ "cost_per_1000_usd": 2.809613636363636,
+ "latency_p50_s": 22.605
+}
