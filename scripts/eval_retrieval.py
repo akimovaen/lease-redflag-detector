@@ -405,8 +405,12 @@ def report(info: dict, metrics: dict) -> str:
 
 def history() -> str:
     rows = []
-    for run in sorted(p for p in OUT.iterdir() if (p / "metrics.json").exists()):
-        info = json.loads((run / "run.json").read_text(encoding="utf-8"))
+    runs = [
+        (json.loads((p / "run.json").read_text(encoding="utf-8")), p)
+        for p in OUT.iterdir()
+        if (p / "metrics.json").exists()
+    ]
+    for info, run in sorted(runs, key=lambda item: item[0]["date"]):
         metrics = json.loads((run / "metrics.json").read_text(encoding="utf-8"))
         m = metrics["by_role"][QUERIES[True]]
         one = metrics["one_list"]["structural / hybrid_rerank"]
