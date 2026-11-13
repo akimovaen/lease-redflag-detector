@@ -1,7 +1,7 @@
 # Red flag retrieval set: red flags as the stage 1 extractor returns them, and the
 # passages the role search (rag/redline_search.py) must find for each of its roles.
 #
-# Reviewed by the landlord's lawyer on 11.11.2026.
+# Reviewed by the landlord's lawyer on 11.11.2026; f23 and f24 on 13.11.2026.
 #
 # `quote` is the clause that raises the flag: Ukrainian leases as they are, other
 # leases in the Ukrainian translation of data/processed/golden_hints/ (the translation
@@ -451,5 +451,44 @@ wording = [
 law = [
   { doc = "civil_code", quote = "Наймач звільняється від плати за весь час, протягом якого майно не могло бути використане ним" },
   { doc = "civil_code", quote = "Наймач має право вимагати розірвання договору найму, якщо" },
+]
+precedent = []
+
+# Flags whose point the sources do not settle. The roles
+# must still find the nearest rules, so the answer can show they do not settle it.
+
+[[flag]]
+id = "f23"
+type = "service_charges_limited"
+source = "authored"
+trap = "not_covered"
+quote = "7.5. Витрати на пальне та обслуговування резервних генераторів, що забезпечують електропостачання Приміщення під час відключень, не включаються до експлуатаційних витрат; ці витрати несе Орендодавець."
+position = [
+  { doc = "policy_2026", quote = "відшкодовує частку експлуатаційних витрат пропорційно орендованій площі: управління і прибирання місць загального користування, охорона, утримання інженерних систем" },
+  { doc = "policy_2026", quote = "Орендна плата не включає експлуатаційні витрати та комунальні послуги" },
+]
+wording = [
+  { doc = "clause_library_2026", quote = "Орендар відшкодовує частку експлуатаційних витрат Орендодавця пропорційно орендованій площі" },
+]
+law = []
+precedent = []
+
+[[flag]]
+id = "f24"
+type = "landlord_repairs"
+source = "authored"
+trap = "not_covered"
+quote = "8.6. Якщо Приміщення пошкоджено внаслідок бойових дій, ракетного удару або падіння уламків, Орендодавець за власний рахунок відновлює оздоблення Приміщення, вікна та вхідні двері протягом 30 (тридцяти) календарних днів."
+position = [
+  { doc = "policy_2026", quote = "Орендар за свій рахунок проводить поточний ремонт приміщення та інженерних мереж у його межах" },
+  { doc = "policy_2026", quote = "Компанія проводить капітальний ремонт конструктивних елементів будівлі" },
+  { doc = "policy_2026", quote = "Будівлю страхує Компанія з відшкодуванням через експлуатаційні витрати" },
+]
+wording = [
+  { doc = "clause_library_2026", quote = "Орендодавець здійснює капітальний ремонт конструктивних елементів будівлі" },
+]
+law = [
+  { doc = "civil_code", quote = "Поточний ремонт речі, переданої у найм, провадиться наймачем за його рахунок" },
+  { doc = "civil_code", quote = "Капітальний ремонт речі, переданої у найм, провадиться наймодавцем за його рахунок" },
 ]
 precedent = []
