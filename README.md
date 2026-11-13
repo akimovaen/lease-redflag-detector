@@ -247,10 +247,13 @@ make calibrate                                      # judge against the lawyer's
 make check                                          # thresholds of evals/thresholds.toml
 ```
 
-CI ([.github/workflows/evals.yml](.github/workflows/evals.yml)) runs on every push and
-pull request: lint, tests, the role search on the eval set and the saved production
-generation run rescored against the expected answers. It fails when a metric is below
-its threshold in [evals/thresholds.toml](evals/thresholds.toml). New generation and
+CI runs on every push and pull request
+([.github/workflows/evals.yml](.github/workflows/evals.yml)): lint, tests and the saved
+production generation run rescored against the expected answers. The role search on
+the eval set ([retrieval.yml](.github/workflows/retrieval.yml)) runs only when the
+search can change; embeddings and reranker scores are cached, so it recomputes only
+what changed. A run fails when a metric is below its threshold in
+[evals/thresholds.toml](evals/thresholds.toml). New generation and
 judging cost money, so they run only by hand from the Actions tab, with the
 `ANTHROPIC_API_KEY` repository secret.
 

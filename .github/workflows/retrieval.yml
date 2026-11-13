@@ -1,0 +1,80 @@
+# The role search on the red flag set against the thresholds in evals/thresholds.toml.
+#
+# Runs only when the search can change: its code, the chunks, the flag set, the
+# thresholds or the dependencies. On a CPU runner the slow parts are embedding the
+# chunks and the reranker; both are cached on disk by a hash of their inputs, and the
+# caches are saved even when a run fails or is cancelled, so only what changed is
+# recomputed. The first run without caches takes about 25 minutes, later ones a few.
+name: retrieval
+
+on:
+  push:
+    paths:
+      - "src/lease_redflag_detector/rag/retrieve.py"
+      - "src/lease_redflag_detector/rag/redline_search.py"
+      - "src/lease_redflag_detector/rag/embeddings.py"
+      - "src/lease_redflag_detector/rag/lexical.py"
+      - "src/lease_redflag_detector/rag/chunking.py"
+      - "src/lease_redflag_detector/rag/metrics.py"
+      - "src/lease_redflag_detector/extraction/schema.py"
+      - "data/corpus/chunks.jsonl"
+      - "evals/redflag_retrieval.toml"
+      - "evals/thresholds.toml"
+      - "scripts/check_evals.py"
+      - "scripts/eval_retrieval.py"
+      - "uv.lock"
+      - ".github/workflows/retrieval.yml"
+  pull_request:
+    paths:
+      - "src/lease_redflag_detector/rag/retrieve.py"
+      - "src/lease_redflag_detector/rag/redline_search.py"
+      - "src/lease_redflag_detector/rag/embeddings.py"
+      - "src/lease_redflag_detector/rag/lexical.py"
+      - "src/lease_redflag_detector/rag/chunking.py"
+      - "src/lease_redflag_detector/rag/metrics.py"
+      - "src/lease_redflag_detector/extraction/schema.py"
+      - "data/corpus/chunks.jsonl"
+      - "evals/redflag_retrieval.toml"
+      - "evals/thresholds.toml"
+      - "scripts/check_evals.py"
+      - "scripts/eval_retrieval.py"
+      - "uv.lock"
+      - ".github/workflows/retrieval.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: retrieval-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+  HF_HUB_DISABLE_TELEMETRY: "1"
+  TOKENIZERS_PARALLELISM: "false"
+
+jobs:
+  retrieval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/huggingface
+            data/processed/embeddings
+            data/processed/rerank
+          key: search-cache-${{ github.run_id }}
+          restore-keys: search-cache-
+      - run: make check-retrieval
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            ~/.cache/huggingface
+            data/processed/embeddings
+            data/processed/rerank
+          key: search-cache-${{ github.run_id }}

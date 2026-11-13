@@ -6,7 +6,9 @@
 - **Hybrid**: the two ranked lists fused with Reciprocal Rank Fusion, which needs no
   score calibration between them: score = Σ 1 / (60 + rank).
 - **Rerank**: a cross-encoder reads the query and each of the top hybrid candidates
-  together and orders them again.
+  together and orders them again. Its scores are cached on disk by a hash of the
+  model, the query and the chunk text: the score of a pair never changes, and on a CPU
+  the reranker is the slow part of an eval run.
 
 Metadata filters apply to every mode: by default only documents in force
 (`status = current`), so the 2024 policy and the repealed laws are left out unless
@@ -17,6 +19,7 @@ regimes (state-property acts and leases).
 """
 
 import atexit
+import hashlib
 import json
 from dataclasses import dataclass, field
 from functools import cache, cached_property
@@ -31,6 +34,7 @@ from lease_redflag_detector.rag.lexical import BM25
 ROOT = Path(__file__).resolve().parents[3]
 CHUNKS = ROOT / "data" / "corpus" / "chunks.jsonl"
 QDRANT = ROOT / "data" / "processed" / "qdrant"
+RERANK_CACHE = ROOT / "data" / "processed" / "rerank"
 RERANKER = "BAAI/bge-reranker-v2-m3"
 MODES = ("vector", "bm25", "hybrid", "hybrid_rerank")
 RRF_K = 60
@@ -138,6 +142,46 @@ def qdrant_client(path: Path | None):
     return client
 
 
+class RerankScores:
+    """The cross-encoder with an on-disk cache of its scores."""
+
+    def __init__(self, model: str = RERANKER, cache_dir: Path = RERANK_CACHE):
+        self.model_name = model
+        self.cache_path = cache_dir / f"{model.replace('/', '__')}.json"
+        self.cache: dict[str, float] = (
+            json.loads(self.cache_path.read_text(encoding="utf-8"))
+            if self.cache_path.exists()
+            else {}
+        )
+
+    @cached_property
+    def model(self):
+        from sentence_transformers import CrossEncoder
+
+        return CrossEncoder(self.model_name, max_length=512)
+
+    def key(self, query: str, text: str) -> str:
+        return hashlib.sha256(
+            f"{self.model_name}\n{query}\n{text}".encode()
+        ).hexdigest()
+
+    def predict(self, pairs: list[tuple[str, str]]) -> list[float]:
+        keys = [self.key(query, text) for query, text in pairs]
+        missing = [
+            (k, pair)
+            for k, pair in zip(keys, pairs, strict=True)
+            if k not in self.cache
+        ]
+        if missing:
+            scores = self.model.predict([pair for _, pair in missing])
+            self.cache.update(
+                (k, float(s)) for (k, _), s in zip(missing, scores, strict=True)
+            )
+            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+            self.cache_path.write_text(json.dumps(self.cache), encoding="utf-8")
+        return [self.cache[k] for k in keys]
+
+
 def rrf(rankings: list[list[int]], k: int = RRF_K) -> list[tuple[int, float]]:
     """Fuse ranked lists of item indices; returns (index, score), best first."""
     scores: dict[int, float] = {}
@@ -188,9 +232,7 @@ class Retriever:
 
     @cached_property
     def reranker(self):
-        from sentence_transformers import CrossEncoder
-
-        return CrossEncoder(RERANKER, max_length=512)
+        return RerankScores()
 
     def vector_ranking(self, query: str, filters: Filters, limit: int) -> list[int]:
         response = self.qdrant.query_points(

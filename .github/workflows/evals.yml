@@ -1,11 +1,11 @@
 # Evals on every push and pull request; thresholds in evals/thresholds.toml.
 #
 # - checks: lint, tests, and the saved production generation run rescored against
-#   the expected answers (no API calls);
-# - retrieval: the role search over the committed chunks with the local embedding
-#   model and reranker (no API calls; models and embeddings are cached);
+#   the expected answers (no API calls, under a minute);
 # - generation: new redline proposals and the LLM judges, run by hand from the
 #   Actions tab because they cost money; needs the ANTHROPIC_API_KEY secret.
+#
+# The retrieval check is in retrieval.yml: it runs only when the search can change.
 name: evals
 
 on:
@@ -17,6 +17,12 @@ on:
         description: "Also generate and judge new answers (API calls, about $0.6)"
         type: boolean
         default: false
+
+# One run per branch at a time: a new push cancels the run of the previous one, which
+# would compete with it for the runners and the caches.
+concurrency:
+  group: evals-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
@@ -36,30 +42,9 @@ jobs:
       - run: make test
       - run: make check-generation
 
-  retrieval:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-        with:
-          enable-cache: true
-      - run: uv sync --locked
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/huggingface
-          key: hf-models-${{ hashFiles('src/lease_redflag_detector/rag/chunking.py', 'src/lease_redflag_detector/rag/retrieve.py') }}
-          restore-keys: hf-models-
-      - uses: actions/cache@v4
-        with:
-          path: data/processed/embeddings
-          key: embeddings-${{ hashFiles('data/corpus/chunks.jsonl') }}
-          restore-keys: embeddings-
-      - run: make check-retrieval
-
   generation:
     if: github.event_name == 'workflow_dispatch' && inputs.generation
-    needs: [checks, retrieval]
+    needs: checks
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -70,17 +55,25 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync --locked
-      - uses: actions/cache@v4
+      # Models and the embedding and reranker caches; saved even if the run fails, so
+      # the next one does not recompute them (see retrieval.yml).
+      - uses: actions/cache/restore@v4
         with:
-          path: ~/.cache/huggingface
-          key: hf-models-${{ hashFiles('src/lease_redflag_detector/rag/chunking.py', 'src/lease_redflag_detector/rag/retrieve.py') }}
-          restore-keys: hf-models-
-      - uses: actions/cache@v4
-        with:
-          path: data/processed/embeddings
-          key: embeddings-${{ hashFiles('data/corpus/chunks.jsonl') }}
-          restore-keys: embeddings-
+          path: |
+            ~/.cache/huggingface
+            data/processed/embeddings
+            data/processed/rerank
+          key: search-cache-${{ github.run_id }}
+          restore-keys: search-cache-
       - run: make evals NAME=ci-${GITHUB_SHA::7} NOTE="CI run on ${GITHUB_SHA::7}"
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            ~/.cache/huggingface
+            data/processed/embeddings
+            data/processed/rerank
+          key: search-cache-${{ github.run_id }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
