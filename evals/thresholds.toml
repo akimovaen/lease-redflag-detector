@@ -13,8 +13,8 @@ avoid_max = 0.0
 
 [generation]
 # The production generation run, rescored against evals/redline_expected.toml.
-# Current (haiku-v3): valid 1.00, verdict 0.95, risk 0.82, cite 1.00, faithfulness 0.72.
-run = "2026-11-11_haiku-v3"
+# Current (haiku-v3-24): valid 1.00, verdict 0.88, risk 0.83, cite 1.00, faithfulness 0.73.
+run = "2026-11-13_haiku-v3-24"
 valid = 1.0
 verdict = 0.85
 risk = 0.75

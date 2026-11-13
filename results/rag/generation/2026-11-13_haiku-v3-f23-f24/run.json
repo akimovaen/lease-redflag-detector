@@ -1,0 +1,41 @@
+{
+ "name": "haiku-v3-f23-f24",
+ "note": "Промпт v3 на нових прапорцях f23 і f24 («немає в документах»)",
+ "date": "2026-11-13T18:16:34",
+ "commit": "7ee484d",
+ "uncommitted_changes": false,
+ "config": {
+  "name": "rag-haiku-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "rag/v3",
+  "max_tokens": 8000,
+  "timeout_s": 180.0,
+  "max_retries": 3,
+  "context_tokens": null,
+  "max_red_flags": null,
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "rag/v3",
+ "partial": true,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "10aea6a0fe31"
+ },
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "558f6f8f5647"
+ },
+ "context_tokens": 6000,
+ "flags": 2,
+ "ok": 2,
+ "repaired": 0,
+ "input_tokens": 17719,
+ "output_tokens": 8123,
+ "cost_usd": 0.0058334,
+ "cost_per_1000_usd": 2.9167,
+ "latency_p50_s": 32.24
+}
