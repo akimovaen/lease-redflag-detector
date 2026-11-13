@@ -2,9 +2,10 @@
 #
 # Runs only when the search can change: its code, the chunks, the flag set, the
 # thresholds or the dependencies. On a CPU runner the slow parts are embedding the
-# chunks and the reranker; both are cached on disk by a hash of their inputs, and the
-# caches are saved even when a run fails or is cancelled, so only what changed is
-# recomputed. The first run without caches takes about 25 minutes, later ones a few.
+# chunks and the reranker; both are cached on disk by a hash of their inputs, so only
+# what changed is recomputed. The reranker scores of the eval set are committed
+# (scoring them from scratch takes over 45 minutes here); the embeddings and the models
+# are kept in the Actions cache, saved even when a run fails or is cancelled.
 name: retrieval
 
 on:

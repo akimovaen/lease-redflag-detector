@@ -228,8 +228,8 @@ data/raw/*
 
 # Local Ukrainian translations to help golden set labeling
 data/processed/golden_hints/*.uk.md
-# Stage 2: embedding and reranker score caches and the local Qdrant index, rebuilt
-# from the chunks
+# Stage 2: the embedding cache and the local Qdrant index, rebuilt from the chunks.
+# The reranker score cache is committed: on a CI runner's CPU the reranker cannot
+# score the eval set in time, and a score never changes for the same pair.
 data/processed/embeddings/
-data/processed/rerank/
 data/processed/qdrant/

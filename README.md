@@ -251,8 +251,10 @@ CI runs on every push and pull request
 ([.github/workflows/evals.yml](.github/workflows/evals.yml)): lint, tests and the saved
 production generation run rescored against the expected answers. The role search on
 the eval set ([retrieval.yml](.github/workflows/retrieval.yml)) runs only when the
-search can change; embeddings and reranker scores are cached, so it recomputes only
-what changed. A run fails when a metric is below its threshold in
+search can change. Embeddings are cached between runs, and the reranker scores are
+committed (`data/processed/rerank/`, keyed by a hash of the model, the query and the
+chunk): the reranker is too slow on the runner's CPU to score the eval set from
+scratch, and CI recomputes only the pairs that changed. A run fails when a metric is below its threshold in
 [evals/thresholds.toml](evals/thresholds.toml). New generation and
 judging cost money, so they run only by hand from the Actions tab, with the
 `ANTHROPIC_API_KEY` repository secret.
