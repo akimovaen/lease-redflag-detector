@@ -26,6 +26,8 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = ROOT / "evals" / "redline_expected.toml"
 OUT = ROOT / "results" / "rag" / "generation"
 SCORES = ("valid", "verdict", "risk", "cite", "gaps")
+# Averages of the LLM judges (scripts/judge_redline.py), if the run was judged.
+JUDGED = ("facts", "clause", "faithfulness")
 
 
 def load_expected() -> dict[str, dict]:
@@ -111,11 +113,21 @@ def scores_md(info: dict, scores: dict) -> str:
     )
 
 
+def judged(folder: Path) -> str:
+    """The judges' averages of a run, or dashes if it was not judged."""
+    path = folder / "judge.json"
+    if not path.exists():
+        return "– | – | –"
+    totals = json.loads(path.read_text(encoding="utf-8"))
+    return " | ".join(fmt(totals[name]) for name in JUDGED)
+
+
 def history(runs: list[tuple[dict, dict]]) -> str:
     rows = [
         f"| [{info['folder']}]({info['folder']}/report.md) | {info['note']} | "
         f"{info['model']} | `{info['prompt']}` | {info['flag_set']['hash'][:8]} | "
         + " | ".join(fmt(scores["totals"][name]) for name in SCORES)
+        + f" | {judged(OUT / info['folder'])}"
         + f" | {info['cost_per_1000_usd']:.2f} | {info['latency_p50_s']:.0f} s |"
         for info, scores in runs
     ]
@@ -125,14 +137,18 @@ def history(runs: list[tuple[dict, dict]]) -> str:
             "",
             (
                 "One row per full run of `scripts/run_redline.py`, scored by "
-                "`scripts/eval_redline.py` against the current expected answers. "
-                "Runs compare only on the same flag set (its hash)."
+                "`scripts/eval_redline.py` against the current expected answers; "
+                "facts, clause and faithfulness from the LLM judges "
+                "(`scripts/judge_redline.py`). Runs compare only on the same flag "
+                "set (its hash)."
             ),
             "",
             "| Run | Note | Model | Prompt | Flag set | "
             + " | ".join(SCORES)
+            + " | "
+            + " | ".join(JUDGED)
             + " | $ / 1000 | Latency p50 |",
-            "|---|---|---|---|---|" + "---|" * len(SCORES) + "---|---|",
+            "|---|---|---|---|---|" + "---|" * (len(SCORES) + len(JUDGED)) + "---|---|",
             *rows,
             "",
         ]

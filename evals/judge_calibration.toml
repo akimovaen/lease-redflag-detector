@@ -1,0 +1,154 @@
+# Calibration of the answer judge: the lawyer's grades of 12 answers.
+#
+# Answers: results/rag/generation/2026-11-11_haiku-v3/report.md (one section per flag).
+# Expected answers: evals/redline_expected.toml.
+#
+# Fill in every `grade` and `clause`, without looking at the judge's grades
+# (judge.jsonl in the run folder). Grades mean the same as for the judge
+# (prompts/judge/answer_v1.md):
+#
+# grade (each key fact)
+#   present   the answer states it, in any words
+#   partial   states part of it or vaguely
+#   missing   does not state it, or states the opposite
+# clause (the changed clause)
+#   good         can be pasted as it is
+#   minor_edits  right in substance, a condition or word to fix
+#   wrong        breaks the policy, keeps the problem or invents values
+#   missing      a changed clause is needed but none is given
+#   not_needed   none is needed and none is given
+# comment: optional, anything the grades do not capture
+#
+# Verdict and risk are not graded here: they are checked deterministically.
+
+run = "2026-11-11_haiku-v3"
+
+[[answer]]
+id = "f01"
+facts = [
+  { fact = "12 місяців менше за мінімум 24 місяці для офісних (36 для торговельних) приміщень, п. 4.2", grade = "present" },
+  { fact = "повідомлення за 3 місяці коротше за 6 місяців, п. 4.2", grade = "present" },
+  { fact = "компенсації немає, а відмова без компенсації неприйнятна, п. 4.3", grade = "present" },
+  { fact = "комітет відхилив пропозицію дозволити розірвання через 12 місяців", grade = "present" },
+  { fact = "запропонована редакція — Ф-4.2 (або Ф-4.1)", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f04"
+facts = [
+  { fact = "плата не змінюється весь строк — неприйнятно, якщо строк понад 12 місяців, п. 2.6", grade = "present" },
+  { fact = "відмова від індексації на весь строк — приклад критичного ризику, п. 1.7", grade = "present" },
+  { fact = "ст. 762 ЦК дозволяє встановити індексацію договором", grade = "present" },
+  { fact = "запропонована редакція — Ф-2.1 (щорічна індексація з 1 березня)", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f05"
+facts = [
+  { fact = "зміна плати лише через переговори (за згодою орендаря) — неприйнятна умова, п. 2.6", grade = "present" },
+  { fact = "базова позиція — автоматична індексація без додаткової угоди, п. 2.1", grade = "partial" },
+  { fact = "повідомлення за 30 днів можна залишити як допустиму поступку, п. 2.5 (Ф-2.2)", grade = "present" },
+  { fact = "запропонована редакція — Ф-2.1, за потреби з Ф-2.2", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f07"
+facts = [
+  { fact = "6 % менше за мінімальну поступку 10 %, але не менше за 5 %, тому не неприйнятно, п. 2.5–2.6", grade = "present" },
+  { fact = "навіть для якірного орендаря генеральний директор може погодити не менше 7 % (Ф-2.3, п. 10.3), тому 6 % не може погодити ніхто", grade = "present" },
+  { fact = "прецедент: 7 % погоджено для якірного орендаря «Зелена Полиця»; зниження до 5 % відхилено", grade = "present" },
+  { fact = "запропонована редакція — Ф-2.3 з граничним розміром 10 % (7 % лише для якірного орендаря за погодженням генерального директора)", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f08"
+facts = [
+  { fact = "формулювання «не відмовляти без серйозної причини» прямо неприйнятне, п. 5.3", grade = "present" },
+  { fact = "базова позиція — згода на власний розсуд Компанії, п. 5.1", grade = "partial" },
+  { fact = "запропонована редакція — Ф-5.1, за потреби з Ф-5.4 (строк розгляду 15 робочих днів)", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f10"
+facts = [
+  { fact = "суборенда пов'язаним особам за письмовим повідомленням — допустима поступка, п. 5.2 (Ф-5.2)", grade = "present" },
+  { fact = "«заздалегідь» замінити на письмове повідомлення не пізніше ніж за 10 робочих днів до передачі", grade = "present" },
+  { fact = "«володіє щонайменше 50 % активів» відрізняється від контролю у Ф-5.2: охоплює лише дочірні компанії, а рівно 50 % може не давати контролю; рішення за юристом", grade = "partial" },
+  { fact = "запропонована редакція — мінімальна правка пункту, а не повна заміна на Ф-5.2", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f12"
+facts = [
+  { fact = "поточний ремонт приміщення та інженерних мереж у його межах — обов'язок орендаря, п. 6.1; за рахунок Компанії — неприйнятно, п. 6.4", grade = "present" },
+  { fact = "утримання спільних інженерних систем будівлі Компанією — допустима поступка лише з відшкодуванням через експлуатаційні витрати, п. 6.3", grade = "present" },
+  { fact = "запропонована редакція — Ф-6.1 і Ф-6.3", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f13"
+facts = [
+  { fact = "ремонт будь-яких пошкоджень приміщення Компанією — поточний ремонт за її рахунок, неприйнятно, п. 6.4", grade = "present" },
+  { fact = "право орендаря ремонтувати за рахунок Компанії без її згоди неприйнятне, п. 6.4", grade = "missing" },
+  { fact = "ст. 776 ЦК: поточний ремонт — обов'язок наймача, якщо інше не встановлено договором", grade = "present" },
+  { fact = "запропонована редакція — Ф-6.1", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f16"
+facts = [
+  { fact = "сплата податку на нерухомість і плати за землю Компанією як власником відповідає п. 7.1, якщо орендар відшкодовує свою частку у складі експлуатаційних витрат", grade = "present" },
+  { fact = "регулярне надання копій підтвердження сплати — поступка, ширша за право ознайомитися з первинними документами, п. 7.3 (Ф-7.4)", grade = "present" },
+  { fact = "у пункті бракує умови про відшкодування цих податків орендарем", grade = "missing" },
+  { fact = "запропонована редакція — мінімальна правка: додати відшкодування частки пропорційно орендованій площі у складі експлуатаційних витрат (Ф-7.1)", grade = "missing" },
+]
+clause = "minor_edits"
+comment = "очікувались мінімальні виправлення клози із додаванням фрази про відшкодування. А тут повністю перероблена клоза"
+
+[[answer]]
+id = "f18"
+facts = [
+  { fact = "формулювання «не може безпідставно відмовити» прямо неприйнятне, п. 5.3", grade = "present" },
+  { fact = "обмеження 50 % площі не робить умову допустимою: згода — на власний розсуд Компанії, п. 5.1", grade = "partial" },
+  { fact = "запропонована редакція — Ф-5.1", grade = "present" },
+]
+clause = "minor_edits"
+comment = "зайве додавання Ф-5.3"
+
+[[answer]]
+id = "f20"
+facts = [
+  { fact = "зміна плати лише за погодженням сторін неприйнятна, п. 2.6", grade = "present" },
+  { fact = "базова позиція — автоматична індексація без додаткової угоди, п. 2.1", grade = "present" },
+  { fact = "ст. 762 ЦК дозволяє встановити індексацію договором", grade = "present" },
+  { fact = "запропонована редакція — Ф-2.1, без посилання на ГК", grade = "present" },
+]
+clause = "good"
+comment = ""
+
+[[answer]]
+id = "f22"
+facts = [
+  { fact = "одностороння відмова суперечить базовій позиції, п. 4.1", grade = "present" },
+  { fact = "повідомлення за 30 днів менше за 3 місяці, компенсації немає — неприйнятно, п. 4.3", grade = "present" },
+  { fact = "Політика не має окремого правила про неможливість користуватися приміщенням через бойові дії", grade = "missing" },
+  { fact = "Ф-10.4: воєнний стан сам по собі не звільняє від зобов'язань (якщо знайдено)", grade = "missing" },
+]
+clause = "good"
+comment = "не врахований gap"
