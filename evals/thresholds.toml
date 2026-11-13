@@ -1,0 +1,25 @@
+# Thresholds of scripts/check_evals.py: CI fails when a metric falls below its minimum
+# (or the avoid share rises above its maximum). Set a little below the current
+# production numbers, so a change that makes things worse fails, and noise does not.
+
+[retrieval]
+# Role search with the production settings (rag/redline_search.py) on
+# evals/redflag_retrieval.toml. Current: overall 0.95, avoid 0.00.
+overall = 0.90
+position = 0.90
+wording = 0.85
+law = 0.85
+avoid_max = 0.0
+
+[generation]
+# The production generation run, rescored against evals/redline_expected.toml.
+# Current (haiku-v3): valid 1.00, verdict 0.95, risk 0.82, cite 1.00, faithfulness 0.72.
+run = "2026-11-11_haiku-v3"
+valid = 1.0
+verdict = 0.85
+risk = 0.75
+cite = 0.95
+# From the LLM judge (judge.json), checked only when the run was judged. Facts and
+# clause are not gates: their agreement with the lawyer is too low
+# (results/rag/judge_calibration.md).
+faithfulness = 0.65

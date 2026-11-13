@@ -233,6 +233,27 @@ ollama pull qwen3:8b
 make run CONFIG=configs/qwen3-8b-t0-capped-v3.toml   # about 30–60 min on a laptop
 ```
 
+Stage 2 runs on the committed chunks (`data/corpus/chunks.jsonl`); the embedding
+model and the reranker are downloaded from Hugging Face on the first run. Every run
+goes to its own folder under `results/rag/` and is added to its `history.md`:
+
+```sh
+make retrieval NAME=my-change NOTE="what changed"   # retrieval eval, no API calls
+make evals NAME=my-change                           # generate, judge, score, check (about $0.6)
+make redline NAME=my-change                         # or step by step: generate (about $0.07)
+make judge RUN=2026-11-13_my-change                 # LLM judges (about $0.5)
+make scores                                         # rescore every generation run
+make calibrate                                      # judge against the lawyer's grades
+make check                                          # thresholds of evals/thresholds.toml
+```
+
+CI ([.github/workflows/evals.yml](.github/workflows/evals.yml)) runs on every push and
+pull request: lint, tests, the role search on the eval set and the saved production
+generation run rescored against the expected answers. It fails when a metric is below
+its threshold in [evals/thresholds.toml](evals/thresholds.toml). New generation and
+judging cost money, so they run only by hand from the Actions tab, with the
+`ANTHROPIC_API_KEY` repository secret.
+
 ## License
 
 The code is released under the [MIT License](LICENSE).
