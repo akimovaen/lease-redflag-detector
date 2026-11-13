@@ -237,6 +237,8 @@ def by_role(flags: list[dict], retriever: Retriever) -> tuple[dict, dict]:
             latencies[topic].append(time.perf_counter() - start)
 
     metrics = {
+        # The query role search uses; history and the threshold table follow it.
+        "query": QUERIES[True],
         "by_role": {
             QUERIES[topic]: role_scores(flags, results[topic], MIN_SCORE)
             | {"latency_p50_s": round(statistics.median(latencies[topic]), 2)}
@@ -412,12 +414,15 @@ def history() -> str:
     ]
     for info, run in sorted(runs, key=lambda item: item[0]["date"]):
         metrics = json.loads((run / "metrics.json").read_text(encoding="utf-8"))
-        m = metrics["by_role"][QUERIES[True]]
+        # Older runs did not record the query; their first one is the one searched.
+        query = metrics.get("query") or next(iter(metrics["by_role"]))
+        m = metrics["by_role"][query]
         one = metrics["one_list"]["structural / hybrid_rerank"]
         rows.append(
             f"| [{run.name}]({run.name}/report.md) | {info['note']} | "
             f"{info['flag_set']['hash'][:8]} | {info['chunks']['hash'][:8]} | "
             f"`{info['commit']}`{'*' if info['uncommitted_changes'] else ''} | "
+            f"{query} | "
             + " | ".join(fmt(m["roles"][role]) for role in SCORED_ROLES)
             + f" | **{fmt(m['overall'])}** | {fmt(m['empty_precedent'])} | "
             f"{fmt(m.get('avoid'))} | {fmt(one[f'recall@{TOP}'])} | "
@@ -430,17 +435,18 @@ def history() -> str:
             (
                 "One row per run of `scripts/eval_retrieval.py`, rebuilt from the run "
                 "folders. Runs compare only with the same flag set and chunks hashes. "
-                "Role columns: search by role with the type description; one list: "
+                "Query: the query role search used in the run; role columns: its "
+                "recall by role; one list: "
                 f"structural chunks, hybrid with reranking, recall@{TOP}. "
                 "\\* uncommitted changes."
             ),
             "",
             (
-                "| Run | Note | Flag set | Chunks | Commit | "
+                "| Run | Note | Flag set | Chunks | Commit | Query | "
                 + " | ".join(SCORED_ROLES)
                 + " | Overall | Empty precedent | Avoid | One list | Latency p50 |"
             ),
-            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
             *rows,
             "",
         ]
