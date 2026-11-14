@@ -1,0 +1,462 @@
+{
+ "one_list": {
+  "structural / vector": {
+   "recall@1": 0.2557,
+   "recall@3": 0.5735,
+   "recall@5": 0.6273,
+   "recall@10": 0.6538,
+   "mrr": 0.9318,
+   "roles": {
+    "position": 0.8409,
+    "wording": 0.9621,
+    "law": 0.0,
+    "precedent": 0.0
+   },
+   "outdated_in_top5": 0,
+   "avoid": 0.0667,
+   "trap_first": 0,
+   "latency_p50_s": 0.026
+  },
+  "structural / bm25": {
+   "recall@1": 0.311,
+   "recall@3": 0.5348,
+   "recall@5": 0.5576,
+   "recall@10": 0.678,
+   "mrr": 0.8712,
+   "roles": {
+    "position": 0.9318,
+    "wording": 0.7803,
+    "law": 0.1579,
+    "precedent": 0.3333
+   },
+   "outdated_in_top5": 0,
+   "avoid": 0.0667,
+   "trap_first": 0,
+   "latency_p50_s": 0.001
+  },
+  "structural / hybrid": {
+   "recall@1": 0.2723,
+   "recall@3": 0.5386,
+   "recall@5": 0.55,
+   "recall@10": 0.6583,
+   "mrr": 0.8333,
+   "roles": {
+    "position": 0.8864,
+    "wording": 0.8939,
+    "law": 0.0526,
+    "precedent": 0.0
+   },
+   "outdated_in_top5": 0,
+   "avoid": 0.0667,
+   "trap_first": 0,
+   "latency_p50_s": 0.027
+  },
+  "structural / hybrid_rerank": {
+   "recall@1": 0.2254,
+   "recall@3": 0.5364,
+   "recall@5": 0.6258,
+   "recall@10": 0.6947,
+   "mrr": 0.8091,
+   "roles": {
+    "position": 0.9318,
+    "wording": 0.9318,
+    "law": 0.1053,
+    "precedent": 0.0
+   },
+   "outdated_in_top5": 0,
+   "avoid": 0.0667,
+   "trap_first": 0,
+   "latency_p50_s": 2.9
+  },
+  "fixed / vector": {
+   "recall@1": 0.2754,
+   "recall@3": 0.4758,
+   "recall@5": 0.5583,
+   "recall@10": 0.5879,
+   "mrr": 0.822,
+   "roles": {
+    "position": 0.8409,
+    "wording": 0.75,
+    "law": 0.0,
+    "precedent": 0.0
+   },
+   "outdated_in_top5": 0,
+   "avoid": 0.0667,
+   "trap_first": 1,
+   "latency_p50_s": 0.028
+  },
+  "fixed / bm25": {
+   "recall@1": 0.3019,
+   "recall@3": 0.5652,
+   "recall@5": 0.6212,
+   "recall@10": 0.7093,
+   "mrr": 0.8687,
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.9015,
+    "law": 0.1053,
+    "precedent": 0.0833
+   },
+   "outdated_in_top5": 0,
+   "avoid": 0.0667,
+   "trap_first": 0,
+   "latency_p50_s": 0.001
+  },
+  "fixed / hybrid": {
+   "recall@1": 0.3133,
+   "recall@3": 0.5652,
+   "recall@5": 0.6068,
+   "recall@10": 0.6553,
+   "mrr": 0.851,
+   "roles": {
+    "position": 0.9318,
+    "wording": 0.8636,
+    "law": 0.0,
+    "precedent": 0.0
+   },
+   "outdated_in_top5": 0,
+   "avoid": 0.0667,
+   "trap_first": 1,
+   "latency_p50_s": 0.028
+  },
+  "fixed / hybrid_rerank": {
+   "recall@1": 0.1981,
+   "recall@3": 0.5114,
+   "recall@5": 0.5864,
+   "recall@10": 0.6727,
+   "mrr": 0.7607,
+   "roles": {
+    "position": 0.9091,
+    "wording": 0.9545,
+    "law": 0.0,
+    "precedent": 0.0
+   },
+   "outdated_in_top5": 0,
+   "avoid": 0.0667,
+   "trap_first": 0,
+   "latency_p50_s": 2.871
+  },
+  "structural / hybrid_rerank / all versions": {
+   "recall@1": 0.2027,
+   "recall@3": 0.5091,
+   "recall@5": 0.5902,
+   "recall@10": 0.6614,
+   "mrr": 0.7742,
+   "roles": {
+    "position": 0.8864,
+    "wording": 0.9318,
+    "law": 0.0,
+    "precedent": 0.0
+   },
+   "outdated_in_top5": 23,
+   "avoid": 1.0,
+   "trap_first": 2,
+   "latency_p50_s": 2.917
+  }
+ },
+ "by_role": {
+  "clause + type description": {
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.7727,
+    "law": 0.8158,
+    "precedent": 0.8889
+   },
+   "overall": 0.8609,
+   "empty_precedent": 0.4375,
+   "avoid": 0.0,
+   "latency_p50_s": 5.18
+  },
+  "clause only": {
+   "roles": {
+    "position": 0.9318,
+    "wording": 0.6591,
+    "law": 0.4737,
+    "precedent": 0.4444
+   },
+   "overall": 0.7149,
+   "empty_precedent": 0.875,
+   "avoid": 0.0,
+   "latency_p50_s": 4.8
+  }
+ },
+ "thresholds": {
+  "0": {
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.7727,
+    "law": 0.9211,
+    "precedent": 1.0
+   },
+   "overall": 0.9019,
+   "empty_precedent": 0.0,
+   "avoid": 0.0
+  },
+  "0.01": {
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.7727,
+    "law": 0.9211,
+    "precedent": 1.0
+   },
+   "overall": 0.9019,
+   "empty_precedent": 0.3125,
+   "avoid": 0.0
+  },
+  "0.02": {
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.7727,
+    "law": 0.8684,
+    "precedent": 0.9444
+   },
+   "overall": 0.8811,
+   "empty_precedent": 0.375,
+   "avoid": 0.0
+  },
+  "0.05": {
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.7727,
+    "law": 0.8158,
+    "precedent": 0.8889
+   },
+   "overall": 0.8609,
+   "empty_precedent": 0.4375,
+   "avoid": 0.0
+  },
+  "0.1": {
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.7727,
+    "law": 0.7632,
+    "precedent": 0.7778
+   },
+   "overall": 0.8404,
+   "empty_precedent": 0.625,
+   "avoid": 0.0
+  },
+  "0.2": {
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.7273,
+    "law": 0.6579,
+    "precedent": 0.3333
+   },
+   "overall": 0.7761,
+   "empty_precedent": 0.8125,
+   "avoid": 0.0
+  },
+  "0.3": {
+   "roles": {
+    "position": 0.9773,
+    "wording": 0.7273,
+    "law": 0.5,
+    "precedent": 0.1667
+   },
+   "overall": 0.7273,
+   "empty_precedent": 1.0,
+   "avoid": 0.0
+  }
+ },
+ "per_flag": {
+  "f01": {
+   "type": "tenant_break_option",
+   "trap": "outdated_policy",
+   "position": "4/4",
+   "wording": "3/3",
+   "law": "1/1",
+   "precedent": "2/2",
+   "avoid": "0/1"
+  },
+  "f02": {
+   "type": "tenant_break_option",
+   "trap": null,
+   "position": "2/2",
+   "wording": "2/2",
+   "law": "1/1",
+   "precedent": "2/3",
+   "avoid": null
+  },
+  "f03": {
+   "type": "tenant_break_option",
+   "trap": null,
+   "position": "2/2",
+   "wording": "0/3",
+   "law": "1/1",
+   "precedent": "2/3",
+   "avoid": null
+  },
+  "f04": {
+   "type": "indexation_limited",
+   "trap": null,
+   "position": "1/1",
+   "wording": "1/1",
+   "law": "0/1",
+   "precedent": "empty",
+   "avoid": null
+  },
+  "f05": {
+   "type": "indexation_limited",
+   "trap": null,
+   "position": "2/2",
+   "wording": "1/2",
+   "law": "1/1",
+   "precedent": "not empty",
+   "avoid": null
+  },
+  "f06": {
+   "type": "indexation_limited",
+   "trap": null,
+   "position": "1/1",
+   "wording": "0/1",
+   "law": "0/1",
+   "precedent": "not empty",
+   "avoid": null
+  },
+  "f07": {
+   "type": "indexation_limited",
+   "trap": null,
+   "position": "1/2",
+   "wording": "1/1",
+   "law": "1/1",
+   "precedent": "4/4",
+   "avoid": null
+  },
+  "f08": {
+   "type": "sublease_permitted",
+   "trap": null,
+   "position": "2/2",
+   "wording": "1/1",
+   "law": "1/1",
+   "precedent": "not empty",
+   "avoid": null
+  },
+  "f09": {
+   "type": "sublease_permitted",
+   "trap": null,
+   "position": "2/2",
+   "wording": "1/1",
+   "law": "1/1",
+   "precedent": "1/1",
+   "avoid": null
+  },
+  "f10": {
+   "type": "sublease_permitted",
+   "trap": null,
+   "position": "1/1",
+   "wording": "1/1",
+   "law": "1/1",
+   "precedent": "not empty",
+   "avoid": null
+  },
+  "f11": {
+   "type": "sublease_permitted",
+   "trap": null,
+   "position": "1/1",
+   "wording": "1/1",
+   "law": null,
+   "precedent": "not empty",
+   "avoid": null
+  },
+  "f12": {
+   "type": "landlord_repairs",
+   "trap": null,
+   "position": "2/2",
+   "wording": "2/2",
+   "law": "1/1",
+   "precedent": "empty",
+   "avoid": null
+  },
+  "f13": {
+   "type": "landlord_repairs",
+   "trap": null,
+   "position": "2/2",
+   "wording": "1/1",
+   "law": "1/1",
+   "precedent": "empty",
+   "avoid": null
+  },
+  "f14": {
+   "type": "landlord_repairs",
+   "trap": null,
+   "position": "1/1",
+   "wording": "1/1",
+   "law": "1/1",
+   "precedent": "empty",
+   "avoid": null
+  },
+  "f15": {
+   "type": "service_charges_limited",
+   "trap": null,
+   "position": "2/2",
+   "wording": "1/1",
+   "law": null,
+   "precedent": "not empty",
+   "avoid": null
+  },
+  "f16": {
+   "type": "service_charges_limited",
+   "trap": null,
+   "position": "1/1",
+   "wording": "1/1",
+   "law": "0/1",
+   "precedent": "empty",
+   "avoid": null
+  },
+  "f17": {
+   "type": "service_charges_limited",
+   "trap": null,
+   "position": "2/2",
+   "wording": "1/1",
+   "law": null,
+   "precedent": "empty",
+   "avoid": null
+  },
+  "f18": {
+   "type": "sublease_permitted",
+   "trap": "outdated_policy",
+   "position": "2/2",
+   "wording": "0/1",
+   "law": "1/1",
+   "precedent": "not empty",
+   "avoid": "0/1"
+  },
+  "f19": {
+   "type": "landlord_repairs",
+   "trap": "outdated_policy",
+   "position": "2/2",
+   "wording": "2/2",
+   "law": "1/1",
+   "precedent": "empty",
+   "avoid": "0/1"
+  },
+  "f20": {
+   "type": "indexation_limited",
+   "trap": "outdated_law",
+   "position": "2/2",
+   "wording": "0/1",
+   "law": "1/1",
+   "precedent": "not empty",
+   "avoid": "0/1"
+  },
+  "f21": {
+   "type": "sublease_permitted",
+   "trap": "similar_document",
+   "position": "2/2",
+   "wording": "1/1",
+   "law": "1/1",
+   "precedent": "1/1",
+   "avoid": "0/3"
+  },
+  "f22": {
+   "type": "tenant_break_option",
+   "trap": "not_covered",
+   "position": "2/2",
+   "wording": "1/2",
+   "law": "1/2",
+   "precedent": "not empty",
+   "avoid": null
+  }
+ }
+}

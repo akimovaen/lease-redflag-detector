@@ -1,0 +1,11 @@
+# Judges of redline answers: a stronger model than the generator.
+name = "judge-sonnet-v1"
+provider = "anthropic"
+model = "claude-sonnet-5-5"
+prompt = "judge/answer_v1"
+max_tokens = 4000
+timeout_s = 180
+max_retries = 3
+
+[sampling]
+effort = "low"

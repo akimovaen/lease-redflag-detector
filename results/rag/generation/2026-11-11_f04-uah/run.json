@@ -1,0 +1,41 @@
+{
+ "name": "f04-uah",
+ "note": "f04: юані замінено на гривні",
+ "date": "2026-11-11T13:23:23",
+ "commit": "4b76516",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "rag-haiku-v2",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "rag/v2",
+  "max_tokens": 8000,
+  "timeout_s": 180.0,
+  "max_retries": 3,
+  "context_tokens": null,
+  "max_red_flags": null,
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "rag/v2",
+ "partial": true,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "795b9b0538ca"
+ },
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "558f6f8f5647"
+ },
+ "context_tokens": 6000,
+ "flags": 1,
+ "ok": 1,
+ "repaired": 0,
+ "input_tokens": 9601,
+ "output_tokens": 3933,
+ "cost_usd": 0.0029266,
+ "cost_per_1000_usd": 2.9266,
+ "latency_p50_s": 38.7
+}

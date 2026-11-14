@@ -1,0 +1,35 @@
+{
+ "name": "no-rerank",
+ "note": "Пошук по ролях і без reranker",
+ "date": "2026-11-14T11:23:43",
+ "commit": "a73977c",
+ "uncommitted_changes": true,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "10aea6a0fe31"
+ },
+ "flags": 24,
+ "evidence": 114,
+ "trap_flags": 5,
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "558f6f8f5647"
+ },
+ "embedding_model": "intfloat/multilingual-e5-base",
+ "reranker": "BAAI/bge-reranker-v2-m3",
+ "parameters": {
+  "top": 10,
+  "rrf_k": 60,
+  "candidates": 50,
+  "rerank_candidates_one_list": 30,
+  "rerank_candidates_by_role": 15,
+  "min_score": 0.01,
+  "roles": {
+   "position": 3,
+   "wording": 3,
+   "law": 3,
+   "precedent": 2,
+   "market": 2
+  }
+ }
+}

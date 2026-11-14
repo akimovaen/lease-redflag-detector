@@ -1,0 +1,20 @@
+{
+ "totals": {
+  "valid": 1.0,
+  "verdict": 1.0,
+  "risk": 1.0,
+  "cite": 1.0,
+  "gaps": 0.0
+ },
+ "per_flag": {
+  "f04": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 0.0,
+   "got": "unacceptable / critical",
+   "expected": "unacceptable / critical"
+  }
+ }
+}

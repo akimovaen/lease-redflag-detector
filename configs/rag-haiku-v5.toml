@@ -1,0 +1,12 @@
+# Prompt rag/v5, not kept (REPORT.md, error 2). It needs the gap schema of commit
+# 5c6bae2; on later commits gaps are plain strings again.
+name = "rag-haiku-v5"
+provider = "anthropic"
+model = "claude-haiku-5-5"
+prompt = "rag/v5"
+max_tokens = 8000
+timeout_s = 180
+max_retries = 3
+
+[sampling]
+effort = "medium"

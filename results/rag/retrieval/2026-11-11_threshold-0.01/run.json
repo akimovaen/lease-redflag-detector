@@ -1,0 +1,35 @@
+{
+ "name": "threshold-0.01",
+ "note": "Поріг reranker 0.05 → 0.01",
+ "date": "2026-11-11T11:01:47",
+ "commit": "1a40fed",
+ "uncommitted_changes": true,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "207fb6de69b7"
+ },
+ "flags": 22,
+ "evidence": 105,
+ "trap_flags": 5,
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "558f6f8f5647"
+ },
+ "embedding_model": "intfloat/multilingual-e5-base",
+ "reranker": "BAAI/bge-reranker-v2-m3",
+ "parameters": {
+  "top": 10,
+  "rrf_k": 60,
+  "candidates": 50,
+  "rerank_candidates_one_list": 30,
+  "rerank_candidates_by_role": 15,
+  "min_score": 0.01,
+  "roles": {
+   "position": 3,
+   "wording": 2,
+   "law": 3,
+   "precedent": 2,
+   "market": 2
+  }
+ }
+}

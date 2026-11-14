@@ -1,0 +1,11 @@
+# Redline proposals: the stronger model, for comparison.
+name = "rag-sonnet-v3"
+provider = "anthropic"
+model = "claude-sonnet-5-5"
+prompt = "rag/v3"
+max_tokens = 8000
+timeout_s = 180
+max_retries = 3
+
+[sampling]
+effort = "medium"
