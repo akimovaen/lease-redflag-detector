@@ -32,15 +32,17 @@ faithfulness = 0.65
 [fresh]
 # A run CI generates on a pull request to main with the production config, unjudged.
 # Generation is not deterministic and one red flag is 0.04 of a score, so verdict and
-# risk are looser than for the saved run. Four runs of v3 on the same code gave verdict
+# risk are looser than for the saved run. Five runs of v3 on the same code gave verdict
 # 0.79-0.88; 0.70 (17 of 24) leaves two flags of room below the lowest. valid
 # and cite do not depend on the model's judgment and stay strict.
 valid = 1.0
 cite = 0.95
 verdict = 0.70
 risk = 0.70
-# Routing varies more between runs: over four runs of v3 referred was 0.73-1.00 and
-# referred_extra 0.00-0.23.
-referred = 0.65
+# Routing varies more between runs: over five runs of v3 referred was 0.55-1.00 (11
+# flags, one is 0.09) and referred_extra 0.00-0.31. referred was 0.65, set on four runs;
+# the fifth (CI on PR #20) gave 0.55 with the same generation code, so it is now 0.45:
+# it catches a prompt that stops naming gaps (v5: 0.27), not the noise.
+referred = 0.45
 no_answer = 0.5
 referred_extra_max = 0.35

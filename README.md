@@ -64,14 +64,14 @@ landlord's lawyer; details, the judge calibration and the error analysis are in
 |---|---|---|---|---|---|---|---|---|---|---|
 | claude-haiku-5-5 | rag/v3 | 0.95 | 0 | 0.88 (0.79–0.88) | 0.83 | 1.00 | 0.73 | 2 of 2 | 23 s | 2.82 |
 
-The numbers are of the saved production run; the verdict range is over four runs of
+The numbers are of the saved production run; the verdict range is over five runs of
 the same config (mean 0.84), so differences of a few hundredths are noise. Both
-questions without an answer went to the lawyer in all four runs.
+questions without an answer went to the lawyer in all five runs.
 
 The main error: when the sources do not settle a question, the model names the gap but
 still gives a verdict instead of not_covered (0 of 2 such flags). So every answer with
 a gap is marked in code as needing the lawyer's decision: both such flags are referred,
-and 0 to 3 of the 13 answers that need none.
+and 0 to 4 of the 13 answers that need none.
 
 ## Stage 2: RAG
 
