@@ -1,0 +1,41 @@
+{
+ "name": "haiku-v4",
+ "note": "Промпт v4: прогалина, що змінює вердикт, — not_covered (поле в схемі, перевірка в коді)",
+ "date": "2026-11-14T11:39:46",
+ "commit": "a73977c",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "rag-haiku-v4",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "rag/v4",
+  "max_tokens": 8000,
+  "timeout_s": 180.0,
+  "max_retries": 3,
+  "context_tokens": null,
+  "max_red_flags": null,
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "rag/v4",
+ "partial": false,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "10aea6a0fe31"
+ },
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "558f6f8f5647"
+ },
+ "context_tokens": 6000,
+ "flags": 24,
+ "ok": 24,
+ "repaired": 0,
+ "input_tokens": 228821,
+ "output_tokens": 96754,
+ "cost_usd": 0.0712591,
+ "cost_per_1000_usd": 2.969129166666667,
+ "latency_p50_s": 19.08
+}

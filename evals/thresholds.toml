@@ -23,3 +23,13 @@ cite = 0.95
 # clause are not gates: their agreement with the lawyer is too low
 # (results/rag/judge_calibration.md).
 faithfulness = 0.65
+
+[fresh]
+# A run CI generates on a pull request to main with the production config, unjudged.
+# Generation is not deterministic and one red flag is 0.04 of a score, so verdict and
+# risk are looser than for the saved run: they catch a change that breaks three or
+# more answers. valid and cite do not depend on the model's judgment and stay strict.
+valid = 1.0
+cite = 0.95
+verdict = 0.75
+risk = 0.70

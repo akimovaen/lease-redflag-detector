@@ -56,6 +56,23 @@ Redline proposals for a red flag from the chunks of the role search
 (`src/lease_redflag_detector/rag/redline.py`). The answer schema is `Redline` in the
 same module. `rag/repair_v1` is the repair message, as in stage 1.
 
+### v5 — which gaps change the verdict
+
+| Change | Error in v4 |
+|---|---|
+| Only a matter on which the sources contain no rule changes the verdict. Doubts about the clause or the deal (what it means, other terms, facts) and how to apply a rule the sources do contain are gaps without the mark; the clause is assessed as written | three flags the sources settle got not_covered: the model marked the meaning of the clause, the type of premises, other terms of the lease and the reading of a policy term as verdict-changing |
+
+The one refinement of the v4 rule; further changes need a set the rule was not tuned on.
+
+### v4 — a gap that changes the verdict means not_covered
+
+| Change | Error in v3 |
+|---|---|
+| Each gap is marked whether it changes the verdict (`Gap.changes_verdict` in the schema); if one does, the verdict is not_covered with no changed clause. The code checks both directions and sends a mismatch back for repair | in the 24-flag run the model never said not_covered: on the two flags the sources do not settle it named the deciding point as a gap and gave a verdict anyway |
+
+A general rule, not written for those two flags: the prompt names no topic of theirs.
+Older answers keep gaps as plain strings; the readers accept both.
+
 ### v3 — fixes from the lawyer's review of the expected answers
 
 | Change | Error in v2 |

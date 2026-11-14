@@ -17,6 +17,7 @@ import anthropic
 from pydantic import BaseModel, Field
 
 from lease_redflag_detector.extraction.extractor import RunConfig, load_prompt
+from lease_redflag_detector.rag.redline import gap_line
 
 FACT_SCORES = {"present": 1.0, "partial": 0.5, "missing": 0.0}
 CLAUSE_SCORES = {"good": 1.0, "minor_edits": 0.5, "wrong": 0.0, "missing": 0.0}
@@ -94,7 +95,7 @@ def render_answer(row: dict, expected: dict) -> str:
     output = row["output"]
     facts = "\n".join(f"{i}. {fact}" for i, fact in enumerate(expected["key_facts"], 1))
     findings = "\n".join(f"- {claim['text']}" for claim in output["findings"])
-    gaps = "\n".join(f"- {gap}" for gap in output["gaps"]) or "(none)"
+    gaps = "\n".join(f"- {gap_line(gap)}" for gap in output["gaps"]) or "(none)"
     return f"""<clause type="{row["type"]}">
 {row["quote"]}
 </clause>

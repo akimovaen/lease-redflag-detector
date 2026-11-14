@@ -14,8 +14,10 @@ computed here, not asked of the model. The risk level starts from a default per 
 type (`DEFAULT_RISK`); the model may move it and must say why.
 
 An answer is valid when it matches the schema, every source it cites is in the context,
-every claim cites one, and a changed clause is given exactly when one is needed. If it
-is not, the model gets the problems back and one chance to fix them, as in stage 1.
+every claim cites one, a changed clause is given exactly when one is needed, and the
+verdict is not_covered exactly when a gap changes it (from prompt rag/v4: the model
+marks each gap, and the code keeps the verdict consistent with the marks). If it is
+not, the model gets the problems back and one chance to fix them, as in stage 1.
 """
 
 import time
@@ -93,6 +95,23 @@ class Claim(BaseModel):
     )
 
 
+class Gap(BaseModel):
+    text: str = Field(description="A point the sources do not settle, in Ukrainian.")
+    changes_verdict: bool = Field(
+        description=(
+            "True if the verdict depends on how the lawyer decides this point: it "
+            "would differ for different answers to it."
+        )
+    )
+
+
+def gap_line(gap: dict | str) -> str:
+    """A saved gap as one line; answers before prompt rag/v4 have plain strings."""
+    if isinstance(gap, str):
+        return gap
+    return gap["text"] + (" (змінює вердикт)" if gap["changes_verdict"] else "")
+
+
 class Redline(BaseModel):
     verdict: Verdict = Field(
         description=(
@@ -127,10 +146,11 @@ class Redline(BaseModel):
     proposed_sources: list[str] = Field(
         description="Sources the changed clause is based on; empty if there is none."
     )
-    gaps: list[str] = Field(
+    gaps: list[Gap] = Field(
         description=(
-            "Points of the clause the sources do not settle, in Ukrainian, without "
-            "sources. Empty if they settle all of them."
+            "Points of the clause the sources do not settle, without sources. Empty "
+            "if they settle all of them. If any changes the verdict, the verdict is "
+            "not_covered."
         )
     )
     conflicts: list[Claim] = Field(
@@ -255,6 +275,17 @@ def validate(raw: str, ids: set[str]) -> tuple[Redline | None, str | None]:
         problems.append(f"proposed_clause: must be null for verdict {output.verdict}")
     if output.proposed_clause and not output.proposed_sources:
         problems.append("proposed_sources: empty for a changed clause")
+    open_points = [gap.text for gap in output.gaps if gap.changes_verdict]
+    if open_points and output.verdict != Verdict.NOT_COVERED:
+        problems.append(
+            f"verdict: must be not_covered, since the gap {open_points[0][:100]!r} "
+            "changes the verdict; otherwise the gap does not change it"
+        )
+    if output.verdict == Verdict.NOT_COVERED and not open_points:
+        problems.append(
+            "gaps: not_covered needs the gap that changes the verdict; otherwise the "
+            "sources settle the point and the verdict is another one"
+        )
     return (None, "\n".join(problems)) if problems else (output, None)
 
 

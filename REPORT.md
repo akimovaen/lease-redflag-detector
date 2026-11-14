@@ -341,8 +341,9 @@ its sources, gaps (points the sources do not settle) and conflicts between sourc
 Who approves follows from the verdict in code. Every cited id is checked against the
 context, with one repair attempt.
 
-**Test set** (`evals/`). 24 red flags, written before any model answer and reviewed
-by the landlord's lawyer, who corrected every expected answer:
+**Test set** (`evals/`). The system answers a red flag, not a free question, so each
+red flag is one question of the test set. 24 red flags, written before any model
+answer and reviewed by the landlord's lawyer, who corrected every expected answer:
 
 - `redflag_retrieval.toml`: the clause and, per role, the passages the search must
   find, as quotes copied from the documents, so any chunking is scored alike;
@@ -370,32 +371,56 @@ wrong-regime documents) any role returns; it must be 0. Every run is kept in
 | two queries fused (rejected) | 0.98 | 0.86 | 0.79 | 1.00 | 0.91 | 0.00 |
 | **24 flags** (f23, f24 added) | 0.98 | 0.94 | 0.93 | 1.00 | **0.95** | 0.00 |
 
-The role search against one list over the whole corpus, on the 24 flags:
+**Search modes in one list.** The clause and the type description as one query over
+the whole corpus, top 10, structural chunks (run `2026-11-14_no-rerank`; MRR is the
+reciprocal rank of the first expected passage):
 
-| Search | Recall | position | wording | law | precedent | Avoid |
+| Search | recall@10 | MRR | position | wording | law | precedent |
 |---|---|---|---|---|---|---|
-| one list, top 10, structural chunks, hybrid + rerank | 0.70 | 0.92 | 0.94 | 0.10 | 0.00 | 0.07 |
-| same, fixed-size chunks | 0.68 | 0.90 | 0.96 | 0.00 | 0.00 | 0.07 |
-| same, outdated documents not filtered out | 0.67 | 0.88 | 0.94 | 0.00 | 0.00 | 1.00 |
-| **by role**, clause only | 0.81 | 0.98 | 0.75 | 0.60 | 0.78 | 0.00 |
-| **by role**, clause + type description | **0.95** | 0.98 | 0.94 | 0.93 | 1.00 | 0.00 |
-| same, fixed-size chunks | 0.90 | 0.97 | 1.00 | 0.70 | 0.71 | 0.00 |
+| vector only | 0.66 | **0.92** | 0.84 | 0.97 | 0.00 | 0.00 |
+| BM25 only | 0.68 | 0.88 | 0.92 | 0.80 | 0.15 | 0.33 |
+| hybrid (RRF) | 0.67 | 0.85 | 0.88 | 0.90 | 0.05 | 0.00 |
+| hybrid + rerank | **0.70** | 0.85 | 0.92 | 0.94 | 0.10 | 0.00 |
 
-One list of 10 is filled by the policy and the library, which match the clause best;
-the law and the minutes almost never make it. Searching each role separately, with
-about the same number of chunks (11), finds the law article and the precedent for
-nearly every flag. The type description in the query adds the vocabulary the clause
-lacks ("суборенда", "згода наймодавця") and is worth 0.14. The status filter is what
-keeps the traps out: without it every trap passage is returned.
+In one list the modes hardly differ, and by MRR plain vector search is even the best.
+The list is the problem, not the ranking: all four fill the 10 places with the policy
+and the library, which match the clause best, and leave out the law and the minutes.
 
-Structural chunks against fixed windows matter little in one list (0.70 against
-0.68) but in the role search they are 0.95 against 0.90 (run `2026-11-14_fixed-roles`).
-The difference is in the law (0.93 against 0.70) and the precedents (1.00 against
-0.71), the short units: a 350-token window holds parts of two or three articles or
-decisions, which likely dilutes the match (not checked hit by hit). Fixed windows find the library
-wording slightly better (1.00 against 0.94), since one window often holds a clause and
-its neighbour. The reranker threshold was chosen on the structural chunks, which
-favours them somewhat.
+**Search by role** against one list, on the 24 flags:
+
+| Search | Recall | position | wording | law | precedent | Empty precedent | Avoid |
+|---|---|---|---|---|---|---|---|
+| one list, top 10, hybrid + rerank | 0.70 | 0.92 | 0.94 | 0.10 | 0.00 | | 0.07 |
+| same, fixed-size chunks | 0.68 | 0.90 | 0.96 | 0.00 | 0.00 | | 0.07 |
+| same, outdated documents not filtered out | 0.67 | 0.88 | 0.94 | 0.00 | 0.00 | | 1.00 |
+| **by role**, clause only | 0.81 | 0.98 | 0.75 | 0.60 | 0.78 | 0.83 | 0.00 |
+| **by role**, clause + type description | **0.95** | 0.98 | 0.94 | 0.93 | 1.00 | 0.39 | 0.00 |
+| same, fixed-size chunks | 0.90 | 0.97 | 1.00 | 0.70 | 0.71 | 0.50 | 0.00 |
+| same, hybrid without reranker | 0.93 | 0.98 | 0.98 | 0.78 | 0.78 | 0.00 | 0.00 |
+
+Empty precedent: of the flags with no precedent in the minutes, the share whose
+precedent role comes back empty.
+
+Searching each role separately, with about the same number of chunks (11), finds the
+law article and the precedent for nearly every flag: 0.70 → 0.95. The type description
+in the query adds the vocabulary the clause lacks ("суборенда", "згода наймодавця") and
+is worth 0.14. The status filter is what keeps the traps out: without it every trap
+passage is returned.
+
+The reranker earns its place in the role search, not in one list. Within a role it
+brings the right law article and precedent into the top k (law 0.78 → 0.93, precedent
+0.78 → 1.00), and its score is what the threshold cuts at: without it every role is
+always full, and a flag with no precedent gets two minutes that are not its precedent in its context
+(empty precedent 0.00 against 0.39). Hybrid search without the reranker finds the
+library wording slightly better (0.98 against 0.94).
+
+Structural chunks against fixed windows matter little in one list (0.70 against 0.68)
+but in the role search they are 0.95 against 0.90. The difference is in the law (0.93
+against 0.70) and the precedents (1.00 against 0.71), the short units: a 350-token
+window holds parts of two or three articles or decisions, which likely dilutes the
+match (not checked hit by hit). Fixed windows find the library wording slightly better
+(1.00 against 0.94), since one window often holds a clause and its neighbour. The
+reranker threshold was chosen on the structural chunks, which favours them somewhat.
 
 The reranker threshold and k were chosen on this set, so 0.95 is optimistic: there is
 no held-out set yet.
@@ -416,6 +441,8 @@ the claims their cited sources support).
 | Haiku, prompt v2 | 22 | 1.00 | 0.86 | 0.86 | 0.98 | 0.59 | | | | 2.86 | 24 s |
 | Haiku, prompt v3 | 22 | 1.00 | 0.95 | 0.82 | 1.00 | 0.73 | 0.93 | 0.68 | 0.72 | 2.81 | 23 s |
 | **Haiku, prompt v3** | **24** | 1.00 | **0.88** | 0.83 | 1.00 | 0.75 | 0.89 | 0.62 | 0.73 | 2.82 | 23 s |
+| Haiku, prompt v4 (not kept) | 24 | 1.00 | 0.83 | 0.83 | 0.99 | 0.71 | | | | 2.97 | 19 s |
+| Haiku, prompt v5 (not kept) | 24 | 1.00 | 0.83 | 0.88 | 1.00 | 0.75 | | | | 2.94 | 18 s |
 
 v1 and v2 were scored against the draft of the expected answers, which the lawyer then
 corrected (f04 also changed currency), so the rows compare only roughly. The 24-flag
@@ -425,6 +452,14 @@ missed (error 2).
 
 19 of the 24 expected verdicts are `unacceptable`, so an answer that always says so
 would score 0.79 on verdict; the metric is read with that in mind.
+
+**"I don't know".** The verdict for a question the sources do not settle is
+`not_covered`. In the 24-flag run it was expected 2 times and given 0 times: the model
+gave 20 `unacceptable`, 3 `beyond_concessions` and 1 `concession`. There are no false
+`not_covered` either, so a fix can be checked both ways (f22 looks uncovered but is
+settled). The search half of "I don't know" works: a role with nothing above the
+reranker threshold comes back empty (above). The generation half does not, and two
+prompt fixes did not change that (error 2).
 
 ### The judge and its calibration
 
@@ -467,8 +502,11 @@ eval set when the search code, the chunks, the flag set or the thresholds change
 about 6 minutes. Either fails when a metric is under its threshold in
 [evals/thresholds.toml](evals/thresholds.toml), set a little under the current
 numbers: retrieval overall ≥ 0.90 and no trap passage; valid 1.00, verdict ≥ 0.85, risk
-≥ 0.75, cite ≥ 0.95, faithfulness ≥ 0.65. New generation and judging cost money and run
-only by hand.
+≥ 0.75, cite ≥ 0.95, faithfulness ≥ 0.65. On a pull request to main CI also generates
+new answers with the production config, without the judges (about $0.07), and checks
+them against looser thresholds: valid 1.00 and cite ≥ 0.95 as before, verdict ≥ 0.75
+and risk ≥ 0.70, since one new run is noisy and one flag is 0.04 of a score. The judges
+run only by hand.
 
 On the runner's CPU the reranker could not score the eval set within 45 minutes. Its
 scores are cached by a hash of the model, the query and the chunk and the cache is
@@ -507,6 +545,30 @@ whether finishes, windows and doors are structural elements"), but the prompt as
 not apply that to its own gaps. This is the failure that matters most for a lawyer: a
 confident verdict on a point the company has no rule for.
 
+**Two fixes tried, neither kept.** Both are general rules; the prompts name no topic of
+f23 or f24. v4 has the model mark each gap that changes the verdict
+(`Gap.changes_verdict`), and the code requires `not_covered` exactly when one is
+marked. f23 became `not_covered`, f24 did not, and three flags the sources do settle
+(f02, f10, f16) got a false `not_covered`: the model marked doubts about the clause
+(what it means, the type of premises, other terms of the lease) and the reading of a
+policy term as verdict-changing. v5 narrowed the mark to a matter on which the sources
+contain no rule, with the clause assessed as written and general rules applied by the
+model. The model then marked nothing, and no answer was `not_covered`, as in v3.
+
+| Prompt | f23 | f24 | false `not_covered` | verdict |
+|---|---|---|---|---|
+| v3 | beyond_concessions | unacceptable | 0 | 0.88 |
+| v4 | **not_covered** | unacceptable | 3 | 0.83 |
+| v5 | beyond_concessions | unacceptable | 0 | 0.83 |
+
+The two attempts show where the boundary is. The gaps of f23 and f24 are questions of
+applying a general rule ("are generators engineering systems of the building", "are
+windows structural elements"), and so are the false ones of v4 ("are companies 50 %
+owned by the tenant one group"). Whether such a question is open or settled is the
+lawyer's judgment, and a prompt rule either lets the model settle all of them (v3, v5)
+or none (v4). v3 stays in production. Two more rounds on the same 24 flags would be
+fitting the prompt to them; the next step is a different mechanism (below).
+
 ### 3. A law article inverted
 
 **Expected (f11):** Civil Code art. 774: a sublease is possible only with the lessor's
@@ -544,17 +606,21 @@ look when the model disagrees for a reason.
 
 ## Budget
 
-About $1.3 of the $5 budget so far: three full Haiku runs at about $0.065 each, the two
-new flags $0.006, the judges $0.57 for the 24-flag run (recorded runs $0.77 in all), and
-short smoke runs that were not kept. Retrieval, chunking and CI run locally and cost nothing. A redline costs
-about $0.003 with Haiku ($2.82 per 1,000 red flags) and takes 23 s (p50).
+About $1.45 of the $5 budget so far: five full Haiku runs at about $0.07 each, the two
+new flags $0.006, the judges $0.57 for the 24-flag run (recorded runs $0.91 in all), and
+short smoke runs that were not kept. Retrieval and chunking run locally and cost
+nothing; CI costs nothing on a push and about $0.07 on a pull request to main. A
+redline costs about $0.003 with Haiku ($2.82 per 1,000 red flags) and takes 23 s (p50).
 
 ## Next steps
 
-From [docs/improvements.md](docs/improvements.md), none implemented yet:
+From [docs/improvements.md](docs/improvements.md), not implemented (except the
+`not_covered` rule, tried and not kept):
 
-- **Generation:** a gap that changes the verdict means `not_covered` (error 2), checked
-  in code through a field of the schema; risk from a table of verdict and type in code,
+- **Generation:** for "I don't know", a mechanism other than a prompt rule (error 2,
+  v4 and v5): route an answer with any gap to the lawyer as "needs a decision" next to
+  the verdict, instead of asking the model to choose between a verdict and
+  `not_covered`, and score that routing on new flags; risk from a table of verdict and type in code,
   with the model only explaining a deviation (error 4); for an unacceptable clause the
   base wording without unrequested concessions; a comparison with Sonnet.
 - **Judge:** a fact is present only if stated; a clause is good if it can go into the

@@ -8,6 +8,7 @@ from lease_redflag_detector.rag.redline import (
     Verdict,
     build_sources,
     fixed_chunks,
+    gap_line,
     validate,
 )
 from lease_redflag_detector.rag.retrieve import Hit
@@ -44,6 +45,28 @@ def test_sources_must_be_in_the_context_and_every_claim_needs_one():
     findings = [{"text": "Без джерела.", "sources": []}]
     _, error = validate(answer(findings=findings), {"S1", "S2"})
     assert "findings: no source" in error
+
+
+def test_gap_that_changes_the_verdict_means_not_covered():
+    open_gap = [{"text": "Хто несе витрати на пальне?", "changes_verdict": True}]
+    _, error = validate(answer(gaps=open_gap), {"S1", "S2"})
+    assert "must be not_covered" in error
+    not_covered = {"verdict": "not_covered", "proposed_clause": None}
+    _, error = validate(answer(**not_covered, proposed_sources=[]), {"S1", "S2"})
+    assert "not_covered needs the gap" in error
+    output, error = validate(
+        answer(**not_covered, proposed_sources=[], gaps=open_gap), {"S1", "S2"}
+    )
+    assert error is None and output.verdict == Verdict.NOT_COVERED
+    minor = [{"text": "Строк повідомлення.", "changes_verdict": False}]
+    output, _ = validate(answer(gaps=minor), {"S1", "S2"})
+    assert output is not None
+
+
+def test_saved_gaps_of_both_formats_render():
+    assert gap_line("Стара прогалина.") == "Стара прогалина."
+    gap = {"text": "Нова.", "changes_verdict": True}
+    assert gap_line(gap) == "Нова. (змінює вердикт)"
 
 
 def test_changed_clause_is_required_or_forbidden_by_verdict():

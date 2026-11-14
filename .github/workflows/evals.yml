@@ -2,8 +2,10 @@
 #
 # - checks: lint, tests, and the saved production generation run rescored against
 #   the expected answers (no API calls, under a minute);
+# - fresh: on a pull request to main, new redline proposals without the judges;
 # - generation: new redline proposals and the LLM judges, run by hand from the
-#   Actions tab because they cost money; needs the ANTHROPIC_API_KEY secret.
+#   Actions tab because they cost money.
+# fresh and generation need the ANTHROPIC_API_KEY repository secret.
 #
 # The retrieval check is in retrieval.yml: it runs only when the search can change.
 name: evals
@@ -41,6 +43,45 @@ jobs:
       - run: make lint
       - run: make test
       - run: make check-generation
+
+  # On a pull request to main: new answers from the production config, without the
+  # judges (about $0.07), against the looser [fresh] thresholds.
+  fresh:
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/huggingface
+            data/processed/embeddings
+            data/processed/rerank
+          key: search-cache-${{ github.run_id }}
+          restore-keys: search-cache-
+      - run: make redline NAME=ci-pr${{ github.event.pull_request.number }} NOTE="CI run on PR ${{ github.event.pull_request.number }}"
+      - run: make check-fresh RUN=$(date +%F)_ci-pr${{ github.event.pull_request.number }}
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            ~/.cache/huggingface
+            data/processed/embeddings
+            data/processed/rerank
+          key: search-cache-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fresh-run
+          path: results/rag/generation/
 
   generation:
     if: github.event_name == 'workflow_dispatch' && inputs.generation

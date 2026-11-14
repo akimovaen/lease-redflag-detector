@@ -36,6 +36,7 @@ from lease_redflag_detector.rag.redline import (
     ROLE_NAMES,
     RedlineGenerator,
     Result,
+    gap_line,
 )
 from lease_redflag_detector.rag.redline_search import RedlineSearch
 from lease_redflag_detector.rag.retrieve import CHUNKS, Retriever, load_chunks
@@ -150,7 +151,7 @@ def report(info: dict, rows: list[dict]) -> str:
             lines += [
                 "**Джерела не вирішують:**",
                 "",
-                *[f"- {gap}" for gap in out["gaps"]],
+                *[f"- {gap_line(gap)}" for gap in out["gaps"]],
                 "",
             ]
         if out["conflicts"]:

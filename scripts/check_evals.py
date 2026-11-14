@@ -3,12 +3,15 @@
     uv run python scripts/check_evals.py retrieval          # runs the role search
     uv run python scripts/check_evals.py generation         # the production run
     uv run python scripts/check_evals.py generation <run>   # another run folder
+    uv run python scripts/check_evals.py fresh <run>        # a new unjudged run
 
 retrieval searches every red flag of evals/redflag_retrieval.toml by role with the
 production settings and scores it like scripts/eval_retrieval.py, without writing a
 run folder. generation rescores a saved run against evals/redline_expected.toml like
 scripts/eval_redline.py and adds the judge's faithfulness if the run was judged. No
-API calls: CI runs this on every push.
+API calls: CI runs this on every push. fresh scores a run CI has just generated on a
+pull request against the looser [fresh] thresholds: one new run is noisier than the
+saved one.
 """
 
 import json
@@ -47,8 +50,10 @@ def generation(run: str) -> dict[str, float | None]:
 
 
 def main() -> None:
-    if len(sys.argv) < 2 or sys.argv[1] not in ("retrieval", "generation"):
+    if len(sys.argv) < 2 or sys.argv[1] not in ("retrieval", "generation", "fresh"):
         raise SystemExit(__doc__)
+    if sys.argv[1] == "fresh" and len(sys.argv) < 3:
+        raise SystemExit("fresh needs the run folder name")
     stage = sys.argv[1]
     limits = tomllib.loads(THRESHOLDS.read_text(encoding="utf-8"))[stage]
     if stage == "retrieval":

@@ -5,7 +5,7 @@ NOTE ?=
 RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
-	check check-retrieval check-generation evals test lint
+	check check-retrieval check-generation check-fresh evals test lint
 
 run: extract metrics
 
@@ -43,6 +43,10 @@ calibrate:
 
 # Thresholds of evals/thresholds.toml, as in CI; no API calls.
 check: check-retrieval check-generation
+
+# A run just generated, against the looser [fresh] thresholds: make check-fresh RUN=...
+check-fresh:
+	uv run python scripts/check_evals.py fresh $(RUN)
 
 check-retrieval:
 	uv run python scripts/check_evals.py retrieval
