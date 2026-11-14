@@ -275,6 +275,12 @@ ollama pull qwen3:8b
 make run CONFIG=configs/qwen3-8b-t0-capped-v3.toml   # about 30–60 min on a laptop
 ```
 
+**Stage 2 in one command:** `make evals` generates redlines for the 24 red flags of the
+eval set, runs the LLM judges, scores the answers and checks the thresholds (about
+$0.6); `make redline` alone generates without the judges (about $0.07). Answers come
+from Claude Haiku 5.5 at $2.82 per 1,000 red flags; the embedding model and the
+reranker run locally at no cost.
+
 Stage 2 runs on the committed chunks (`data/corpus/chunks.jsonl`); the embedding
 model and the reranker are downloaded from Hugging Face on the first run. Every run
 goes to its own folder under `results/rag/` and is added to its `history.md`:
