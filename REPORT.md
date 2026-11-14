@@ -484,13 +484,19 @@ Referred varies most: 11 flags, so one flag is 0.09. The `fresh` threshold for i
 0.65, set on four runs; the fifth, the CI run on PR #20, gave 0.55 with the same
 generation code and failed it. The threshold is now 0.45: it still catches a prompt that
 stops naming gaps (v5 refers 0.27) and no longer fails on the spread. It was lowered
-after a failure, which is recorded here and in `evals/thresholds.toml`.
+after a failure, which is recorded here and in `evals/thresholds.toml`. The next CI run
+on PR #20, a sixth run of v3 with the same generation code, gave 0.64
+([run](https://github.com/akimovaen/lease-redflag-detector/actions/runs/43613378373)):
+the old threshold would have failed twice in a row on the spread alone.
 
-**"I don't know".** The verdict for a question the sources do not settle is
-`not_covered`. In the 24-flag run it was expected 2 times and given 0 times: the model
-gave 20 `unacceptable`, 3 `beyond_concessions` and 1 `concession`. There are no false
-`not_covered` either, so a fix can be checked both ways (f22 looks uncovered but is
-settled). The search half of "I don't know" works: a role with nothing above the
+**"I don't know".** In this system "I don't know" is a referral: an answer with any
+point the sources do not settle goes to the lawyer marked "needs a decision", with the
+open points first (Routing to the lawyer, below). Both questions without an answer were
+referred in all five runs of v3. The verdict `not_covered` is a second, weaker signal:
+over five runs it was given 1 time in the 10 it was expected (f23 in repeat 3), and
+never where it was not expected (f22 looks uncovered but is settled). In the 24-flag run
+it was given 0 times of 2: the model gave 20 `unacceptable`, 3 `beyond_concessions` and
+1 `concession`. The search half of "I don't know" works: a role with nothing above the
 reranker threshold comes back empty (above). The verdict half does not, and two prompt
 fixes did not change that (error 2).
 
@@ -531,13 +537,13 @@ lawyer, and that is now a CI threshold (no_answer 1.00 on the saved run, 0.50 on
 one). Expected gaps were widened after the first count (error 5): four flags the lawyer
 had expected settled were referred in both runs made by then, and she decided she wants
 to see them. With that, the saved run refers no answer that needs no decision; the CI
-run refers three, on the type of premises and the term of the lease (f02), the time to
-fix a defect found during the lease (f13) and the major repair of air conditioning
-(f19). f20's note says its answer may name the gap, but it is scored as required until
-the expected answers have an "either" value (Next steps). Referred counts that an answer
-has a gap, not what it says: f05 counts as referred even if its gap were about something
-else than the cut-off quote. Judging the content needs the expected gaps as key facts
-(Next steps).
+run on PR #19 refers three, on the type of premises and the term of the lease (f02), the
+time to fix a defect found during the lease (f13) and the major repair of air
+conditioning (f19); the one on PR #20 four, the same three and f08. f20's note says its
+answer may name the gap, but it is scored as required until the expected answers have an
+"either" value (Next steps). Referred counts that an answer has a gap, not what it says:
+f05 counts as referred even if its gap were about something else than the cut-off quote.
+Judging the content needs the expected gaps as key facts (Next steps).
 
 The gaps column of the answers table above is the same signal, aggregated: an answer
 scores 1 when it has a gap exactly when one is expected, so gaps = (11 · referred + 13 ·
@@ -594,7 +600,9 @@ referred_extra ≤ 0.10. On a pull request to main CI also generates new answers
 production config, without the judges (about $0.07), and checks them against looser
 thresholds: valid 1.00 and cite ≥ 0.95 as before, verdict ≥ 0.70, risk ≥ 0.70, referred
 ≥ 0.45, no_answer ≥ 0.50 and referred_extra ≤ 0.35, since one new run is noisy and one
-flag is 0.04 of a score. The judges run only by hand.
+flag is 0.04 of a score. A pull request that changes only documentation (Markdown
+outside `prompts/`, `docs/`) skips this run: no new answer could differ for a reason.
+The judges run only by hand.
 
 On the runner's CPU the reranker could not score the eval set within 45 minutes. Its
 scores are cached by a hash of the model, the query and the chunk and the cache is
