@@ -4,7 +4,10 @@
   "verdict": 1.0,
   "risk": 1.0,
   "cite": 1.0,
-  "gaps": 0.0
+  "gaps": 0.0,
+  "referred": null,
+  "no_answer": null,
+  "referred_extra": 1.0
  },
  "per_flag": {
   "f04": {

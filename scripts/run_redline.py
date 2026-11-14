@@ -36,6 +36,7 @@ from lease_redflag_detector.rag.redline import (
     ROLE_NAMES,
     RedlineGenerator,
     Result,
+    approval,
     gap_line,
 )
 from lease_redflag_detector.rag.redline_search import RedlineSearch
@@ -73,6 +74,7 @@ def record(flag: dict, result: Result) -> dict:
         "error": result.error,
         "output": result.output.model_dump(mode="json") if result.output else None,
         "approval": result.approval,
+        "needs_decision": result.needs_decision,
         "sources": [
             {
                 "id": s.id,
@@ -125,9 +127,22 @@ def report(info: dict, rows: list[dict]) -> str:
             lines += [f"**Не вдалося:** {row['error']}", ""]
             continue
         default = DEFAULT_RISK[RedFlagType(row["type"])]
+        # Computed, not read from the run: older runs saved the route without the
+        # lawyer's step for answers with gaps.
+        verdict = "Вердикт (попередній)" if out["gaps"] else "Вердикт"
+        route = approval(out["verdict"], bool(out["gaps"]))
         lines += [
-            f"**Вердикт:** {out['verdict']} · **Погоджує:** {row['approval']}",
+            f"**{verdict}:** {out['verdict']} · **Погоджує:** {route}",
             "",
+        ]
+        if out["gaps"]:
+            lines += [
+                "**Потрібне рішення юриста.** Джерела не вирішують:",
+                "",
+                *[f"- {gap_line(gap)}" for gap in out["gaps"]],
+                "",
+            ]
+        lines += [
             f"**Ризик:** {out['risk']}"
             + (f" (за замовчуванням {default})" if out["risk"] != default else "")
             + f" — {claim_line(out['risk_reason'], chunks)}",
@@ -145,13 +160,6 @@ def report(info: dict, rows: list[dict]) -> str:
                 f"**Запропонована редакція** ({cited}):",
                 "",
                 f"> {out['proposed_clause']}",
-                "",
-            ]
-        if out["gaps"]:
-            lines += [
-                "**Джерела не вирішують:**",
-                "",
-                *[f"- {gap_line(gap)}" for gap in out["gaps"]],
                 "",
             ]
         if out["conflicts"]:

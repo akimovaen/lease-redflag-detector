@@ -1,0 +1,41 @@
+{
+ "name": "ci-pr20",
+ "note": "CI run on PR 20",
+ "date": "2026-11-14T15:50:36",
+ "commit": "6e7c113",
+ "uncommitted_changes": false,
+ "config": {
+  "name": "rag-haiku-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "rag/v3",
+  "max_tokens": 8000,
+  "timeout_s": 180.0,
+  "max_retries": 3,
+  "context_tokens": null,
+  "max_red_flags": null,
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "rag/v3",
+ "partial": false,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "10aea6a0fe31"
+ },
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "558f6f8f5647"
+ },
+ "context_tokens": 6000,
+ "flags": 24,
+ "ok": 24,
+ "repaired": 0,
+ "input_tokens": 220973,
+ "output_tokens": 88779,
+ "cost_usd": 0.0664868,
+ "cost_per_1000_usd": 2.7702833333333334,
+ "latency_p50_s": 17.86
+}

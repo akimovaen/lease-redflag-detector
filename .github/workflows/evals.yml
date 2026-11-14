@@ -67,8 +67,10 @@ jobs:
             data/processed/rerank
           key: search-cache-${{ github.run_id }}
           restore-keys: search-cache-
-      - run: make redline NAME=ci-pr${{ github.event.pull_request.number }} NOTE="CI run on PR ${{ github.event.pull_request.number }}"
-      - run: make check-fresh RUN=$(date +%F)_ci-pr${{ github.event.pull_request.number }}
+      # One folder per push: a run of an earlier push to this PR may be committed.
+      - run: echo "RUN_NAME=ci-pr${{ github.event.pull_request.number }}-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+      - run: make redline NAME=$RUN_NAME NOTE="CI run on PR ${{ github.event.pull_request.number }}"
+      - run: make check-fresh RUN=$(date +%F)_$RUN_NAME
       - uses: actions/cache/save@v4
         if: always()
         with:

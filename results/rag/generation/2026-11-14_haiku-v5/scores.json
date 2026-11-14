@@ -4,7 +4,10 @@
   "verdict": 0.8333333333333334,
   "risk": 0.875,
   "cite": 1.0,
-  "gaps": 0.75
+  "gaps": 0.6666666666666666,
+  "referred": 0.2727272727272727,
+  "no_answer": 0.5,
+  "referred_extra": 0.0
  },
  "per_flag": {
   "f01": {
@@ -48,7 +51,7 @@
    "verdict": 1.0,
    "risk": 1.0,
    "cite": 1.0,
-   "gaps": 0.0,
+   "gaps": 1.0,
    "got": "unacceptable / high",
    "expected": "unacceptable / high"
   },
@@ -57,7 +60,7 @@
    "verdict": 1.0,
    "risk": 1.0,
    "cite": 1.0,
-   "gaps": 1.0,
+   "gaps": 0.0,
    "got": "unacceptable / high",
    "expected": "unacceptable / high"
   },
@@ -111,7 +114,7 @@
    "verdict": 1.0,
    "risk": 1.0,
    "cite": 1.0,
-   "gaps": 1.0,
+   "gaps": 0.0,
    "got": "unacceptable / high",
    "expected": "unacceptable / high"
   },
@@ -129,7 +132,7 @@
    "verdict": 1.0,
    "risk": 1.0,
    "cite": 1.0,
-   "gaps": 1.0,
+   "gaps": 0.0,
    "got": "unacceptable / high",
    "expected": "unacceptable / high"
   },
