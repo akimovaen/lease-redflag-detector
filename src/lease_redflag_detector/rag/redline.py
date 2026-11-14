@@ -9,6 +9,10 @@ Two parts of the policy apply to every red flag but share no words with the clau
 the search never finds them: the risk criteria and levels (1.6–1.7) and who approves
 deviations (section 10). They are always in the context.
 
+An answer with any gap needs the lawyer's decision (`Result.needs_decision`): the code
+refers every point the model names as open, so the model does not have to choose
+between a verdict and not_covered.
+
 Who approves the clause follows from the verdict by section 10 of the policy and is
 computed here, not asked of the model. The risk level starts from a default per red flag
 type (`DEFAULT_RISK`); the model may move it and must say why.
@@ -86,6 +90,19 @@ APPROVAL = {
     Verdict.UNACCEPTABLE: "не погоджується (п. 10.4)",
     Verdict.NOT_COVERED: "Політика не визначає; рішення за юристом",
 }
+
+
+def approval(verdict: str, has_gaps: bool) -> str:
+    """Who approves the clause. With open points the verdict is provisional: the lawyer
+    decides them first, and the route of section 10 applies only if the verdict holds."""
+    route = APPROVAL[Verdict(verdict)]
+    if not has_gaps or verdict == Verdict.NOT_COVERED:
+        return route
+    return (
+        "спершу юрист — вирішити відкриті пункти; якщо вердикт підтвердиться: " + route
+    )
+
+
 NEEDS_CLAUSE = {Verdict.BEYOND_CONCESSIONS, Verdict.UNACCEPTABLE}
 NO_CLAUSE = {Verdict.COMPLIANT, Verdict.NOT_COVERED}
 
@@ -283,6 +300,11 @@ class Result:
     output_tokens: int = 0
     extra: dict = field(default_factory=dict)
 
+    @property
+    def needs_decision(self) -> bool:
+        """Any gap sends the answer to the lawyer, whatever its verdict."""
+        return bool(self.output and self.output.gaps)
+
 
 class RedlineGenerator:
     def __init__(self, config: RunConfig, search: RedlineSearch):
@@ -343,7 +365,7 @@ class RedlineGenerator:
             raw=completions[-1].raw if completions else "",
             output=output,
             error=error,
-            approval=APPROVAL[output.verdict] if output else None,
+            approval=approval(output.verdict, bool(output.gaps)) if output else None,
             latency_s=time.perf_counter() - start,
             input_tokens=sum(c.input_tokens for c in completions),
             output_tokens=sum(c.output_tokens for c in completions),

@@ -1,6 +1,6 @@
 # Scores: haiku-v1
 
-Expected answers `evals/redline_expected.toml`. valid 1.00 · verdict 0.86 · risk 0.68 · cite 0.98 · gaps 0.23
+Expected answers `evals/redline_expected.toml`. valid 1.00 · verdict 0.86 · risk 0.68 · cite 0.98 · gaps 0.41 · referred 1.00 · no_answer – · referred_extra 1.00
 
 | Flag | Verdict / risk | Expected | valid | verdict | risk | cite | gaps |
 |---|---|---|---|---|---|---|---|
@@ -8,16 +8,16 @@ Expected answers `evals/redline_expected.toml`. valid 1.00 · verdict 0.86 · ri
 | f02 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
 | f03 | unacceptable / critical | unacceptable / high | 1.00 | 1.00 | 0.00 | 1.00 | 0.00 |
 | f04 | not_covered / critical | unacceptable / critical | 1.00 | 0.00 | 1.00 | 0.67 | 0.00 |
-| f05 | unacceptable / critical | unacceptable / high | 1.00 | 1.00 | 0.00 | 1.00 | 0.00 |
-| f06 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
+| f05 | unacceptable / critical | unacceptable / high | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 |
+| f06 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
 | f07 | beyond_concessions / high | beyond_concessions / high | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
 | f08 | unacceptable / medium | unacceptable / medium | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
 | f09 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
 | f10 | unacceptable / medium | concession / low | 1.00 | 0.00 | 0.00 | 1.00 | 1.00 |
 | f11 | unacceptable / high | unacceptable / medium | 1.00 | 1.00 | 0.00 | 1.00 | 0.00 |
-| f12 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
+| f12 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
 | f13 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| f14 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
+| f14 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
 | f15 | unacceptable / high | unacceptable / high | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
 | f16 | beyond_concessions / high | concession / high | 1.00 | 0.00 | 1.00 | 1.00 | 1.00 |
 | f17 | unacceptable / critical | unacceptable / high | 1.00 | 1.00 | 0.00 | 1.00 | 0.00 |

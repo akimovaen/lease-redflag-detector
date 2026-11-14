@@ -70,13 +70,13 @@ def main() -> None:
         metric, upper = name.removesuffix("_max"), name.endswith("_max")
         value = scores.get(metric)
         if value is None:
-            print(f"  {metric:<13} –      (not measured)")
+            print(f"  {metric:<15} –      (not measured)")
             continue
         ok = value <= limit if upper else value >= limit
         failed |= not ok
         sign = "≤" if upper else "≥"
         print(
-            f"  {metric:<13} {value:.2f}   {sign} {limit:.2f}   {'ok' if ok else 'FAIL'}"
+            f"  {metric:<15} {value:.2f}   {sign} {limit:.2f}   {'ok' if ok else 'FAIL'}"
         )
     if failed:
         raise SystemExit(f"{stage}: below the thresholds in {THRESHOLDS.name}")

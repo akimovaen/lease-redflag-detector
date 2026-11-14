@@ -1,6 +1,6 @@
 # Scores: f04-uah
 
-Expected answers `evals/redline_expected.toml`. valid 1.00 · verdict 1.00 · risk 1.00 · cite 1.00 · gaps 0.00
+Expected answers `evals/redline_expected.toml`. valid 1.00 · verdict 1.00 · risk 1.00 · cite 1.00 · gaps 0.00 · referred – · no_answer – · referred_extra 1.00
 
 | Flag | Verdict / risk | Expected | valid | verdict | risk | cite | gaps |
 |---|---|---|---|---|---|---|---|

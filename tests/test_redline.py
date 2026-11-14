@@ -5,7 +5,9 @@ from lease_redflag_detector.rag.chunking import Chunk
 from lease_redflag_detector.rag.redline import (
     APPROVAL,
     DEFAULT_RISK,
+    Result,
     Verdict,
+    approval,
     build_sources,
     fixed_chunks,
     gap_line,
@@ -104,3 +106,19 @@ def test_sources_are_numbered_once_and_cut_to_the_budget_by_score():
 def test_every_type_and_verdict_has_a_default():
     assert set(DEFAULT_RISK) == set(RedFlagType)
     assert set(APPROVAL) == set(Verdict)
+
+
+def test_any_gap_needs_the_lawyers_decision():
+    output, _ = validate(answer(), {"S1", "S2"})
+    assert not Result("ok", [], "", output).needs_decision
+    output, _ = validate(answer(gaps=["Хто несе витрати на пальне?"]), {"S1", "S2"})
+    assert Result("ok", [], "", output).needs_decision
+    assert not Result("failed", [], "").needs_decision
+
+
+def test_open_points_make_the_verdict_provisional():
+    assert approval("unacceptable", False) == APPROVAL[Verdict.UNACCEPTABLE]
+    provisional = approval("beyond_concessions", True)
+    assert provisional.startswith("спершу юрист")
+    assert provisional.endswith(APPROVAL[Verdict.BEYOND_CONCESSIONS])
+    assert approval("not_covered", True) == APPROVAL[Verdict.NOT_COVERED]

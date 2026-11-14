@@ -19,6 +19,11 @@ valid = 1.0
 verdict = 0.85
 risk = 0.75
 cite = 0.95
+# Routing to the lawyer (an answer with any gap; scripts/eval_redline.py). Current:
+# referred 0.82, no_answer 1.00 (both flags expected not_covered), referred_extra 0.00.
+referred = 0.75
+no_answer = 1.0
+referred_extra_max = 0.1
 # From the LLM judge (judge.json), checked only when the run was judged. Facts and
 # clause are not gates: their agreement with the lawyer is too low
 # (results/rag/judge_calibration.md).
@@ -27,9 +32,15 @@ faithfulness = 0.65
 [fresh]
 # A run CI generates on a pull request to main with the production config, unjudged.
 # Generation is not deterministic and one red flag is 0.04 of a score, so verdict and
-# risk are looser than for the saved run: they catch a change that breaks three or
-# more answers. valid and cite do not depend on the model's judgment and stay strict.
+# risk are looser than for the saved run. Four runs of v3 on the same code gave verdict
+# 0.79-0.88; 0.70 (17 of 24) leaves two flags of room below the lowest. valid
+# and cite do not depend on the model's judgment and stay strict.
 valid = 1.0
 cite = 0.95
-verdict = 0.75
+verdict = 0.70
 risk = 0.70
+# Routing varies more between runs: over four runs of v3 referred was 0.73-1.00 and
+# referred_extra 0.00-0.23.
+referred = 0.65
+no_answer = 0.5
+referred_extra_max = 0.35

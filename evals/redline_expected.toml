@@ -1,7 +1,10 @@
 # Expected redline answers for the red flags of evals/redflag_retrieval.toml.
 #
 # Drafted before reading any model answer, reviewed by the landlord's lawyer on
-# 11.11.2026; f23 and f24 on 13.11.2026.
+# 11.11.2026; f23 and f24 on 13.11.2026. On 14.11.2026, after reading the answers, the
+# lawyer added expected gaps she wants to see, which the first review did not look
+# for: applying a general rule to the case (f12, f14), a quote cut off by stage 1 (f05)
+# and no approved wording in the sources (f06). REPORT.md, error 5.
 #
 # verdict    compliant | concession | beyond_concessions | unacceptable | not_covered
 # risk       low | medium | high | critical (policy 1.7); the default per type is
@@ -78,8 +81,8 @@ key_facts = [
   "запропонована редакція — Ф-2.1, за потреби з Ф-2.2",
 ]
 cite = ["policy_2026", "clause_library_2026"]
-gaps = false
-note = ""
+gaps = true
+note = "Прогалина: цитата обривається на «випадках:», перелік невідомий."
 
 [[answer]]
 id = "f06"
@@ -91,8 +94,8 @@ key_facts = [
   "редакція: виключити орендну плату (індексацію) з дії застереження або вилучити його",
 ]
 cite = ["policy_2026"]
-gaps = false
-note = "Готового формулювання в бібліотеці немає; посилання на Ф-2.1 для індексації доречне."
+gaps = true
+note = "Готового формулювання в бібліотеці немає; посилання на Ф-2.1 для індексації доречне. Прогалина: стабілізаційного застереження для умов, що не стосуються орендної плати, джерела не містять."
 
 [[answer]]
 id = "f07"
@@ -172,8 +175,8 @@ key_facts = [
   "запропонована редакція — Ф-6.1 і Ф-6.3",
 ]
 cite = ["policy_2026", "clause_library_2026"]
-gaps = false
-note = ""
+gaps = true
+note = "Прогалина: чи телефонні лінії й кабельні канали поза приміщенням — загальні інженерні системи будівлі, джерела не визначають."
 
 [[answer]]
 id = "f13"
@@ -199,8 +202,8 @@ key_facts = [
   "запропонована редакція — Ф-6.1 і Ф-6.3",
 ]
 cite = ["policy_2026", "clause_library_2026"]
-gaps = false
-note = ""
+gaps = true
+note = "Прогалина: чи фарбування й заміна килимових покриттів — поточний ремонт, і що таке «спеціальне» обладнання, джерела прямо не визначають."
 
 [[answer]]
 id = "f15"

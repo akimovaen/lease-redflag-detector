@@ -304,8 +304,8 @@ local runs cost no API fees.
 # Report — stage 2: RAG
 
 An assistant for the lawyer of a landlord: given a red flag from stage 1 (its type and
-the clause quote), it finds what the leasing policy, the clause library, the law and
-the committee minutes say, and proposes a redline with a verdict, a risk level and a
+the clause quote), it finds what the leasing policy, the clause library, the law and the
+committee minutes say, and proposes a redline with a verdict, a risk level and a
 citation for every claim. The corpus and the chunking (structural against fixed-size
 windows, with the comparison) are described in the [README](README.md#stage-2-rag).
 
@@ -325,25 +325,26 @@ searched in:
 
 Why separately: in one ranked list over the whole corpus the policy and the library
 match the clause best and crowd out the law and the minutes (see the second table under
-[Retrieval](#retrieval)). Each role is one hybrid search (multilingual-e5 vectors +
-BM25 over lemmas, fused with RRF, reranked by bge-reranker-v2-m3) with a metadata
-filter, which also keeps outdated and wrong-regime documents out. The query is the
-clause plus a description of the red flag type. Hits under a reranker score of 0.01 are
-dropped, so a role with nothing relevant (most flags have no precedent) comes back
-empty instead of filling the context with noise.
+[Retrieval](#retrieval)). Each role is one hybrid search (multilingual-e5 vectors + BM25
+over lemmas, fused with RRF, reranked by bge-reranker-v2-m3) with a metadata filter,
+which also keeps outdated and wrong-regime documents out. The query is the clause plus a
+description of the red flag type. Hits under a reranker score of 0.01 are dropped, so a
+role with nothing relevant can come back empty instead of filling the context with
+noise: of the flags with no precedent in the minutes, 39% get an empty precedent role;
+for the rest, minutes on the topic still score above the threshold.
 
-**Generation** (`rag/redline.py`, prompt `rag/v3`, Haiku). Sources are numbered S1…
-in a 6,000-token context; the policy points on how to assess a change and on approval
-are always included. The answer is structured output: a verdict by the levels of the
-policy (compliant, concession, beyond concessions, unacceptable, not covered), findings
-and a risk reason as claims with source ids, the risk level, the changed clause with
-its sources, gaps (points the sources do not settle) and conflicts between sources.
-Who approves follows from the verdict in code. Every cited id is checked against the
+**Generation** (`rag/redline.py`, prompt `rag/v3`, Haiku). Sources are numbered S1… in a
+6,000-token context; the policy points on how to assess a change and on approval are
+always included. The answer is structured output: a verdict by the levels of the policy
+(compliant, concession, beyond concessions, unacceptable, not covered), findings and a
+risk reason as claims with source ids, the risk level, the changed clause with its
+sources, gaps (points the sources do not settle) and conflicts between sources. Who
+approves follows from the verdict in code. Every cited id is checked against the
 context, with one repair attempt.
 
-**Test set** (`evals/`). The system answers a red flag, not a free question, so each
-red flag is one question of the test set. 24 red flags, written before any model
-answer and reviewed by the landlord's lawyer, who corrected every expected answer:
+**Test set** (`evals/`). The system answers a red flag, not a free question, so each red
+flag is one question of the test set. 24 red flags, written before any model answer and
+reviewed by the landlord's lawyer, who corrected every expected answer:
 
 - `redflag_retrieval.toml`: the clause and, per role, the passages the search must
   find, as quotes copied from the documents, so any chunking is scored alike;
@@ -371,8 +372,8 @@ wrong-regime documents) any role returns; it must be 0. Every run is kept in
 | two queries fused (rejected) | 0.98 | 0.86 | 0.79 | 1.00 | 0.91 | 0.00 |
 | **24 flags** (f23, f24 added) | 0.98 | 0.94 | 0.93 | 1.00 | **0.95** | 0.00 |
 
-**Search modes in one list.** The clause and the type description as one query over
-the whole corpus, top 10, structural chunks (run `2026-11-14_no-rerank`; MRR is the
+**Search modes in one list.** The clause and the type description as one query over the
+whole corpus, top 10, structural chunks (run `2026-11-14_no-rerank`; MRR is the
 reciprocal rank of the first expected passage):
 
 | Search | recall@10 | MRR | position | wording | law | precedent |
@@ -401,29 +402,30 @@ and the library, which match the clause best, and leave out the law and the minu
 Empty precedent: of the flags with no precedent in the minutes, the share whose
 precedent role comes back empty.
 
-Searching each role separately, with about the same number of chunks (11), finds the
-law article and the precedent for nearly every flag: 0.70 → 0.95. The type description
-in the query adds the vocabulary the clause lacks ("суборенда", "згода наймодавця") and
-is worth 0.14. The status filter is what keeps the traps out: without it every trap
-passage is returned.
+Searching each role separately, with about the same number of scored chunks (at most 3 +
+3 + 3 + 2 = 11; the context also gets up to 2 market chunks and the fixed policy
+points), finds the law article and the precedent for nearly every flag: 0.70 → 0.95. The
+type description in the query adds the vocabulary the clause lacks ("суборенда", "згода
+наймодавця") and is worth 0.14. The status filter is what keeps the traps out: without
+it every trap passage is returned.
 
 The reranker earns its place in the role search, not in one list. Within a role it
 brings the right law article and precedent into the top k (law 0.78 → 0.93, precedent
 0.78 → 1.00), and its score is what the threshold cuts at: without it every role is
-always full, and a flag with no precedent gets two minutes that are not its precedent in its context
-(empty precedent 0.00 against 0.39). Hybrid search without the reranker finds the
-library wording slightly better (0.98 against 0.94).
+always full, and a flag with no precedent gets two minutes that are not its precedent in
+its context (empty precedent 0.00 against 0.39). Hybrid search without the reranker
+finds the library wording slightly better (0.98 against 0.94).
 
 Structural chunks against fixed windows matter little in one list (0.70 against 0.68)
 but in the role search they are 0.95 against 0.90. The difference is in the law (0.93
 against 0.70) and the precedents (1.00 against 0.71), the short units: a 350-token
-window holds parts of two or three articles or decisions, which likely dilutes the
-match (not checked hit by hit). Fixed windows find the library wording slightly better
-(1.00 against 0.94), since one window often holds a clause and its neighbour. The
-reranker threshold was chosen on the structural chunks, which favours them somewhat.
+window holds parts of two or three articles or decisions, which likely dilutes the match
+(not checked hit by hit). Fixed windows find the library wording slightly better (1.00
+against 0.94), since one window often holds a clause and its neighbour. The reranker
+threshold was chosen on the structural chunks, which favours them somewhat.
 
-The reranker threshold and k were chosen on this set, so 0.95 is optimistic: there is
-no held-out set yet.
+The reranker threshold and k were chosen on this set, so 0.95 is optimistic: there is no
+held-out set yet.
 
 ## Answers
 
@@ -437,36 +439,111 @@ the claims their cited sources support).
 
 | Run | Flags | valid | verdict | risk | cite | gaps | facts | clause | faithfulness | $ / 1000 flags | p50 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| Haiku, prompt v1 | 22 | 1.00 | 0.86 | 0.68 | 0.98 | 0.23 | | | | 3.11 | 28 s |
-| Haiku, prompt v2 | 22 | 1.00 | 0.86 | 0.86 | 0.98 | 0.59 | | | | 2.86 | 24 s |
-| Haiku, prompt v3 | 22 | 1.00 | 0.95 | 0.82 | 1.00 | 0.73 | 0.93 | 0.68 | 0.72 | 2.81 | 23 s |
-| **Haiku, prompt v3** | **24** | 1.00 | **0.88** | 0.83 | 1.00 | 0.75 | 0.89 | 0.62 | 0.73 | 2.82 | 23 s |
+| Haiku, prompt v1 | 22 | 1.00 | 0.86 | 0.68 | 0.98 | 0.41 | | | | 3.11 | 28 s |
+| Haiku, prompt v2 | 22 | 1.00 | 0.86 | 0.86 | 0.98 | 0.77 | | | | 2.86 | 24 s |
+| Haiku, prompt v3 | 22 | 1.00 | 0.95 | 0.82 | 1.00 | 0.91 | 0.93 | 0.68 | 0.72 | 2.81 | 23 s |
+| **Haiku, prompt v3** | **24** | 1.00 | **0.88** | 0.83 | 1.00 | 0.92 | 0.89 | 0.62 | 0.73 | 2.82 | 23 s |
 | Haiku, prompt v4 (not kept) | 24 | 1.00 | 0.83 | 0.83 | 0.99 | 0.71 | | | | 2.97 | 19 s |
-| Haiku, prompt v5 (not kept) | 24 | 1.00 | 0.83 | 0.88 | 1.00 | 0.75 | | | | 2.94 | 18 s |
+| Haiku, prompt v5 (not kept) | 24 | 1.00 | 0.83 | 0.88 | 1.00 | 0.67 | | | | 2.94 | 18 s |
+| Haiku, prompt v3, CI run on PR #19 | 24 | 1.00 | 0.79 | 0.83 | 1.00 | 0.79 | | | | 2.83 | 20 s |
+| Haiku, prompt v3, repeat 2 | 24 | 1.00 | 0.83 | 0.88 | 1.00 | 1.00 | | | | 2.72 | 17 s |
+| Haiku, prompt v3, repeat 3 | 24 | 1.00 | 0.88 | 0.83 | 1.00 | 0.79 | | | | 2.85 | 18 s |
 
-v1 and v2 were scored against the draft of the expected answers, which the lawyer then
-corrected (f04 also changed currency), so the rows compare only roughly. The 24-flag
-run merges the 22 answers of v3 with the two new flags run on the same code and config
+Every row is scored against the current expected answers, including the gaps the lawyer
+added on 14.11 (error 5). v1 and v2 ran on an earlier flag set (f04 in yuan, no f23 and
+f24), so their rows compare with the others only roughly. The 24-flag run merges the 22
+answers of v3 with the two new flags run on the same code and config
 (`scripts/merge_runs.py`). The two new flags take verdict from 0.95 to 0.88: both are
 missed (error 2).
 
 19 of the 24 expected verdicts are `unacceptable`, so an answer that always says so
 would score 0.79 on verdict; the metric is read with that in mind.
 
+**Runs vary.** The production config was run four times on the same code and flag set:
+the 24-flag run, the CI run on PR #19 and two repeats.
+
+| Run of v3 | verdict | risk | cite | referred | no_answer | referred_extra | verdict missed |
+|---|---|---|---|---|---|---|---|
+| 24-flag run (saved) | 0.88 | 0.83 | 1.00 | 0.82 | 1.00 | 0.00 | f16, f23, f24 |
+| CI run on PR #19 | 0.79 | 0.83 | 1.00 | 0.82 | 1.00 | 0.23 | f07, f10, f16, f23, f24 |
+| repeat 2 | 0.83 | 0.88 | 1.00 | 1.00 | 1.00 | 0.00 | f10, f16, f23, f24 |
+| repeat 3 | 0.88 | 0.83 | 1.00 | 0.73 | 1.00 | 0.15 | f10, f16, f24 |
+| **mean (range)** | **0.84** (0.79–0.88) | 0.84 (0.83–0.88) | 1.00 | 0.84 (0.73–1.00) | 1.00 | 0.10 (0–0.23) | |
+
+Valid, cite and no_answer do not move. Verdict moves by 0.09, so one run of a config
+cannot tell prompts apart: v4 and v5 (0.83 each) are inside the range of v3. The misses
+split into errors that repeat and noise. f16 is missed in all four runs, f10 in three,
+and the risk of f10, f11 and f18 in all four: these are what a fix should aim at. f07
+and the risk of f08 are missed once or twice. In repeat 3 the model answered
+`not_covered` for f23 for the first time with v3, one of eight chances over four runs.
+
 **"I don't know".** The verdict for a question the sources do not settle is
 `not_covered`. In the 24-flag run it was expected 2 times and given 0 times: the model
 gave 20 `unacceptable`, 3 `beyond_concessions` and 1 `concession`. There are no false
 `not_covered` either, so a fix can be checked both ways (f22 looks uncovered but is
 settled). The search half of "I don't know" works: a role with nothing above the
-reranker threshold comes back empty (above). The generation half does not, and two
-prompt fixes did not change that (error 2).
+reranker threshold comes back empty (above). The verdict half does not, and two prompt
+fixes did not change that (error 2).
+
+**Routing to the lawyer.** What works instead is in code, not in the prompt: an answer
+with any gap is marked "needs the lawyer's decision" (`needs_decision`), and its report
+opens with the open points. Its verdict is shown as provisional, and the approval route
+starts with the lawyer: "first the lawyer decides the open points; if the verdict
+holds", then the route of policy section 10 for that verdict. The model does not have to
+choose between a verdict and `not_covered`; it only has to name what the sources leave
+open, which it mostly does (8 to 11 of the 11 expected in four runs of v3). Scored on
+the saved runs (`scripts/eval_redline.py`):
+
+| Run | Referred, of 11 flags with expected gaps | f23, f24 referred | Referred, of the 13 others |
+|---|---|---|---|
+| v3, 24-flag run | 0.82 (missed f16, f20) | **2 of 2** | 0.00 |
+| v3, CI run on PR #19 | 0.82 (missed f07, f22) | **2 of 2** | 0.23 (f02, f13, f19) |
+| v3, repeat 2 | 1.00 | **2 of 2** | 0.00 |
+| v3, repeat 3 | 0.73 (missed f10, f14, f16) | **2 of 2** | 0.15 (f13, f19) |
+| v4 | 0.45 | 1 of 2 | 0.08 |
+| v5 | 0.27 | 1 of 2 | 0.00 |
+| v1 (earlier flag set, 22 flags) | 1.00 | – | 1.00 |
+
+v1 shows why referred_extra is a threshold too: it named gaps in every answer, so it
+referred everything. Referring every answer would meet referred and no_answer trivially;
+the limit on extra referrals is what makes them mean something.
+
+By the expected answers before the lawyer's review of 14.11, with 7 flags with gaps and
+17 without (error 5):
+
+| Run | Referred, of 7 | f23, f24 referred | Referred, of the 17 others |
+|---|---|---|---|
+| v3, 24-flag run | 0.71 | 2 of 2 | 0.24 |
+| v3, CI run on PR #19 | 0.71 | 2 of 2 | 0.41 |
+
+All four runs of the production prompt send both questions without an answer to the
+lawyer, and that is now a CI threshold (no_answer 1.00 on the saved run, 0.50 on a new
+one). Expected gaps were widened after the first count (error 5): four flags the lawyer
+had expected settled were referred in both runs made by then, and she decided she wants
+to see them. With that, the saved run refers no answer that needs no decision; the CI
+run refers three, on the type of premises and the term of the lease (f02), the time to
+fix a defect found during the lease (f13) and the major repair of air conditioning
+(f19). f20's note says its answer may name the gap, but it is scored as required until
+the expected answers have an "either" value (Next steps). Referred counts that an answer
+has a gap, not what it says: f05 counts as referred even if its gap were about something
+else than the cut-off quote. Judging the content needs the expected gaps as key facts
+(Next steps).
+
+The gaps column of the answers table above is the same signal, aggregated: an answer
+scores 1 when it has a gap exactly when one is expected, so gaps = (11 · referred + 13 ·
+(1 − referred_extra)) / 24, for the saved run (9 + 13) / 24 = 0.92.
+
+The prompt and the code were not tuned on these flags: no prompt changed, and the rule
+is "any gap". The expected answers were, after the first count (error 5), and the
+thresholds were set on the numbers after it. By the expectations before the review, the
+CI run would have failed the new limit on extra referrals (0.41 against 0.35).
 
 ### The judge and its calibration
 
 The judges are Sonnet with structured output (`prompts/judge/`). The answer judge sees
-the clause, the expected answer and the model's answer, and grades each key fact and
-the changed clause. The faithfulness judge sees every claim with the full text of the
-chunks it cites, and grades it supported, partly supported or not.
+the clause, the expected answer and the model's answer, and grades each key fact and the
+changed clause. The faithfulness judge sees every claim with the full text of the chunks
+it cites, and grades it supported, partly supported or not.
 
 The lawyer graded 12 answers of the v3 run by hand (46 key facts, 12 changed clauses,
 `evals/judge_calibration.toml`), without seeing the judge's grades
@@ -478,13 +555,13 @@ The lawyer graded 12 answers of the v3 run by hand (46 key facts, 12 changed cla
 | Changed clause | 12 | 0.58 | 0.25 |
 
 The judge is **too lenient on facts**: 4 of the 5 facts the lawyer found missing it
-counts as present, because the answer touches the point without stating it. It is
-**too strict on the clause**: all 5 disagreements are "good" from the lawyer against
-"minor edits" from the judge, which marks down a clause for anything beyond the minimal
-edit, while the lawyer asks whether it can go into the lease as it is. High agreement
-with a kappa near zero means the judge agrees on the common case (a fact that is
-there) and not on the rare ones that matter. Facts and clause are therefore reported
-but are not CI thresholds; the faithfulness judge was not calibrated separately.
+counts as present, because the answer touches the point without stating it. It is **too
+strict on the clause**: all 5 disagreements are "good" from the lawyer against "minor
+edits" from the judge, which marks down a clause for anything beyond the minimal edit,
+while the lawyer asks whether it can go into the lease as it is. High agreement with a
+kappa near zero means the judge agrees on the common case (a fact that is there) and not
+on the rare ones that matter. Facts and clause are therefore reported but are not CI
+thresholds; the faithfulness judge was not calibrated separately.
 
 ### Faithfulness
 
@@ -500,13 +577,14 @@ tests and the production generation run rescored against the expected answers, u
 minute. [retrieval.yml](.github/workflows/retrieval.yml) runs the role search on the
 eval set when the search code, the chunks, the flag set or the thresholds change, in
 about 6 minutes. Either fails when a metric is under its threshold in
-[evals/thresholds.toml](evals/thresholds.toml), set a little under the current
-numbers: retrieval overall ≥ 0.90 and no trap passage; valid 1.00, verdict ≥ 0.85, risk
-≥ 0.75, cite ≥ 0.95, faithfulness ≥ 0.65. On a pull request to main CI also generates
-new answers with the production config, without the judges (about $0.07), and checks
-them against looser thresholds: valid 1.00 and cite ≥ 0.95 as before, verdict ≥ 0.75
-and risk ≥ 0.70, since one new run is noisy and one flag is 0.04 of a score. The judges
-run only by hand.
+[evals/thresholds.toml](evals/thresholds.toml), set a little under the current numbers:
+retrieval overall ≥ 0.90 and no trap passage; valid 1.00, verdict ≥ 0.85, risk ≥ 0.75,
+cite ≥ 0.95, faithfulness ≥ 0.65; routing referred ≥ 0.75, no_answer 1.00,
+referred_extra ≤ 0.10. On a pull request to main CI also generates new answers with the
+production config, without the judges (about $0.07), and checks them against looser
+thresholds: valid 1.00 and cite ≥ 0.95 as before, verdict ≥ 0.70, risk ≥ 0.70, referred
+≥ 0.65, no_answer ≥ 0.50 and referred_extra ≤ 0.35, since one new run is noisy and one
+flag is 0.04 of a score. The judges run only by hand.
 
 On the runner's CPU the reranker could not score the eval set within 45 minutes. Its
 scores are cached by a hash of the model, the query and the chunk and the cache is
@@ -519,16 +597,16 @@ change touches.
 
 **Expected:** for a sublease or repair clause, the law role returns the Civil Code
 article (774, 776). **Got:** at a threshold of 0.05 the law role missed the right
-article for some flags: law recall 0.82. **Why:** the reranker scores a Ukrainian statute
-article against a contract clause low, even when it is the right one: the right article
-scored as low as 0.01, while unrelated minutes scored up to 0.007. The threshold was
-set before measuring this. Lowered to 0.01, law recall rose to 0.92 and precedent recall to
-1.00; the cost is that the precedent slot of a flag without a precedent comes back
-empty less often (31% of them instead of 44%), so more minutes on the topic reach the
-context as noise. The library role had a related problem: with k 2 it missed the second approved
-wording (a fallback after the base one); k 3 took it from 0.77 to 0.93. A fix tried
-for both, a second query with the clause alone fused with RRF, lowered recall to 0.91
-and was reverted.
+article for some flags: law recall 0.82. **Why:** the reranker scores a Ukrainian
+statute article against a contract clause low, even when it is the right one: the right
+article scored as low as 0.01, while unrelated minutes scored up to 0.007. The threshold
+was set before measuring this. Lowered to 0.01, law recall rose to 0.92 and precedent
+recall to 1.00; the cost is that the precedent slot of a flag without a precedent comes
+back empty less often (31% of them instead of 44%), so more minutes on the topic reach
+the context as noise. The library role had a related problem: with k 2 it missed the
+second approved wording (a fallback after the base one); k 3 took it from 0.77 to 0.93.
+A fix tried for both, a second query with the clause alone fused with RRF, lowered
+recall to 0.91 and was reverted.
 
 ### 2. The model names what the sources do not settle and decides anyway
 
@@ -547,13 +625,13 @@ confident verdict on a point the company has no rule for.
 
 **Two fixes tried, neither kept.** Both are general rules; the prompts name no topic of
 f23 or f24. v4 has the model mark each gap that changes the verdict
-(`Gap.changes_verdict`), and the code requires `not_covered` exactly when one is
-marked. f23 became `not_covered`, f24 did not, and three flags the sources do settle
-(f02, f10, f16) got a false `not_covered`: the model marked doubts about the clause
-(what it means, the type of premises, other terms of the lease) and the reading of a
-policy term as verdict-changing. v5 narrowed the mark to a matter on which the sources
-contain no rule, with the clause assessed as written and general rules applied by the
-model. The model then marked nothing, and no answer was `not_covered`, as in v3.
+(`Gap.changes_verdict`), and the code requires `not_covered` exactly when one is marked.
+f23 became `not_covered`, f24 did not, and three flags the sources do settle (f02, f10,
+f16) got a false `not_covered`: the model marked doubts about the clause (what it means,
+the type of premises, other terms of the lease) and the reading of a policy term as
+verdict-changing. v5 narrowed the mark to a matter on which the sources contain no rule,
+with the clause assessed as written and general rules applied by the model. The model
+then marked nothing, and no answer was `not_covered`, as in v3.
 
 | Prompt | f23 | f24 | false `not_covered` | verdict |
 |---|---|---|---|---|
@@ -566,19 +644,23 @@ applying a general rule ("are generators engineering systems of the building", "
 windows structural elements"), and so are the false ones of v4 ("are companies 50 %
 owned by the tenant one group"). Whether such a question is open or settled is the
 lawyer's judgment, and a prompt rule either lets the model settle all of them (v3, v5)
-or none (v4). v3 stays in production. Two more rounds on the same 24 flags would be
-fitting the prompt to them; the next step is a different mechanism (below).
+or none (v4). v4 is rejected for its three false `not_covered` and the missed f24, v5
+for changing nothing; their verdict scores (0.83 against 0.88) are within the range of
+four runs of v3 (0.79–0.88) and decide nothing. v3 stays in production. Two more rounds
+on the same 24 flags would be fitting the prompt to them. Instead every answer with a
+gap is now routed to the lawyer, which catches both flags in all four runs of v3 (see
+"Routing to the lawyer").
 
 ### 3. A law article inverted
 
 **Expected (f11):** Civil Code art. 774: a sublease is possible only with the lessor's
 consent, unless the contract or the law provides otherwise. **Got:** "Art. 774 allows a
 sublease without the lessor's consent if the contract provides so, so the law is not
-broken." **Why:** the article has an exception clause, and the model read the
-exception as the rule. The verdict is still right, because it rests on the policy,
-and cite is 1.00, because the right document is cited. Only the faithfulness judge,
-which reads the claim against the cited text, caught it. Citation checks alone do not
-show that the cited source says what the claim says.
+broken." **Why:** the article has an exception clause, and the model read the exception
+as the rule. The verdict is still right, because it rests on the policy, and cite is
+1.00, because the right document is cited. Only the faithfulness judge, which reads the
+claim against the cited text, caught it. Citation checks alone do not show that the
+cited source says what the claim says.
 
 ### 4. A prompt rule written for two flags spread to others
 
@@ -589,40 +671,58 @@ from the lawyer's corrections of f09 and f21. It fixed f09 (medium in v2, high i
 and moved f18 the other way: the model applied the rule to a sublease clause that does
 require consent, because the consent cannot be refused. The rule was checked on the
 flags it was written for, not on the others of its type. (f11, the business buyer, was
-high in every version against the expected medium.) Since then fixes are recorded as general rules
-for a class of errors in [docs/improvements.md](docs/improvements.md) before any prompt
-change.
+high in every version against the expected medium.) Since then fixes are recorded as
+general rules for a class of errors in [docs/improvements.md](docs/improvements.md)
+before any prompt change.
 
-### 5. The test, not the model, was wrong
+### 5. The tests, not the model, were wrong
 
 **Expected (draft):** f04, rent fixed at 85,330 yuan for the whole term, is
-`unacceptable`: no indexation. **Got:** `not_covered` from v1 and v2. **Why:** the
-model was right. The policy indexes hryvnia rent (section 2) and sets euro rent for
-some premises (section 3); yuan rent is in neither, so the currency is a point the
-policy does not settle. The flag was meant to test the missing indexation, and the
-currency added a second question. The lawyer changed it to hryvnias; v3 answers
-`unacceptable`. Expected answers written before the model runs still need a second
-look when the model disagrees for a reason.
+`unacceptable`: no indexation. **Got:** `not_covered` from v1 and v2. **Why:** the model
+was right. The policy indexes hryvnia rent (section 2) and sets euro rent for some
+premises (section 3); yuan rent is in neither, so the currency is a point the policy
+does not settle. The flag was meant to test the missing indexation, and the currency
+added a second question. The lawyer changed it to hryvnias; v3 answers `unacceptable`.
+
+**Expected:** no gaps for f05, f06, f12 and f14. **Got:** gaps in both runs of v3 made
+by then: the quote of f05 is cut off mid-list; no approved stabilization wording for
+terms other than rent (f06); are telephone lines outside the premises engineering
+systems of the building (f12); are painting and new carpets current repair (f14).
+**Why:** the lawyer wrote the expected answers asking what the verdict is, not what she
+would want to check herself. The four gaps are of three kinds: two are points of
+applying a general rule, the same kind as f23 and f24 (f12, f14); one is a gap in the
+input, a quote stage 1 cut off (f05, also in Next steps); one is a gap in the sources,
+which have no approved wording for the case (f06). Shown them, she decided she wants to
+see them, and the expected answers now have gaps for these four (14.11.2026). She was
+shown every flag the model referred without an expected gap and kept three as not
+needing her (f02, f13, f19).
+
+Expected answers written before the model runs still need a second look when the model
+disagrees for a reason. Changing them after reading the answers is a risk of fitting the
+test to the model; here every change was the lawyer's, made per flag and recorded in the
+file's header.
 
 ## Budget
 
-About $1.45 of the $5 budget so far: five full Haiku runs at about $0.07 each, the two
-new flags $0.006, the judges $0.57 for the 24-flag run (recorded runs $0.91 in all), and
-short smoke runs that were not kept. Retrieval and chunking run locally and cost
-nothing; CI costs nothing on a push and about $0.07 on a pull request to main. A
-redline costs about $0.003 with Haiku ($2.82 per 1,000 red flags) and takes 23 s (p50).
+About $1.65 of the $5 budget so far: eight full Haiku runs at about $0.07 each (one of
+them CI on PR #19), the two new flags $0.006, the judges $0.57 for the 24-flag run
+(recorded runs $1.11 in all), and short smoke runs that were not kept. Retrieval and
+chunking run locally and cost nothing; CI costs nothing on a push and about $0.07 on a
+pull request to main. A redline costs about $0.003 with Haiku ($2.82 per 1,000 red
+flags) and takes 23 s (p50).
 
 ## Next steps
 
-From [docs/improvements.md](docs/improvements.md), not implemented (except the
-`not_covered` rule, tried and not kept):
+From [docs/improvements.md](docs/improvements.md), not implemented (the `not_covered`
+rule was tried and not kept; routing to the lawyer is done):
 
-- **Generation:** for "I don't know", a mechanism other than a prompt rule (error 2,
-  v4 and v5): route an answer with any gap to the lawyer as "needs a decision" next to
-  the verdict, instead of asking the model to choose between a verdict and
-  `not_covered`, and score that routing on new flags; risk from a table of verdict and type in code,
-  with the model only explaining a deviation (error 4); for an unacceptable clause the
-  base wording without unrequested concessions; a comparison with Sonnet.
+- **Runs:** compare prompts by several runs each, as done for v3 (four runs), not by
+  one; aim fixes at the errors that repeat (f16, f10, the risk of f10, f11, f18).
+- **Routing:** check it on flags it was not measured on, and cut the extra referrals by
+  what kind of gap they are, not by flag.
+- **Generation:** risk from a table of verdict and type in code, with the model only
+  explaining a deviation (error 4); for an unacceptable clause the base wording without
+  unrequested concessions; a comparison with Sonnet.
 - **Judge:** a fact is present only if stated; a clause is good if it can go into the
   lease as it is; then calibrate on new grades, not on the 12 the prompt was fixed on.
   A deterministic check that the clause numbers a claim cites are in its source.
