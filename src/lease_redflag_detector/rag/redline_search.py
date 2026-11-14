@@ -93,11 +93,18 @@ def build_query(red_flag: RedFlag, topic: bool = True) -> str:
 
 class RedlineSearch:
     def __init__(
-        self, retriever: Retriever, min_score: float = MIN_SCORE, topic: bool = True
+        self,
+        retriever: Retriever,
+        min_score: float = MIN_SCORE,
+        topic: bool = True,
+        mode: str = "hybrid_rerank",
     ):
+        """`mode` other than hybrid_rerank is for the evaluation; its scores are not
+        the reranker's, so `min_score` should then be 0."""
         self.retriever = retriever
         self.min_score = min_score
         self.topic = topic
+        self.mode = mode
 
     def search(self, red_flag: RedFlag) -> dict[str, list[Hit]]:
         """The hits for every role, best first; a role may come back empty."""
@@ -107,7 +114,7 @@ class RedlineSearch:
                 hit
                 for hit in self.retriever.search(
                     query,
-                    "hybrid_rerank",
+                    self.mode,
                     role.k,
                     role.filters,
                     rerank_candidates=RERANK_CANDIDATES,

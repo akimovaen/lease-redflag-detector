@@ -9,8 +9,8 @@ Every red flag is searched three ways:
    windows (computed here from the documents), and once more with reranking but
    without the default filter, to show what the filter keeps out.
 2. **By role** (`rag/redline_search.py`): each role with its own filter and k, with
-   and without the type description in the query, and with it over the fixed-size
-   windows. The scored roles return at most 3 + 3 + 3 + 2 = 11 chunks, about the
+   and without the type description in the query, with it over the fixed-size
+   windows, and without the reranker (and so without a threshold). The scored roles return at most 3 + 3 + 3 + 2 = 11 chunks, about the
    budget of the one list (10).
 3. **Thresholds**: the role search scored without a threshold and cut at several
    reranker scores, for the recall of each role and the share of flags with no
@@ -81,6 +81,7 @@ SCORED_ROLES = ("position", "wording", "law", "precedent")
 THRESHOLDS = (0.0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.3)
 QUERIES = {True: "clause + type description", False: "clause only"}
 FIXED_ROLES = "clause + type description, fixed-size chunks"
+NO_RERANK = "clause + type description, hybrid without reranker"
 
 
 def load_flags() -> list[dict]:
@@ -229,9 +230,9 @@ def per_flag(flags: list[dict], results: dict) -> dict:
 
 
 def search_roles(
-    flags: list[dict], retriever: Retriever, topic: bool
+    flags: list[dict], retriever: Retriever, topic: bool, mode: str
 ) -> tuple[dict, list[float]]:
-    search = RedlineSearch(retriever, min_score=0.0, topic=topic)
+    search = RedlineSearch(retriever, min_score=0.0, topic=topic, mode=mode)
     results, latencies = {}, []
     for flag in flags:
         start = time.perf_counter()
@@ -241,48 +242,43 @@ def search_roles(
 
 
 def by_role(flags: list[dict], retrievers: dict) -> tuple[dict, dict]:
-    results, latencies = {}, {}
-    for topic in QUERIES:
-        results[topic], latencies[topic] = search_roles(
-            flags, retrievers["structural"], topic
+    # name: chunking, type description in the query, mode, threshold. The first is
+    # production; history and the threshold table follow it.
+    variants = {
+        QUERIES[True]: ("structural", True, "hybrid_rerank", MIN_SCORE),
+        QUERIES[False]: ("structural", False, "hybrid_rerank", MIN_SCORE),
+        # What the chunking is worth in the production search.
+        FIXED_ROLES: ("fixed", True, "hybrid_rerank", MIN_SCORE),
+        # What the reranker is worth: without it there is no score to cut at.
+        NO_RERANK: ("structural", True, "hybrid", 0.0),
+    }
+    results, scores = {}, {}
+    for name, (chunking, topic, mode, threshold) in variants.items():
+        results[name], latencies = search_roles(
+            flags, retrievers[chunking], topic, mode
         )
-    # The production search over fixed-size windows: what the chunking is worth there.
-    fixed, fixed_latencies = search_roles(flags, retrievers["fixed"], True)
-
-    metrics = {
-        # The query role search uses; history and the threshold table follow it.
-        "query": QUERIES[True],
-        "by_role": {
-            QUERIES[topic]: role_scores(flags, results[topic], MIN_SCORE)
-            | {"latency_p50_s": round(statistics.median(latencies[topic]), 2)}
-            for topic in QUERIES
+        scores[name] = role_scores(flags, results[name], threshold) | {
+            "latency_p50_s": round(statistics.median(latencies), 2)
         }
-        | {
-            FIXED_ROLES: role_scores(flags, fixed, MIN_SCORE)
-            | {"latency_p50_s": round(statistics.median(fixed_latencies), 2)}
-        },
+
+    production = results[QUERIES[True]]
+    metrics = {
+        "query": QUERIES[True],
+        "by_role": scores,
         "thresholds": {
-            f"{t:g}": role_scores(flags, results[True], t) for t in THRESHOLDS
+            f"{t:g}": role_scores(flags, production, t) for t in THRESHOLDS
         },
-        "per_flag": per_flag(flags, results[True]),
+        "per_flag": per_flag(flags, production),
     }
     hits = {
-        f"by role / {QUERIES[topic]}": {
+        f"by role / {name}": {
             flag_id: {
                 role: [[hit.chunk.id, round(hit.score, 4)] for hit in role_hits]
                 for role, role_hits in roles.items()
             }
-            for flag_id, roles in results[topic].items()
+            for flag_id, roles in variant.items()
         }
-        for topic in QUERIES
-    } | {
-        f"by role / {FIXED_ROLES}": {
-            flag_id: {
-                role: [[hit.chunk.id, round(hit.score, 4)] for hit in role_hits]
-                for role, role_hits in roles.items()
-            }
-            for flag_id, roles in fixed.items()
-        }
+        for name, variant in results.items()
     }
     return metrics, hits
 
