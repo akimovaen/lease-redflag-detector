@@ -297,8 +297,9 @@ production generation run rescored against the expected answers; the role search
 ([retrieval.yml](.github/workflows/retrieval.yml)) runs when the search can change. A
 run fails when a metric is below its threshold in
 [evals/thresholds.toml](evals/thresholds.toml). A pull request to main also generates
-new answers (about $0.07, needs the `ANTHROPIC_API_KEY` repository secret); the LLM
-judges run only by hand from the Actions tab. See [REPORT.md](REPORT.md#ci).
+new answers (about $0.07, needs the `ANTHROPIC_API_KEY` repository secret), unless it
+changes only documentation; the LLM judges run only by hand from the Actions tab. See
+[REPORT.md](REPORT.md#ci).
 
 ## License
 

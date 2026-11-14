@@ -2,7 +2,8 @@
 #
 # - checks: lint, tests, and the saved production generation run rescored against
 #   the expected answers (no API calls, under a minute);
-# - fresh: on a pull request to main, new redline proposals without the judges;
+# - fresh: on a pull request to main, new redline proposals without the judges,
+#   skipped when the pull request changes only documentation;
 # - generation: new redline proposals and the LLM judges, run by hand from the
 #   Actions tab because they cost money.
 # fresh and generation need the ANTHROPIC_API_KEY repository secret.
@@ -46,9 +47,35 @@ jobs:
 
   # On a pull request to main: new answers from the production config, without the
   # judges (about $0.07), against the looser [fresh] thresholds.
-  fresh:
+  # Whether a pull request changes only documentation: Markdown outside prompts/ (the
+  # prompts are Markdown too) and docs/. Then fresh is skipped, since no new answer can
+  # differ from the last one for a reason.
+  changes:
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
-    needs: checks
+    runs-on: ubuntu-latest
+    outputs:
+      only_docs: ${{ steps.diff.outputs.only_docs }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: diff
+        run: |
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} > changed.txt
+          cat changed.txt
+          # Every changed file must be documentation; prompts/ is never documentation.
+          if grep -qvE '^(docs/.*|[^/]+\.md|results/.*\.md|data/README\.md)$' changed.txt \
+            || grep -q '^prompts/' changed.txt; then
+            echo "only_docs=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "only_docs=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  fresh:
+    if: >-
+      github.event_name == 'pull_request' && github.base_ref == 'main'
+      && needs.changes.outputs.only_docs != 'true'
+    needs: [checks, changes]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
