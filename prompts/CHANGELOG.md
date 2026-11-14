@@ -63,6 +63,8 @@ same module. `rag/repair_v1` is the repair message, as in stage 1.
 | Only a matter on which the sources contain no rule changes the verdict. Doubts about the clause or the deal (what it means, other terms, facts) and how to apply a rule the sources do contain are gaps without the mark; the clause is assessed as written | three flags the sources settle got not_covered: the model marked the meaning of the clause, the type of premises, other terms of the lease and the reading of a policy term as verdict-changing |
 
 The one refinement of the v4 rule; further changes need a set the rule was not tuned on.
+Neither v4 nor v5 was kept: the code went back to plain-string gaps after commit
+5c6bae2, which has the schema both need.
 
 ### v4 — a gap that changes the verdict means not_covered
 
