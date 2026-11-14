@@ -9,8 +9,9 @@ Every red flag is searched three ways:
    windows (computed here from the documents), and once more with reranking but
    without the default filter, to show what the filter keeps out.
 2. **By role** (`rag/redline_search.py`): each role with its own filter and k, with
-   and without the type description in the query. The scored roles return at most
-   3 + 3 + 3 + 2 = 11 chunks, about the budget of the one list (10).
+   and without the type description in the query, and with it over the fixed-size
+   windows. The scored roles return at most 3 + 3 + 3 + 2 = 11 chunks, about the
+   budget of the one list (10).
 3. **Thresholds**: the role search scored without a threshold and cut at several
    reranker scores, for the recall of each role and the share of flags with no
    precedent whose precedent slot comes back empty.
@@ -79,6 +80,7 @@ KS = (1, 3, 5, 10)
 SCORED_ROLES = ("position", "wording", "law", "precedent")
 THRESHOLDS = (0.0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.3)
 QUERIES = {True: "clause + type description", False: "clause only"}
+FIXED_ROLES = "clause + type description, fixed-size chunks"
 
 
 def load_flags() -> list[dict]:
@@ -226,15 +228,26 @@ def per_flag(flags: list[dict], results: dict) -> dict:
     return table
 
 
-def by_role(flags: list[dict], retriever: Retriever) -> tuple[dict, dict]:
+def search_roles(
+    flags: list[dict], retriever: Retriever, topic: bool
+) -> tuple[dict, list[float]]:
+    search = RedlineSearch(retriever, min_score=0.0, topic=topic)
+    results, latencies = {}, []
+    for flag in flags:
+        start = time.perf_counter()
+        results[flag["id"]] = search.search(flag["red_flag"])
+        latencies.append(time.perf_counter() - start)
+    return results, latencies
+
+
+def by_role(flags: list[dict], retrievers: dict) -> tuple[dict, dict]:
     results, latencies = {}, {}
     for topic in QUERIES:
-        search = RedlineSearch(retriever, min_score=0.0, topic=topic)
-        results[topic], latencies[topic] = {}, []
-        for flag in flags:
-            start = time.perf_counter()
-            results[topic][flag["id"]] = search.search(flag["red_flag"])
-            latencies[topic].append(time.perf_counter() - start)
+        results[topic], latencies[topic] = search_roles(
+            flags, retrievers["structural"], topic
+        )
+    # The production search over fixed-size windows: what the chunking is worth there.
+    fixed, fixed_latencies = search_roles(flags, retrievers["fixed"], True)
 
     metrics = {
         # The query role search uses; history and the threshold table follow it.
@@ -243,6 +256,10 @@ def by_role(flags: list[dict], retriever: Retriever) -> tuple[dict, dict]:
             QUERIES[topic]: role_scores(flags, results[topic], MIN_SCORE)
             | {"latency_p50_s": round(statistics.median(latencies[topic]), 2)}
             for topic in QUERIES
+        }
+        | {
+            FIXED_ROLES: role_scores(flags, fixed, MIN_SCORE)
+            | {"latency_p50_s": round(statistics.median(fixed_latencies), 2)}
         },
         "thresholds": {
             f"{t:g}": role_scores(flags, results[True], t) for t in THRESHOLDS
@@ -258,6 +275,14 @@ def by_role(flags: list[dict], retriever: Retriever) -> tuple[dict, dict]:
             for flag_id, roles in results[topic].items()
         }
         for topic in QUERIES
+    } | {
+        f"by role / {FIXED_ROLES}": {
+            flag_id: {
+                role: [[hit.chunk.id, round(hit.score, 4)] for hit in role_hits]
+                for role, role_hits in roles.items()
+            }
+            for flag_id, roles in fixed.items()
+        }
     }
     return metrics, hits
 
@@ -476,7 +501,7 @@ def main() -> None:
     }
 
     list_metrics, hits = one_list(flags, retrievers)
-    role_metrics, role_hits = by_role(flags, retrievers["structural"])
+    role_metrics, role_hits = by_role(flags, retrievers)
     metrics = {"one_list": list_metrics, **role_metrics}
 
     folder.mkdir(parents=True)

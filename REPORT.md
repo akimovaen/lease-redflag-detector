@@ -303,10 +303,269 @@ local runs cost no API fees.
 
 # Report — stage 2: RAG
 
-An assistant for the lawyer of a landlord that answers questions and proposes redlines
-from the leasing policy, the clause library and the law, with a citation for every
-claim. The scenario, the corpus and the chunking are described in the
-[README](README.md#stage-2-rag); results are added as the stage goes on.
+An assistant for the lawyer of a landlord: given a red flag from stage 1 (its type and
+the clause quote), it finds what the leasing policy, the clause library, the law and
+the committee minutes say, and proposes a redline with a verdict, a risk level and a
+citation for every claim. The corpus and the chunking (structural against fixed-size
+windows, with the comparison) are described in the [README](README.md#stage-2-rag).
+
+## Setup
+
+**Search by role** (`rag/redline_search.py`). A redline has parts, and each part rests
+on its own kind of source. A role is that part together with the documents it is
+searched in:
+
+| Role | Searched in | k | What it gives the redline |
+|---|---|---|---|
+| position | leasing policy | 3 | what the landlord requires, i.e. what is wrong with the clause |
+| wording | clause library | 3 | approved clauses to base the changed clause on |
+| law | laws in force, without the state-property regime (Law 157-IX) | 3 | the bounds of the change: mandatory rules, caps |
+| precedent | lease committee minutes | 2 | deviations the committee has approved before |
+| market | market research, signed leases | 2 | background only; not scored |
+
+Why separately: in one ranked list over the whole corpus the policy and the library
+match the clause best and crowd out the law and the minutes (see the second table under
+[Retrieval](#retrieval)). Each role is one hybrid search (multilingual-e5 vectors +
+BM25 over lemmas, fused with RRF, reranked by bge-reranker-v2-m3) with a metadata
+filter, which also keeps outdated and wrong-regime documents out. The query is the
+clause plus a description of the red flag type. Hits under a reranker score of 0.01 are
+dropped, so a role with nothing relevant (most flags have no precedent) comes back
+empty instead of filling the context with noise.
+
+**Generation** (`rag/redline.py`, prompt `rag/v3`, Haiku). Sources are numbered S1…
+in a 6,000-token context; the policy points on how to assess a change and on approval
+are always included. The answer is structured output: a verdict by the levels of the
+policy (compliant, concession, beyond concessions, unacceptable, not covered), findings
+and a risk reason as claims with source ids, the risk level, the changed clause with
+its sources, gaps (points the sources do not settle) and conflicts between sources.
+Who approves follows from the verdict in code. Every cited id is checked against the
+context, with one repair attempt.
+
+**Test set** (`evals/`). 24 red flags, written before any model answer and reviewed
+by the landlord's lawyer, who corrected every expected answer:
+
+- `redflag_retrieval.toml`: the clause and, per role, the passages the search must
+  find, as quotes copied from the documents, so any chunking is scored alike;
+- `redline_expected.toml`: verdict, risk, key facts, documents that must be cited,
+  whether gaps are expected;
+- 8 traps: 3 clauses that the outdated 2024 policy allowed (f01, f18, f19), a clause
+  built on the repealed Commercial Code (f20), a sublease clause that matches the
+  state-property law better than the Civil Code (f21), and 3 on "is there an answer at
+  all". f22 (termination because of war) looks uncovered but is
+  settled by the general rule of policy 4.3; f23 (generator costs) and f24 (war damage
+  repairs) are not settled, and the expected verdict is not_covered.
+
+## Retrieval
+
+Recall of the role search: the share of a flag's expected passages that its role
+returns, averaged over flags. Avoid: the share of trap passages (outdated or
+wrong-regime documents) any role returns; it must be 0. Every run is kept in
+`results/rag/retrieval/`, with [history.md](results/rag/retrieval/history.md).
+
+| Run | position | wording | law | precedent | Overall | Avoid |
+|---|---|---|---|---|---|---|
+| reviewed set, threshold 0.05, wording k 2 | 0.98 | 0.77 | 0.82 | 0.89 | 0.86 | 0.00 |
+| threshold 0.01 | 0.98 | 0.77 | 0.92 | 1.00 | 0.90 | 0.00 |
+| wording k 3 | 0.98 | 0.93 | 0.92 | 1.00 | **0.95** | 0.00 |
+| two queries fused (rejected) | 0.98 | 0.86 | 0.79 | 1.00 | 0.91 | 0.00 |
+| **24 flags** (f23, f24 added) | 0.98 | 0.94 | 0.93 | 1.00 | **0.95** | 0.00 |
+
+The role search against one list over the whole corpus, on the 24 flags:
+
+| Search | Recall | position | wording | law | precedent | Avoid |
+|---|---|---|---|---|---|---|
+| one list, top 10, structural chunks, hybrid + rerank | 0.70 | 0.92 | 0.94 | 0.10 | 0.00 | 0.07 |
+| same, fixed-size chunks | 0.68 | 0.90 | 0.96 | 0.00 | 0.00 | 0.07 |
+| same, outdated documents not filtered out | 0.67 | 0.88 | 0.94 | 0.00 | 0.00 | 1.00 |
+| **by role**, clause only | 0.81 | 0.98 | 0.75 | 0.60 | 0.78 | 0.00 |
+| **by role**, clause + type description | **0.95** | 0.98 | 0.94 | 0.93 | 1.00 | 0.00 |
+| same, fixed-size chunks | 0.90 | 0.97 | 1.00 | 0.70 | 0.71 | 0.00 |
+
+One list of 10 is filled by the policy and the library, which match the clause best;
+the law and the minutes almost never make it. Searching each role separately, with
+about the same number of chunks (11), finds the law article and the precedent for
+nearly every flag. The type description in the query adds the vocabulary the clause
+lacks ("суборенда", "згода наймодавця") and is worth 0.14. The status filter is what
+keeps the traps out: without it every trap passage is returned.
+
+Structural chunks against fixed windows matter little in one list (0.70 against
+0.68) but in the role search they are 0.95 against 0.90 (run `2026-11-14_fixed-roles`).
+The difference is in the law (0.93 against 0.70) and the precedents (1.00 against
+0.71), the short units: a 350-token window holds parts of two or three articles or
+decisions, which likely dilutes the match (not checked hit by hit). Fixed windows find the library
+wording slightly better (1.00 against 0.94), since one window often holds a clause and
+its neighbour. The reranker threshold was chosen on the structural chunks, which
+favours them somewhat.
+
+The reranker threshold and k were chosen on this set, so 0.95 is optimistic: there is
+no held-out set yet.
+
+## Answers
+
+Scored against the expected answers, every run in `results/rag/generation/` with
+[history.md](results/rag/generation/history.md). Deterministic scores: valid (passed
+validation), verdict and risk (equal to the expected), cite (share of the expected
+documents among the cited ones), gaps (named exactly when expected). From the LLM
+judges: facts (share of the key facts the answer states, partial as half), clause
+(changed clause good 1, minor edits 0.5, wrong or missing 0) and faithfulness (share of
+the claims their cited sources support).
+
+| Run | Flags | valid | verdict | risk | cite | gaps | facts | clause | faithfulness | $ / 1000 flags | p50 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Haiku, prompt v1 | 22 | 1.00 | 0.86 | 0.68 | 0.98 | 0.23 | | | | 3.11 | 28 s |
+| Haiku, prompt v2 | 22 | 1.00 | 0.86 | 0.86 | 0.98 | 0.59 | | | | 2.86 | 24 s |
+| Haiku, prompt v3 | 22 | 1.00 | 0.95 | 0.82 | 1.00 | 0.73 | 0.93 | 0.68 | 0.72 | 2.81 | 23 s |
+| **Haiku, prompt v3** | **24** | 1.00 | **0.88** | 0.83 | 1.00 | 0.75 | 0.89 | 0.62 | 0.73 | 2.82 | 23 s |
+
+v1 and v2 were scored against the draft of the expected answers, which the lawyer then
+corrected (f04 also changed currency), so the rows compare only roughly. The 24-flag
+run merges the 22 answers of v3 with the two new flags run on the same code and config
+(`scripts/merge_runs.py`). The two new flags take verdict from 0.95 to 0.88: both are
+missed (error 2).
+
+19 of the 24 expected verdicts are `unacceptable`, so an answer that always says so
+would score 0.79 on verdict; the metric is read with that in mind.
+
+### The judge and its calibration
+
+The judges are Sonnet with structured output (`prompts/judge/`). The answer judge sees
+the clause, the expected answer and the model's answer, and grades each key fact and
+the changed clause. The faithfulness judge sees every claim with the full text of the
+chunks it cites, and grades it supported, partly supported or not.
+
+The lawyer graded 12 answers of the v3 run by hand (46 key facts, 12 changed clauses,
+`evals/judge_calibration.toml`), without seeing the judge's grades
+([judge_calibration.md](results/rag/judge_calibration.md)):
+
+| | Grades | Exact agreement | Cohen's kappa |
+|---|---|---|---|
+| Key facts | 46 | 0.74 | 0.14 |
+| Changed clause | 12 | 0.58 | 0.25 |
+
+The judge is **too lenient on facts**: 4 of the 5 facts the lawyer found missing it
+counts as present, because the answer touches the point without stating it. It is
+**too strict on the clause**: all 5 disagreements are "good" from the lawyer against
+"minor edits" from the judge, which marks down a clause for anything beyond the minimal
+edit, while the lawyer asks whether it can go into the lease as it is. High agreement
+with a kappa near zero means the judge agrees on the common case (a fact that is
+there) and not on the rare ones that matter. Facts and clause are therefore reported
+but are not CI thresholds; the faithfulness judge was not calibrated separately.
+
+### Faithfulness
+
+0.73 on 111 claims of the 24-flag run. Most "partial" grades are claims that add a
+conclusion to a cited rule. 3 claims are not supported at all: a risk level the prompt
+prescribes but no source states (f09), a statement about what the committee did not
+consider (f06), and a law article read the wrong way round (f11, error 3).
+
+## CI
+
+[evals.yml](.github/workflows/evals.yml) runs on every push and pull request: lint,
+tests and the production generation run rescored against the expected answers, under a
+minute. [retrieval.yml](.github/workflows/retrieval.yml) runs the role search on the
+eval set when the search code, the chunks, the flag set or the thresholds change, in
+about 6 minutes. Either fails when a metric is under its threshold in
+[evals/thresholds.toml](evals/thresholds.toml), set a little under the current
+numbers: retrieval overall ≥ 0.90 and no trap passage; valid 1.00, verdict ≥ 0.85, risk
+≥ 0.75, cite ≥ 0.95, faithfulness ≥ 0.65. New generation and judging cost money and run
+only by hand.
+
+On the runner's CPU the reranker could not score the eval set within 45 minutes. Its
+scores are cached by a hash of the model, the query and the chunk and the cache is
+committed: a score never changes for the same pair, so CI recomputes only the pairs a
+change touches.
+
+## Error analysis
+
+### 1. The reranker threshold dropped the right law articles
+
+**Expected:** for a sublease or repair clause, the law role returns the Civil Code
+article (774, 776). **Got:** at a threshold of 0.05 the law role missed the right
+article for some flags: law recall 0.82. **Why:** the reranker scores a Ukrainian statute
+article against a contract clause low, even when it is the right one: the right article
+scored as low as 0.01, while unrelated minutes scored up to 0.007. The threshold was
+set before measuring this. Lowered to 0.01, law recall rose to 0.92 and precedent recall to
+1.00; the cost is that the precedent slot of a flag without a precedent comes back
+empty less often (31% of them instead of 44%), so more minutes on the topic reach the
+context as noise. The library role had a related problem: with k 2 it missed the second approved
+wording (a fallback after the base one); k 3 took it from 0.77 to 0.93. A fix tried
+for both, a second query with the clause alone fused with RRF, lowered recall to 0.91
+and was reverted.
+
+### 2. The model names what the sources do not settle and decides anyway
+
+**Expected:** f23 (generator costs left with the landlord) and f24 (the landlord
+restores war damage at its cost) are `not_covered`: the policy lists operating costs
+without generators and splits repairs into current and capital only, so the lawyer
+decides. **Got:** f23 `beyond_concessions`, reading generators into "maintenance of
+engineering systems"; f24 `unacceptable`, reading the restoration of finishes, windows
+and doors as the current repair of policy 6.4. Both with a changed clause. **Why:** in
+both answers the gaps say exactly what is open ("whether the generators are a common
+system of the building… changes the verdict and the clause"; "the sources do not say
+whether finishes, windows and doors are structural elements"), but the prompt asks for
+`not_covered` only when "the sources do not settle the main point", and the model does
+not apply that to its own gaps. This is the failure that matters most for a lawyer: a
+confident verdict on a point the company has no rule for.
+
+### 3. A law article inverted
+
+**Expected (f11):** Civil Code art. 774: a sublease is possible only with the lessor's
+consent, unless the contract or the law provides otherwise. **Got:** "Art. 774 allows a
+sublease without the lessor's consent if the contract provides so, so the law is not
+broken." **Why:** the article has an exception clause, and the model read the
+exception as the rule. The verdict is still right, because it rests on the policy,
+and cite is 1.00, because the right document is cited. Only the faithfulness judge,
+which reads the claim against the cited text, caught it. Citation checks alone do not
+show that the cited source says what the claim says.
+
+### 4. A prompt rule written for two flags spread to others
+
+**Expected:** a sublease with consent that "cannot be unreasonably withheld" (f18) is
+medium risk: consent is still needed. **Got:** medium in v2, high in v3. **Why:** v3
+added "sublease or transfer without consent to any third party is high risk", written
+from the lawyer's corrections of f09 and f21. It fixed f09 (medium in v2, high in v3)
+and moved f18 the other way: the model applied the rule to a sublease clause that does
+require consent, because the consent cannot be refused. The rule was checked on the
+flags it was written for, not on the others of its type. (f11, the business buyer, was
+high in every version against the expected medium.) Since then fixes are recorded as general rules
+for a class of errors in [docs/improvements.md](docs/improvements.md) before any prompt
+change.
+
+### 5. The test, not the model, was wrong
+
+**Expected (draft):** f04, rent fixed at 85,330 yuan for the whole term, is
+`unacceptable`: no indexation. **Got:** `not_covered` from v1 and v2. **Why:** the
+model was right. The policy indexes hryvnia rent (section 2) and sets euro rent for
+some premises (section 3); yuan rent is in neither, so the currency is a point the
+policy does not settle. The flag was meant to test the missing indexation, and the
+currency added a second question. The lawyer changed it to hryvnias; v3 answers
+`unacceptable`. Expected answers written before the model runs still need a second
+look when the model disagrees for a reason.
+
+## Budget
+
+About $1.3 of the $5 budget so far: three full Haiku runs at about $0.065 each, the two
+new flags $0.006, the judges $0.57 for the 24-flag run (recorded runs $0.77 in all), and
+short smoke runs that were not kept. Retrieval, chunking and CI run locally and cost nothing. A redline costs
+about $0.003 with Haiku ($2.82 per 1,000 red flags) and takes 23 s (p50).
+
+## Next steps
+
+From [docs/improvements.md](docs/improvements.md), none implemented yet:
+
+- **Generation:** a gap that changes the verdict means `not_covered` (error 2), checked
+  in code through a field of the schema; risk from a table of verdict and type in code,
+  with the model only explaining a deviation (error 4); for an unacceptable clause the
+  base wording without unrequested concessions; a comparison with Sonnet.
+- **Judge:** a fact is present only if stated; a clause is good if it can go into the
+  lease as it is; then calibrate on new grades, not on the 12 the prompt was fixed on.
+  A deterministic check that the clause numbers a claim cites are in its source.
+- **Eval set:** a held-out set for the reranker threshold and k; an "either" value for
+  gaps that may or may not be named; expected gaps as key facts, so their content is
+  judged and not only their presence; more flags with verdicts other than
+  `unacceptable`.
+- **Input:** stage 1 should return the clause to the end of its sentence or list (f05
+  was cut at "in the following cases:").
 
 ## Limitations
 

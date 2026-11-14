@@ -1,42 +1,42 @@
-# Ідеї покращень
+# Improvement ideas
 
-Журнал міркувань про покращення на кожному рівні. Тут лише ідеї, не реалізовані зміни: кожна має підставу (що ми побачили) і статус. Реалізовану ідею позначаємо посиланням на коміт або прогін.
+A log of thinking about improvements at each level. These are ideas, not implemented changes: each has its evidence (what we saw) and a status. An implemented idea is marked with a link to the commit or the run.
 
-Принцип: покращення мають бути загальними правилами, а не підгонкою під конкретний прапорець з eval-набору. Якщо ідея з'явилась з одного випадку, спершу формулюємо, який клас помилок вона закриває, і перевіряємо, чи цей клас трапляється ширше.
+Principle: improvements must be general rules, not fitting to a particular flag of the eval set. If an idea came from one case, first state which class of errors it addresses and check whether that class occurs more widely.
 
-Статуси: **ідея** · **відкладено** · **відхилено** · **зроблено**.
+Statuses: **idea** · **deferred** · **rejected** · **done**.
 
-## Вхід (stage 1)
+## Input (stage 1)
 
-- **Обірвані цитати.** *ідея.* Цитата f05 обривається на «у таких випадках:», і модель чесно каже, що перелік невідомий. Stage 1 має повертати пункт до кінця речення чи переліку, інакше stage 2 судить про неповний текст.
+- **Truncated quotes.** *idea.* The f05 quote breaks off at "у таких випадках:", and the model honestly says the list is unknown. Stage 1 should return the clause to the end of the sentence or the list; otherwise stage 2 judges incomplete text.
 
-## Пошук
+## Retrieval
 
-- **Два злиті запити на роль (умова + опис; лише умова).** *відхилено*, прогін `2026-11-11_two-queries`: recall 0.91 проти 0.95.
-- **Порожні прецеденти.** *ідея.* Частка порожньої ролі precedent 0.31: для частини типів протоколів просто немає. Перевірити, чи це прогалина корпусу, а не пошуку.
-- **Поріг reranker налаштовано на eval-наборі.** *ідея.* MIN_SCORE 0.01 підібрано на тих самих 22 прапорцях, тож recall 0.95 оптимістичний. Потрібен відкладений набір.
+- **Two fused queries per role (clause + description; clause only).** *rejected*, run `2026-11-11_two-queries`: recall 0.91 against 0.95.
+- **Empty precedents.** *idea.* The precedent role is empty for 0.31 of flags: for some types there are simply no minutes. Check whether this is a gap in the corpus rather than in the search.
+- **Reranker threshold tuned on the eval set.** *idea.* MIN_SCORE 0.01 was chosen on the same 22 flags, so recall 0.95 is optimistic. A held-out set is needed.
 
-## Генерація
+## Generation
 
-- **Цитата — лише фрагмент договору.** *ідея.* Модель робить висновок з одного пункту, хоча відповідь може залежати від інших умов договору (наприклад, чи передбачено відшкодування деінде). Загальне правило: якщо висновок залежить від умов поза цитатою, назвати це в gaps і не кваліфікувати пункт гірше, ніж він є. Прояв: f16.
-- **Прогалина, що змінює вердикт, — це not_covered.** *ідея.* Модель називає в gaps питання, від якого, за її ж словами, залежить вердикт, але однаково виносить вердикт і пропонує редакцію (f23, f24 у `haiku-v3-24`: жодного not_covered з двох). Загальне правило: якщо названа прогалина змінює вердикт, вердикт — not_covered, редакції немає. Можна перевіряти й у коді: вердикт not_covered обов'язковий, коли модель позначила прогалину як таку, що змінює вердикт (окреме поле в схемі).
-- **Завищення ризику.** *ідея.* Правило про суборенду без згоди застосовується ширше, ніж задумано (f11, f18), f20 отримує critical. Розглянути, чи визначати ризик правилом у коді з вердикту й типу, а модель лише обґрунтовує відхилення.
-- **Мінімальна правка проти переписування.** *ідея.* Для concession модель часто переписує пункт за формулою з бібліотеки замість мінімальної правки (f10, f16) і губить умови орендаря, яких ніхто не оскаржував.
-- **Непрохані поступки.** *ідея.* У редакцію для unacceptable модель дописує поступки з бібліотеки, про які орендар не просив (f18, Ф-5.3). Правило: для unacceptable — базова позиція без поступок; поступки лише в findings як варіант для переговорів.
-- **Порівняння з Sonnet.** *відкладено.* Конфіг `configs/rag-sonnet-v3.toml` готовий.
+- **The quote is only a fragment of the lease.** *idea.* The model draws its conclusion from one clause, although the answer may depend on other terms of the lease (for example, whether reimbursement is provided for elsewhere). General rule: if the conclusion depends on terms outside the quote, name that in gaps and do not rate the clause worse than it is. Seen in: f16.
+- **A gap that changes the verdict means not_covered.** *idea.* The model names in gaps a question on which, by its own words, the verdict depends, but still gives a verdict and proposes a redline (f23, f24 in `haiku-v3-24`: no not_covered out of two). General rule: if a named gap changes the verdict, the verdict is not_covered and there is no redline. This could also be checked in code: not_covered is required when the model marks a gap as changing the verdict (a separate field in the schema).
+- **Inflated risk.** *idea.* The rule on sublease without consent is applied more widely than intended (f11, f18), and f20 gets critical. Consider setting the risk by a rule in code from the verdict and the type, with the model only justifying a deviation.
+- **Minimal edit against rewriting.** *idea.* For a concession the model often rewrites the clause from a library formula instead of a minimal edit (f10, f16) and loses tenant terms nobody disputed.
+- **Unrequested concessions.** *idea.* In a redline for unacceptable the model adds library concessions the tenant did not ask for (f18, Ф-5.3). Rule: for unacceptable, the base position without concessions; concessions only in findings, as an option for negotiation.
+- **Comparison with Sonnet.** *deferred.* The config `configs/rag-sonnet-v3.toml` is ready.
 
-## Оцінка (eval-набір і скоринг)
+## Evaluation (eval set and scoring)
 
-- **Необов'язкові прогалини.** *ідея.* `gaps` зараз true/false, але в f20 прогалина допустима, не обов'язкова. Додати значення «будь-яке», щоб не карати за обидва варіанти.
-- **Зміст прогалин, а не лише наявність.** *ідея.* Детермінована метрика gaps перевіряє лише, чи є прогалини. Очікувану прогалину (як у f16) варто внести в key_facts, щоб її змістовно перевіряв суддя.
-- **Показ прогалин у звіті.** *ідея.* У `report.md` блок називається «Джерела не вирішують» і його легко не помітити; у `scores.md` немає порівняння очікуваних і знайдених прогалин по прапорцях.
-- **CPU-збірка torch у CI.** *ідея.* На Linux `uv sync` ставить torch з CUDA-бібліотеками (кілька ГБ), хоча CI рахує на CPU. Індекс pytorch-cpu для Linux у `pyproject.toml` скоротив би встановлення.
-- **Загальний скор.** *зроблено:* зведеного числа немає, CI перевіряє пороги окремих метрик (`evals/thresholds.toml`), а не зважену суму.
+- **Optional gaps.** *idea.* `gaps` is now true/false, but in f20 a gap is acceptable, not required. Add an "either" value so that neither answer is penalised.
+- **What the gaps say, not only whether there are any.** *idea.* The deterministic gaps metric only checks whether gaps exist. An expected gap (as in f16) should go into key_facts, so the judge checks its content.
+- **Showing gaps in the report.** *idea.* In `report.md` the block is called "Джерела не вирішують" and is easy to miss; `scores.md` has no per-flag comparison of expected and found gaps.
+- **CPU build of torch in CI.** *idea.* On Linux `uv sync` installs torch with the CUDA libraries (several GB), although CI computes on CPU. A pytorch-cpu index for Linux in `pyproject.toml` would shorten the install.
+- **Overall score.** *done:* there is no aggregate number; CI checks thresholds of individual metrics (`evals/thresholds.toml`), not a weighted sum.
 
-## Суддя
+## Judge
 
-- **Калібрування answer_v1:** факти — збіг 0.74, kappa 0.14; редакція — збіг 0.58, kappa 0.25 (`results/rag/judge_calibration.md`).
-- **Поблажливість до фактів.** *ідея.* Суддя зараховує факт, коли відповідь його лише зачіпає (4 з 5 «missing» юриста у нього «present»). Критерій: present лише якщо факт сформульовано прямо.
-- **Суворість до редакції.** *ідея.* Усі 5 розбіжностей — «good» юриста проти «minor_edits» судді. Суддя карає за доповнення понад мінімальну правку; юрист оцінює, чи редакцію можна використати. Критерій: «чи можна вставити в договір як є».
-- **Калібрування на тих самих відповідях.** *ідея.* Якщо змінювати промпт судді, міряти збіг на нових оцінках юриста, а не на тих 12, під які правили.
-- **Детермінована перевірка номерів пунктів.** *ідея.* Номери п./ст./Ф- у твердженні мають бути в тексті процитованого чанка — дешева перевірка faithfulness без LLM.
+- **Calibration of answer_v1:** facts — agreement 0.74, kappa 0.14; redline — agreement 0.58, kappa 0.25 (`results/rag/judge_calibration.md`).
+- **Lenient on facts.** *idea.* The judge counts a fact when the answer only touches on it (4 of the lawyer's 5 "missing" are "present" for it). Criterion: present only if the fact is stated directly.
+- **Strict on the redline.** *idea.* All 5 disagreements are the lawyer's "good" against the judge's "minor_edits". The judge penalises additions beyond a minimal edit; the lawyer judges whether the redline can be used. Criterion: "can it go into the lease as is".
+- **Calibrating on the same answers.** *idea.* If the judge prompt is changed, measure agreement on new grades by the lawyer, not on the 12 it was adjusted to.
+- **Deterministic check of clause numbers.** *idea.* The numbers п./ст./Ф- in a claim must appear in the text of the cited chunk — a cheap faithfulness check without an LLM.
