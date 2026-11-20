@@ -57,3 +57,4 @@ Statuses: **idea** · **deferred** · **rejected** · **done**.
 ## Agent (stage 3)
 
 - **Tool calls of one step run one after another.** *idea.* The model asks for several redlines at once, and the loop runs them in turn (about 25 s each), so a lease with five or six red flags nears the request time limit and the last redlines are skipped as "time limit". Calls of tools without side effects could run in parallel. Revisit if the evals show it.
+- **The lawyer's time to confirm counts against the request.** *idea.* `submit_for_review` waits for the lawyer's answer with no time limit, and that wait is part of the request's 240 s. A lawyer who reads a long request for two minutes leaves the agent too little time for the steps after it; the answer then says honestly that the time limit was reached. The wait for a person could be left out of the request clock. The evals answer at once, so they do not show it.

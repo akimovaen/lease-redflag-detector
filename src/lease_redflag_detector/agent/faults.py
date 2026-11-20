@@ -12,6 +12,9 @@
 - 429 and 503: a rate limit (with a one-second retry-after) and an unavailable service.
 - schema: the tool runs, and the first field of its result is renamed, as a provider
   might do without warning; the result then fails its schema.
+- lost: the tool runs and acts, and its answer is lost on the way back, as with a
+  dropped connection: the model sees a transient error and may call again, which must
+  not act twice.
 
 `*N` limits a rule to the first N calls of the tool, retries included, so that a task
 can show a service that comes back after a retry. The rules named for a tool replace
@@ -26,7 +29,7 @@ from dataclasses import dataclass
 from lease_redflag_detector.agent.loop import ToolCall, ToolResult
 from lease_redflag_detector.agent.tools import Toolbox
 
-KINDS = ("timeout", "429", "503", "schema")
+KINDS = ("timeout", "429", "503", "schema", "lost")
 RETRY_AFTER_S = 1.0
 
 
@@ -74,6 +77,14 @@ class FaultyToolbox:
     def retry_safe(self, name: str) -> bool:
         return self.toolbox.retry_safe(name)
 
+    def side_effect(self, name: str) -> bool:
+        return self.toolbox.side_effect(name)
+
+    def start_request(self) -> None:
+        """Every request starts with the faults as given: `*N` counts from zero."""
+        self.calls.clear()
+        self.toolbox.start_request()
+
     def fault(self, name: str) -> Fault | None:
         """The rule for this call of the tool: the tool's own first, then a general one."""
         rules = [f for f in self.rules if f.tool == name] or [
@@ -91,6 +102,13 @@ class FaultyToolbox:
             return self.toolbox.execute(call)
         if fault.kind == "schema":
             return self.toolbox.execute(call, mutate=rename_first_field)
+        if fault.kind == "lost":
+            self.toolbox.execute(call)
+            return ToolResult(
+                f"{call.name}: the connection was lost before the answer arrived.",
+                True,
+                error_kind="transient",
+            )
         if fault.kind == "timeout":
             return ToolResult(
                 f"Tool {call.name} timed out.", True, error_kind="timeout"

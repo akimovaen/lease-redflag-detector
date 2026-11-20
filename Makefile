@@ -5,7 +5,7 @@ NOTE ?=
 RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
-	check check-retrieval check-generation check-fresh evals agent test lint
+	check check-retrieval check-generation check-fresh evals agent review test lint
 
 run: extract metrics
 
@@ -69,6 +69,12 @@ agent:
 	uv run python -m lease_redflag_detector.agent.cli "$(Q)" \
 		$(if $(MAX_STEPS),--max-steps $(MAX_STEPS)) $(if $(MAX_USD),--max-usd $(MAX_USD)) \
 		$(if $(FAULTS),--faults "$(FAULTS)")
+
+# The approval queue the agent fills: list, show one, decide (a person, not the agent).
+# make review [ID=R-0001] [STATUS=погоджено|відхилено|повернуто COMMENT="…"]
+review:
+	uv run python -m lease_redflag_detector.agent.review $(if $(ID),--id $(ID)) \
+		$(if $(STATUS),--status $(STATUS)) $(if $(COMMENT),--comment "$(COMMENT)")
 
 test:
 	uv run pytest

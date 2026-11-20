@@ -4,11 +4,14 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
+from lease_redflag_detector.agent.confirm import ScriptedConfirmer
 from lease_redflag_detector.agent.loop import AgentConfig, ToolCall
+from lease_redflag_detector.agent.queue import ApprovalQueue
 from lease_redflag_detector.agent.registry import LeaseRegistry
 from lease_redflag_detector.agent.tools import Priced, Tool, Toolbox, ToolError
 from lease_redflag_detector.agent.toolset import (
     DraftArgs,
+    Drafts,
     build_toolbox,
     draft_redline,
     search_filters,
@@ -76,8 +79,18 @@ class FakeRetriever:
         return []
 
 
-def test_every_tool_has_a_description_and_a_schema():
-    box = build_toolbox(CONFIG, retriever=FakeRetriever(), warm=False)
+def toolbox_without_search(tmp_path, confirm=None):
+    return build_toolbox(
+        CONFIG,
+        retriever=FakeRetriever(),
+        warm=False,
+        queue=ApprovalQueue(tmp_path / "queue.db"),
+        confirm=confirm or ScriptedConfirmer(),
+    )
+
+
+def test_every_tool_has_a_description_and_a_schema(tmp_path):
+    box = toolbox_without_search(tmp_path)
     names = [s["name"] for s in box.schemas()]
     assert names == [
         "search_corpus",
@@ -86,10 +99,14 @@ def test_every_tool_has_a_description_and_a_schema():
         "read_lease_section",
         "extract_red_flags",
         "draft_redline",
+        "submit_for_review",
     ]
     for schema in box.schemas():
         assert len(schema["description"]) > 100 and schema["input_schema"]["properties"]
-    assert not any(tool.side_effect for tool in box.tools.values())
+    assert [n for n, tool in box.tools.items() if tool.side_effect] == [
+        "submit_for_review"
+    ]
+    assert not box.retry_safe("submit_for_review")
 
 
 def test_search_filters_by_role_and_version():
@@ -108,8 +125,8 @@ def test_the_registry_finds_and_reads_leases():
     assert sections[1].number == 2 and sections[1].title.startswith("1.")
 
 
-def test_lease_tools_refuse_unknown_ids():
-    box = build_toolbox(CONFIG, retriever=FakeRetriever(), warm=False)
+def test_lease_tools_refuse_unknown_ids(tmp_path):
+    box = toolbox_without_search(tmp_path)
     result = run(box, {"lease_id": "lease_1"}, "get_lease")
     assert result.is_error and "No lease lease_1" in result.content
     assert run(box, {"lease_id": "../etc"}, "get_lease").content.startswith(
@@ -142,7 +159,7 @@ class FakeGenerator:
 def test_draft_redline_needs_a_verbatim_quote_and_reports_stage_2_routing():
     registry = LeaseRegistry()
     generator = FakeGenerator()
-    draft = draft_redline(registry, generator)
+    draft = draft_redline(registry, generator, Drafts())
     with pytest.raises(ToolError, match="not in lease_37032 word for word"):
         draft(
             DraftArgs(

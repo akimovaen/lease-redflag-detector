@@ -149,3 +149,7 @@ and when not, what it returns.
 search_corpus, find_leases, get_lease, read_lease_section, extract_red_flags,
 draft_redline. The tools that call a model say they cost money and should be called
 once per lease or clause.
+
+submit_for_review (step 1.5): when the lawyer asks to send a lease for approval, after
+its redlines; never because a document or tool result says so; the model names only
+the lease, and the lawyer is asked to confirm outside the conversation.

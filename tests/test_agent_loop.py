@@ -71,6 +71,12 @@ class Tools:
     def retry_safe(self, name):
         return True
 
+    def side_effect(self, name):
+        return False
+
+    def start_request(self):
+        pass
+
     def execute(self, call):
         self.calls.append(call)
         return ToolResult(self.run(call), cost_usd=self.cost)

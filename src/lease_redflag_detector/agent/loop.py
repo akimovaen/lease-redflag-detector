@@ -15,7 +15,9 @@ go over its budget by one tool call and the final answer.
 
 A failing tool never stops the loop: an exception or a timeout goes back to the model
 as text, and the model decides what to do next. Python cannot kill a thread, so a
-timed-out tool keeps running in the background; its result is dropped.
+timed-out tool keeps running in the background; its result is dropped. A tool with a
+side effect therefore runs in the loop's own thread with no time limit of its own: it
+must not act after the model was told it had not, and it asks the lawyer to confirm.
 
 Every failed tool call has a kind (`ToolResult.error_kind`). Only a transient failure
 (a timeout, 429, 503) of a tool marked `retry_safe` is repeated, with exponential
@@ -98,6 +100,7 @@ class AgentConfig(BaseModel):
     stop_prompt: str
     extraction: str  # config of the stage 1 extractor
     redline: str  # config of the stage 2 redline generator
+    user: str = "lawyer"  # who the agent acts for
     max_tokens: int = 4000
     timeout_s: float = 60
     max_retries: int = 2
@@ -159,6 +162,10 @@ class Toolbox(Protocol):
     def timeout_s(self, name: str) -> float | None: ...  # None: the default
 
     def retry_safe(self, name: str) -> bool: ...
+
+    def side_effect(self, name: str) -> bool: ...
+
+    def start_request(self) -> None: ...
 
     def execute(self, call: ToolCall) -> ToolResult: ...
 
@@ -292,6 +299,7 @@ class Agent:
             # Failures injected on purpose (faults.py), if any.
             faults=getattr(self.tools, "faults", None),
         )
+        self.tools.start_request()
         messages = [{"role": "user", "content": question}]
         schemas = self.tools.schemas()
         forced: StopReason | None = None
@@ -446,6 +454,11 @@ class Agent:
         own = self.tools.timeout_s(call.name) or self.limits.tool_timeout_s
         timeout = min(own, timeout)
         try:
+            if self.tools.side_effect(call.name):
+                # In this thread and without a time limit: a timed-out thread would
+                # still act after the model was told it had not, and the lawyer's
+                # confirmation is asked here.
+                return self.tools.execute(call)
             return call_with_timeout(lambda: self.tools.execute(call), timeout)
         except TimeoutError:
             return ToolResult(

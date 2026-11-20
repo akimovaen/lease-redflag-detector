@@ -98,9 +98,18 @@ def errors_text(error: ValidationError) -> str:
 
 
 class Toolbox:
-    def __init__(self, tools: list[Tool]):
+    def __init__(
+        self, tools: list[Tool], on_request: list[Callable[[], None]] | None = None
+    ):
+        """`on_request`: what to reset at the start of every request, such as the
+        redlines a request has drafted."""
         self.tools = {tool.name: tool for tool in tools}
         self._schemas = [tool.schema() for tool in tools]
+        self.on_request = on_request or []
+
+    def start_request(self) -> None:
+        for reset in self.on_request:
+            reset()
 
     def schemas(self) -> list[dict]:
         return self._schemas
@@ -112,6 +121,10 @@ class Toolbox:
     def retry_safe(self, name: str) -> bool:
         tool = self.tools.get(name)
         return bool(tool and tool.retry_safe and not tool.side_effect)
+
+    def side_effect(self, name: str) -> bool:
+        tool = self.tools.get(name)
+        return bool(tool and tool.side_effect)
 
     def execute(
         self, call: ToolCall, mutate: Callable[[dict], dict] | None = None

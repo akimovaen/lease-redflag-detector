@@ -6,7 +6,11 @@
 - extract_red_flags: the stage 1 extractor on a lease from the registry;
 - draft_redline: the stage 2 redline for one red flag of a lease. The verdict, risk,
   approval route and whether the lawyer must decide come from stage 2 and its code,
-  not from the agent's own wording, so that later steps can rely on them.
+  not from the agent's own wording, so that later steps can rely on them;
+- submit_for_review: the one tool with a side effect. It puts a lease's contested
+  points on the approval queue (`queue.py`) after the lawyer confirms (`confirm.py`).
+  The model names only the lease: the points are the redlines drafted in this
+  request, so the model cannot soften a verdict on its way to the committee.
 
 The search runs in memory (`qdrant_path=None`) and writes new reranker scores to a
 local cache, not to the committed one. Loading the embedding model and the reranker
@@ -14,12 +18,21 @@ takes longer than a tool call may, so `build_toolbox` warms them up first.
 """
 
 import dataclasses
+import hashlib
+import json
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from lease_redflag_detector.agent.confirm import Confirmer, TerminalConfirmer
 from lease_redflag_detector.agent.loop import AgentConfig
+from lease_redflag_detector.agent.queue import (
+    ADDRESSEE,
+    RISKS,
+    VERDICTS,
+    ApprovalQueue,
+)
 from lease_redflag_detector.agent.registry import LeaseNotFound, LeaseRegistry
 from lease_redflag_detector.agent.tools import (
     Priced,
@@ -246,7 +259,7 @@ class RedFlags(BaseModel):
     terms: dict = Field(description="Parties, premises, term, rent and indexation.")
 
 
-def extract_red_flags(registry: LeaseRegistry, config: RunConfig):
+def extract_red_flags(registry: LeaseRegistry, config: RunConfig, drafts: "Drafts"):
     extractor = make_extractor(config)
 
     def run(args: LeaseArgs) -> Priced:
@@ -256,6 +269,7 @@ def extract_red_flags(registry: LeaseRegistry, config: RunConfig):
             raise api_failure("Extraction failed", extraction.error, cost or 0.0)
         output = extraction.output.model_dump(mode="json")
         flags = output.pop("red_flags")
+        drafts.flags[args.lease_id] = [(f["type"], f["quote"]) for f in flags]
         return Priced(
             RedFlags(lease_id=args.lease_id, red_flags=flags, terms=output), cost or 0.0
         )
@@ -300,7 +314,32 @@ class Draft(BaseModel):
     sources: list[SourceRef]
 
 
-def draft_redline(registry: LeaseRegistry, generator: RedlineGenerator):
+class Drafts:
+    """What the current request found for each lease: its red flags (if extracted)
+    and the redlines drafted, by clause."""
+
+    def __init__(self):
+        self.by_lease: dict[str, dict[tuple[str, str], Draft]] = {}
+        self.flags: dict[str, list[tuple[str, str]]] = {}
+
+    def reset(self) -> None:
+        self.by_lease.clear()
+        self.flags.clear()
+
+    def add(self, args: DraftArgs, draft: Draft) -> None:
+        self.by_lease.setdefault(args.lease_id, {})[(args.type, args.quote)] = draft
+
+    def without_redline(self, lease_id: str) -> int:
+        """Red flags extracted from the lease that have no redline; a redline counts
+        for a flag of its type whose quote holds its quote or is held in it."""
+        drafted = self.by_lease.get(lease_id, {})
+        return sum(
+            not any(t == flag_type and (q in quote or quote in q) for t, q in drafted)
+            for flag_type, quote in self.flags.get(lease_id, [])
+        )
+
+
+def draft_redline(registry: LeaseRegistry, generator: RedlineGenerator, drafts: Drafts):
     def run(args: DraftArgs) -> Priced:
         if not quote_in_text(args.quote, lease_text(registry, args.lease_id)):
             raise ToolError(
@@ -330,7 +369,175 @@ def draft_redline(registry: LeaseRegistry, generator: RedlineGenerator):
                 for s in result.sources
             ],
         )
+        drafts.add(args, draft)
         return Priced(draft, cost or 0.0)
+
+    return run
+
+
+# submit_for_review
+
+TO_APPROVE = {"concession", "beyond_concessions"}
+
+
+class SubmitArgs(LeaseArgs):
+    pass
+
+
+class Submission(BaseModel):
+    lease_id: str
+    created: bool
+    request_id: str | None
+    status: str
+    replaces: str | None = None
+    points: int = 0
+    # Red flags of the lease left out because they have no redline.
+    without_redline: int = 0
+    # Whether the lawyer confirmed; None when not asked (the request existed).
+    confirmed: bool | None = None
+    confirmation: str | None = None  # what the lawyer was shown
+    message: str
+
+
+def queue_items(drafts: dict[tuple[str, str], Draft]) -> list[dict]:
+    """The points of a request: those to approve (a concession, beyond concessions,
+    or anything the lawyer must decide) and the unacceptable ones for information.
+    Compliant points are left out."""
+    items = []
+    for (flag_type, quote), draft in drafts.items():
+        if draft.needs_decision or draft.verdict in TO_APPROVE:
+            section = "погодження"
+        elif draft.verdict == "unacceptable":
+            section = "до відома"
+        else:
+            continue
+        cited = set(draft.proposed_sources) | {
+            s for claim in draft.findings for s in claim.sources
+        }
+        items.append(
+            {
+                "section": section,
+                "type": flag_type,
+                "quote": quote,
+                "verdict": draft.verdict,
+                "risk": draft.risk,
+                "needs_decision": draft.needs_decision,
+                "gaps": draft.gaps,
+                "proposed_clause": draft.proposed_clause,
+                "approval": draft.approval,
+                "sources": [
+                    f"{s.document}, {s.section}" for s in draft.sources if s.id in cited
+                ],
+            }
+        )
+    return sorted(items, key=lambda i: (i["section"], i["type"], i["quote"]))
+
+
+def idempotency_key(lease_id: str, items: list[dict]) -> str:
+    """The same lease with the same points and verdicts is the same request, even if
+    a rerun words the changed clauses differently."""
+    points = [(i["type"], i["quote"], i["verdict"]) for i in items]
+    data = json.dumps([lease_id, points], ensure_ascii=False)
+    return hashlib.sha256(data.encode()).hexdigest()[:16]
+
+
+def confirmation(
+    title: str, lease_id: str, items: list[dict], replaces, without_redline: int
+) -> str:
+    def line(n: int, item: dict) -> str:
+        decision = " · потрібне рішення юриста" if item["needs_decision"] else ""
+        quote = item["quote"][:90] + ("…" if len(item["quote"]) > 90 else "")
+        return (
+            f"   {n}. {item['type']} · {VERDICTS[item['verdict']]} · ризик "
+            f"{RISKS.get(item['risk'], item['risk'])}{decision}\n      «{quote}»"
+        )
+
+    lines = [
+        "Створити заявку на погодження?",
+        f"  Договір: {lease_id} · {title}",
+        f"  Кому: {ADDRESSEE}",
+        "  Пункти на погодження:",
+    ]
+    to_approve = [i for i in items if i["section"] == "погодження"]
+    lines += [line(n, i) for n, i in enumerate(to_approve, 1)]
+    info = [i for i in items if i["section"] == "до відома"]
+    if info:
+        lines.append("  До відома (неприйнятні умови, не погоджуються):")
+        lines += [line(n, i) for n, i in enumerate(info, 1)]
+    if replaces:
+        lines.append(f"  Замінить заявку {replaces.id}, яка ще очікує.")
+    if without_redline:
+        lines.append(
+            f"  ⚠ Червоних прапорців без redline: {without_redline}; "
+            "у заявку вони не потрапили."
+        )
+    return "\n".join(lines)
+
+
+def submit_for_review(
+    registry: LeaseRegistry,
+    drafts: Drafts,
+    queue: ApprovalQueue,
+    confirm: Confirmer,
+    user: str,
+):
+    def run(args: SubmitArgs) -> Submission:
+        try:
+            title = registry.summary(args.lease_id)["title"]
+        except LeaseNotFound:
+            raise not_found(args.lease_id) from None
+        lease_drafts = drafts.by_lease.get(args.lease_id)
+        if not lease_drafts:
+            raise ToolError(
+                f"No redlines of {args.lease_id} in this request: run draft_redline "
+                "for its red flags first."
+            )
+        items = queue_items(lease_drafts)
+        if not any(i["section"] == "погодження" for i in items):
+            raise ToolError(
+                f"Nothing in {args.lease_id} needs approval: its points comply with "
+                "the policy or are unacceptable, which the committee does not approve."
+            )
+        key = idempotency_key(args.lease_id, items)
+        missing = drafts.without_redline(args.lease_id)
+        existing = queue.pending_with_key(key)
+        if existing:
+            return Submission(
+                lease_id=args.lease_id,
+                created=False,
+                request_id=existing.id,
+                status=existing.status,
+                points=len(existing.items),
+                without_redline=missing,
+                message="This request is already pending; nothing new was created.",
+            )
+        question = confirmation(
+            title, args.lease_id, items, queue.pending(args.lease_id), missing
+        )
+        if not confirm(question):
+            return Submission(
+                lease_id=args.lease_id,
+                created=False,
+                request_id=None,
+                status="not confirmed",
+                without_redline=missing,
+                confirmed=False,
+                confirmation=question,
+                message="The lawyer did not confirm; nothing was created.",
+            )
+        request, created = queue.create(args.lease_id, key, items, user)
+        return Submission(
+            lease_id=args.lease_id,
+            created=created,
+            request_id=request.id,
+            status=request.status,
+            replaces=request.replaces,
+            points=len(items),
+            without_redline=missing,
+            confirmed=True,
+            confirmation=question,
+            message="Created." if created else "This request is already pending.",
+        )
 
     return run
 
@@ -340,8 +547,13 @@ def build_toolbox(
     registry: LeaseRegistry | None = None,
     retriever: Retriever | None = None,
     warm: bool = True,
+    queue: ApprovalQueue | None = None,
+    confirm: Confirmer | None = None,
 ) -> Toolbox:
     registry = registry or LeaseRegistry()
+    queue = queue or ApprovalQueue()
+    confirm = confirm or TerminalConfirmer()
+    drafts = Drafts()
     retriever = retriever or Retriever(
         load_chunks(),
         collection="agent",
@@ -392,7 +604,7 @@ def build_toolbox(
                 "tools/extract_red_flags_v1",
                 LeaseArgs,
                 RedFlags,
-                extract_red_flags(registry, extraction),
+                extract_red_flags(registry, extraction, drafts),
                 timeout_s=EXTRACT_TIMEOUT_S,
             ),
             Tool(
@@ -400,8 +612,18 @@ def build_toolbox(
                 "tools/draft_redline_v1",
                 DraftArgs,
                 Draft,
-                draft_redline(registry, generator),
+                draft_redline(registry, generator, drafts),
                 timeout_s=DRAFT_TIMEOUT_S,
             ),
-        ]
+            Tool(
+                "submit_for_review",
+                "tools/submit_for_review_v1",
+                SubmitArgs,
+                Submission,
+                submit_for_review(registry, drafts, queue, confirm, config.user),
+                side_effect=True,
+                retry_safe=False,
+            ),
+        ],
+        on_request=[drafts.reset],
     )

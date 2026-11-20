@@ -237,3 +237,5 @@ data/processed/qdrant/
 # read), and the traces of single `make agent` questions; eval runs are committed.
 data/processed/rerank_local/
 results/agent/traces/
+# The approval queue of the agent (a local SQLite file).
+data/agent/
