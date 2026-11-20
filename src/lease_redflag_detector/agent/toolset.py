@@ -21,7 +21,13 @@ from pydantic import BaseModel, Field
 
 from lease_redflag_detector.agent.loop import AgentConfig
 from lease_redflag_detector.agent.registry import LeaseNotFound, LeaseRegistry
-from lease_redflag_detector.agent.tools import Priced, Tool, Toolbox, ToolError
+from lease_redflag_detector.agent.tools import (
+    Priced,
+    Tool,
+    Toolbox,
+    ToolError,
+    api_failure,
+)
 from lease_redflag_detector.extraction.extractor import RunConfig
 from lease_redflag_detector.extraction.metrics import cost_usd
 from lease_redflag_detector.extraction.quotes import quote_in_text
@@ -247,7 +253,7 @@ def extract_red_flags(registry: LeaseRegistry, config: RunConfig):
         extraction = extractor.extract(lease_text(registry, args.lease_id))
         cost = cost_usd(config.model, extraction.input_tokens, extraction.output_tokens)
         if extraction.output is None:
-            raise ToolError(f"Extraction failed: {extraction.error}", cost or 0.0)
+            raise api_failure("Extraction failed", extraction.error, cost or 0.0)
         output = extraction.output.model_dump(mode="json")
         flags = output.pop("red_flags")
         return Priced(
@@ -307,7 +313,7 @@ def draft_redline(registry: LeaseRegistry, generator: RedlineGenerator):
             generator.config.model, result.input_tokens, result.output_tokens
         )
         if result.output is None:
-            raise ToolError(f"No valid redline: {result.error}", cost or 0.0)
+            raise api_failure("No valid redline", result.error, cost or 0.0)
         output = result.output.model_dump(mode="json")
         draft = Draft(
             lease_id=args.lease_id,

@@ -63,10 +63,12 @@ evals:
 
 # Stage 3: ask the agent one question (API calls, about $0.001-0.05 per question):
 # make agent Q="Хто погоджує поступки?" [MAX_STEPS=3] [MAX_USD=0.01]
+#   [FAULTS=search_corpus:503] (tool failures on purpose, see agent/faults.py)
 agent:
 	@test -n "$(Q)" || (echo 'Usage: make agent Q="питання"'; exit 1)
 	uv run python -m lease_redflag_detector.agent.cli "$(Q)" \
-		$(if $(MAX_STEPS),--max-steps $(MAX_STEPS)) $(if $(MAX_USD),--max-usd $(MAX_USD))
+		$(if $(MAX_STEPS),--max-steps $(MAX_STEPS)) $(if $(MAX_USD),--max-usd $(MAX_USD)) \
+		$(if $(FAULTS),--faults "$(FAULTS)")
 
 test:
 	uv run pytest

@@ -115,6 +115,15 @@ prompt. `agent/stop_v*` is added to the last message when a limit of the request
 reached (steps, budget or time), with `{reason}` replaced by the limit; that call has
 no tools.
 
+### v2 — a broken tool is not called again
+
+v1 plus one rule: when a tool result says the tool is unavailable or its output format
+has changed, do not call it again in this request; say which service could not be used
+and do not answer from own knowledge instead. With v1 and `FAULTS=find_leases:schema`
+the model called the broken registry four times with other arguments before answering.
+The rule was first written into the error texts of the code; it moved here so that
+behaviour stays in versioned prompts and the error texts state only facts.
+
 ### v1
 
 The landlord's side; general questions without tools, anything on the landlord's

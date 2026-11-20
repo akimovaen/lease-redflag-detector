@@ -68,6 +68,9 @@ class Tools:
     def timeout_s(self, name):
         return None
 
+    def retry_safe(self, name):
+        return True
+
     def execute(self, call):
         self.calls.append(call)
         return ToolResult(self.run(call), cost_usd=self.cost)
@@ -81,8 +84,16 @@ class Clock:
         return self.now
 
 
-def agent(model, tools=None, clock=time.monotonic, **limits):
-    return Agent(model, tools or Tools(), "system", Limits(**limits), STOP, clock)
+def agent(model, tools=None, clock=time.monotonic, sleeps=None, **limits):
+    return Agent(
+        model,
+        tools or Tools(),
+        "system",
+        Limits(**limits),
+        STOP,
+        clock=clock,
+        sleep=(sleeps.append if sleeps is not None else lambda s: None),
+    )
 
 
 def until_final_only(step, final_only):

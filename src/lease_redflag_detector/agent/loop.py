@@ -17,6 +17,15 @@ A failing tool never stops the loop: an exception or a timeout goes back to the 
 as text, and the model decides what to do next. Python cannot kill a thread, so a
 timed-out tool keeps running in the background; its result is dropped.
 
+Every failed tool call has a kind (`ToolResult.error_kind`). Only a transient failure
+(a timeout, 429, 503) of a tool marked `retry_safe` is repeated, with exponential
+backoff or the pause the service asked for, and only while the time and budget of the
+request leave room for it. A wrong result format, invalid arguments or an expected
+error would fail the same way again, and a tool with a side effect could act twice.
+When the retries run out, or the time, budget or the pause the service asks for leave
+no room for another one, the model is told the tool is unavailable; what to do then is
+in the system prompt. Every retry is in the trace.
+
 Time works the same way: a model call with tools gets the time left minus the reserve
 for the answer, and if it runs out, the next call is the final one with the reserve.
 A request runs over its timeout only if the final call itself needs the whole reserve
@@ -55,6 +64,13 @@ LIMIT_NAMES = {
     StopReason.TIMEOUT: "the time limit",
 }
 
+# Kinds of tool failure that may pass if the call is repeated.
+RETRYABLE = {"transient", "timeout"}
+UNAVAILABLE = (
+    "{name} is unavailable: {error} Attempts: {attempts}; it cannot be retried within "
+    "this request."
+)
+
 # Shown to the lawyer when the model gave no answer at all.
 NO_ANSWER = "Запит не завершено ({reason}), відповіді немає. Спробуйте звузити питання."
 
@@ -65,6 +81,12 @@ class Limits(BaseModel):
     tool_timeout_s: float = 20
     request_timeout_s: float = 120
     reserve_s: float = 15  # time kept for the final answer
+
+
+class Retries(BaseModel):
+    max_attempts: int = 3  # the first call included
+    backoff_s: float = 1.0  # doubled after every failed attempt
+    max_backoff_s: float = 8.0  # a longer pause asked by a service: no retry
 
 
 class AgentConfig(BaseModel):
@@ -80,6 +102,7 @@ class AgentConfig(BaseModel):
     timeout_s: float = 60
     max_retries: int = 2
     limits: Limits = Limits()
+    retries: Retries = Retries()
     sampling: dict[str, str | float | int] = {}
 
     @classmethod
@@ -99,6 +122,11 @@ class ToolResult:
     content: str
     is_error: bool = False
     cost_usd: float = 0.0  # model calls the tool made itself
+    # Why a call failed: transient, timeout, schema, invalid_args, tool_error,
+    # unknown_tool, exception, not_run; None if it did not.
+    error_kind: str | None = None
+    retry_after: float | None = None  # the pause a service asked for, seconds
+    attempts: int = 1
 
 
 @dataclass
@@ -129,6 +157,8 @@ class Toolbox(Protocol):
     def schemas(self) -> list[dict]: ...
 
     def timeout_s(self, name: str) -> float | None: ...  # None: the default
+
+    def retry_safe(self, name: str) -> bool: ...
 
     def execute(self, call: ToolCall) -> ToolResult: ...
 
@@ -225,14 +255,18 @@ class Agent:
         system: str,
         limits: Limits,
         stop_prompt: str,
+        retries: Retries | None = None,
         clock: Callable[[], float] = time.monotonic,
+        sleep: Callable[[float], None] = time.sleep,
     ) -> None:
         self.model = model
         self.tools = tools
         self.system = system
         self.limits = limits
         self.stop_prompt = stop_prompt
+        self.retries = retries or Retries()
         self.clock = clock
+        self.sleep = sleep
 
     @classmethod
     def from_config(cls, config: AgentConfig, tools: Toolbox) -> "Agent":
@@ -242,6 +276,7 @@ class Agent:
             load_prompt(config.prompt),
             config.limits,
             load_prompt(config.stop_prompt),
+            config.retries,
         )
 
     def run(self, question: str, trace: Trace | None = None) -> Answer:
@@ -253,6 +288,9 @@ class Agent:
             question=question,
             model=self.model.name,
             limits=self.limits.model_dump(),
+            retries=self.retries.model_dump(),
+            # Failures injected on purpose (faults.py), if any.
+            faults=getattr(self.tools, "faults", None),
         )
         messages = [{"role": "user", "content": question}]
         schemas = self.tools.schemas()
@@ -319,14 +357,14 @@ class Agent:
                 if skipped:
                     # Every tool call needs a result; the ones left are not run.
                     result = ToolResult(
-                        f"Not run: {LIMIT_NAMES[skipped]} was reached.", True
+                        f"Not run: {LIMIT_NAMES[skipped]} was reached.",
+                        True,
+                        error_kind="not_run",
                     )
                     began = self.clock()
                 else:
                     began = self.clock()
-                    result = self.execute(
-                        call, deadline - began - self.limits.reserve_s
-                    )
+                    result = self.execute(call, deadline, step, trace, estimate)
                 trace.tool_call(step, call, result, self.clock() - began)
                 results.append(
                     {
@@ -357,14 +395,67 @@ class Agent:
             return StopReason.MAX_STEPS
         return None
 
-    def execute(self, call: ToolCall, timeout: float) -> ToolResult:
+    def execute(
+        self, call: ToolCall, deadline: float, step: int, trace: Trace, estimate: float
+    ) -> ToolResult:
+        """Run a tool call, repeating a transient failure of a retry-safe tool while the
+        time and budget of the request allow; the result carries the cost of every
+        attempt."""
+        cost = 0.0
+        for attempt in range(1, self.retries.max_attempts + 1):
+            result = self.attempt(call, deadline - self.clock() - self.limits.reserve_s)
+            cost += result.cost_usd
+            result.cost_usd, result.attempts = cost, attempt
+            if result.error_kind not in RETRYABLE or not self.tools.retry_safe(
+                call.name
+            ):
+                return result
+            if attempt == self.retries.max_attempts:
+                break
+            pause = (
+                result.retry_after
+                if result.retry_after is not None
+                else min(
+                    self.retries.backoff_s * 2 ** (attempt - 1),
+                    self.retries.max_backoff_s,
+                )
+            )
+            # A service that asks for a longer pause than allowed would refuse an
+            # earlier retry too.
+            if pause > self.retries.max_backoff_s:
+                break
+            no_time = deadline - self.clock() - pause <= self.limits.reserve_s
+            no_money = trace.cost_usd + cost + estimate > self.limits.max_usd
+            if no_time or no_money:
+                break
+            trace.add(
+                "tool_retry",
+                step=step,
+                name=call.name,
+                attempt=attempt,
+                error=result.content,
+                pause_s=pause,
+            )
+            self.sleep(pause)
+        result.content = UNAVAILABLE.format(
+            name=call.name, error=result.content, attempts=result.attempts
+        )
+        return result
+
+    def attempt(self, call: ToolCall, timeout: float) -> ToolResult:
         own = self.tools.timeout_s(call.name) or self.limits.tool_timeout_s
         timeout = min(own, timeout)
         try:
             return call_with_timeout(lambda: self.tools.execute(call), timeout)
         except TimeoutError:
             return ToolResult(
-                f"Tool {call.name} timed out after {timeout:.0f} s.", True
+                f"Tool {call.name} timed out after {timeout:.0f} s.",
+                True,
+                error_kind="timeout",
             )
         except Exception as e:  # noqa: BLE001 - the model gets the error, the loop goes on
-            return ToolResult(f"Tool {call.name} failed: {type(e).__name__}: {e}", True)
+            return ToolResult(
+                f"Tool {call.name} failed: {type(e).__name__}: {e}",
+                True,
+                error_kind="exception",
+            )

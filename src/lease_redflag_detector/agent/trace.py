@@ -57,6 +57,8 @@ class Trace:
             args=call.args,
             content=result.content,
             is_error=result.is_error,
+            error_kind=result.error_kind,
+            attempts=result.attempts,
             cost_usd=round(result.cost_usd, 6),
             latency_s=round(latency_s, 3),
         )
