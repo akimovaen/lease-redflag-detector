@@ -107,3 +107,14 @@ Before the first recorded run two fixes were made on three red flags: at most fi
 short findings (answers were cut off at 4000 tokens), conflicts only between sources,
 no invented dates; and gaps for what the sources do not settle, since a claim without
 a source failed validation.
+
+## agent
+
+The stage 3 agent (`src/lease_redflag_detector/agent/`). `agent/stop_v*` is added to
+the last message when a limit of the request is reached (steps, budget or time), with
+`{reason}` replaced by the limit; that call has no tools.
+
+### stop_v1
+
+Answer now with what was found, say the work is not complete, what is done and what
+was not checked, and do not guess the rest.

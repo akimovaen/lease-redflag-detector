@@ -1,0 +1,17 @@
+# The stage 3 agent: the stage 2 production model with the limits of every request.
+name = "agent-haiku-v1"
+model = "claude-haiku-5-5"
+stop_prompt = "agent/stop_v1"
+max_tokens = 4000
+timeout_s = 60
+max_retries = 2
+
+[limits]
+max_steps = 8
+max_usd = 0.05
+tool_timeout_s = 20
+request_timeout_s = 120
+reserve_s = 15
+
+[sampling]
+effort = "medium"
