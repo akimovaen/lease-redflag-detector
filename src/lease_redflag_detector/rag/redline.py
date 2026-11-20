@@ -345,9 +345,10 @@ class RedlineGenerator:
             return None, "the answer was cut off at the output token limit"
         return validate(completion.raw, ids)
 
-    def generate(self, red_flag: RedFlag) -> Result:
+    def generate(self, red_flag: RedFlag, exclude_doc: str | None = None) -> Result:
+        """`exclude_doc`: the lease the clause comes from, kept out of its sources."""
         start = time.perf_counter()
-        sources = build_sources(self.search.search(red_flag), self.fixed)
+        sources = build_sources(self.search.search(red_flag, exclude_doc), self.fixed)
         search_s = time.perf_counter() - start
         ids = {source.id for source in sources}
         messages = [{"role": "user", "content": render_context(red_flag, sources)}]

@@ -1,7 +1,11 @@
 # The stage 3 agent: the stage 2 production model with the limits of every request.
 name = "agent-haiku-v1"
 model = "claude-haiku-5-5"
+prompt = "agent/v1"
 stop_prompt = "agent/stop_v1"
+# The tools that call models use the production configs of stages 1 and 2.
+extraction = "configs/claude-haiku-medium-v3.toml"
+redline = "configs/rag-haiku-v3.toml"
 max_tokens = 4000
 timeout_s = 60
 max_retries = 2
@@ -9,9 +13,9 @@ max_retries = 2
 [limits]
 max_steps = 8
 max_usd = 0.05
-tool_timeout_s = 20
-request_timeout_s = 120
-reserve_s = 15
+tool_timeout_s = 20  # tools that call a model set their own (toolset.py)
+request_timeout_s = 240
+reserve_s = 30
 
 [sampling]
 effort = "medium"

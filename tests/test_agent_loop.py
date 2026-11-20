@@ -65,6 +65,9 @@ class Tools:
     def schemas(self):
         return [{"name": "search"}]
 
+    def timeout_s(self, name):
+        return None
+
     def execute(self, call):
         self.calls.append(call)
         return ToolResult(self.run(call), cost_usd=self.cost)
@@ -234,5 +237,6 @@ def test_agent_configs_and_their_prompts_load():
     for path in (ROOT / "configs").glob("agent-*.toml"):
         config = AgentConfig.load(path)
         assert config.name == path.stem
+        assert load_prompt(config.prompt)
         for reason in LIMIT_NAMES.values():
             assert reason in load_prompt(config.stop_prompt).format(reason=reason)

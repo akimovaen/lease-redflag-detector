@@ -233,3 +233,7 @@ data/processed/golden_hints/*.uk.md
 # score the eval set in time, and a score never changes for the same pair.
 data/processed/embeddings/
 data/processed/qdrant/
+# Stage 3: reranker scores of interactive agent queries (the committed cache is only
+# read), and the traces of single `make agent` questions; eval runs are committed.
+data/processed/rerank_local/
+results/agent/traces/

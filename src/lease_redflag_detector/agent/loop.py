@@ -10,7 +10,8 @@ The request then stops with that limit as its reason, not silently.
 The budget counts every model call, including those a tool makes itself (a tool
 reports its own cost). The next call is estimated to cost at least as much as the
 last one, since the history only grows; a call with tools runs only if the answer
-after it still fits, so a request goes over its budget by at most the final answer.
+after it still fits. A tool's own cost is known only after it runs, so a request may
+go over its budget by one tool call and the final answer.
 
 A failing tool never stops the loop: an exception or a timeout goes back to the model
 as text, and the model decides what to do next. Python cannot kill a thread, so a
@@ -71,7 +72,10 @@ class AgentConfig(BaseModel):
 
     name: str
     model: str
+    prompt: str  # the system prompt
     stop_prompt: str
+    extraction: str  # config of the stage 1 extractor
+    redline: str  # config of the stage 2 redline generator
     max_tokens: int = 4000
     timeout_s: float = 60
     max_retries: int = 2
@@ -123,6 +127,8 @@ class Model(Protocol):
 
 class Toolbox(Protocol):
     def schemas(self) -> list[dict]: ...
+
+    def timeout_s(self, name: str) -> float | None: ...  # None: the default
 
     def execute(self, call: ToolCall) -> ToolResult: ...
 
@@ -229,11 +235,11 @@ class Agent:
         self.clock = clock
 
     @classmethod
-    def from_config(cls, config: AgentConfig, tools: Toolbox, system: str) -> "Agent":
+    def from_config(cls, config: AgentConfig, tools: Toolbox) -> "Agent":
         return cls(
             AnthropicModel(config),
             tools,
-            system,
+            load_prompt(config.prompt),
             config.limits,
             load_prompt(config.stop_prompt),
         )
@@ -352,7 +358,8 @@ class Agent:
         return None
 
     def execute(self, call: ToolCall, timeout: float) -> ToolResult:
-        timeout = min(self.limits.tool_timeout_s, timeout)
+        own = self.tools.timeout_s(call.name) or self.limits.tool_timeout_s
+        timeout = min(own, timeout)
         try:
             return call_with_timeout(lambda: self.tools.execute(call), timeout)
         except TimeoutError:

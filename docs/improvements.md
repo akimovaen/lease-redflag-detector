@@ -53,3 +53,7 @@ Statuses: **idea** · **deferred** · **rejected** · **done**.
 - **Ollama retries client errors.** *idea.* `ollama_extractor._post` retries every HTTP error, a 400 as well as a 503; only transport errors, 429 and 5xx are worth retrying.
 - **Three wrappers of one Claude call.** *deferred.* The stage 1 extractor, the redline generator and the judge each build the request and read the usage in their own way. Not merged: each has its own validation and repair.
 - **Edge cases.** *idea.* `chunk_fixed` fails on a document with no text; `score_config` divides by zero for a run with no golden text.
+
+## Agent (stage 3)
+
+- **Tool calls of one step run one after another.** *idea.* The model asks for several redlines at once, and the loop runs them in turn (about 25 s each), so a lease with five or six red flags nears the request time limit and the last redlines are skipped as "time limit". Calls of tools without side effects could run in parallel. Revisit if the evals show it.

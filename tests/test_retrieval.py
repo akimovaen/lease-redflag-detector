@@ -1,6 +1,12 @@
 from lease_redflag_detector.extraction.schema import RedFlag, RedFlagType
-from lease_redflag_detector.rag.redline_search import ROLES, TOPICS, build_query
-from lease_redflag_detector.rag.retrieve import Filters, rrf
+from lease_redflag_detector.rag.chunking import Chunk
+from lease_redflag_detector.rag.redline_search import (
+    ROLES,
+    TOPICS,
+    RedlineSearch,
+    build_query,
+)
+from lease_redflag_detector.rag.retrieve import Filters, Hit, rrf
 
 POLICY = {"type": "policy", "status": "current"}
 CIVIL_CODE = {"type": "law", "status": "current"}
@@ -57,3 +63,17 @@ def test_every_red_flag_type_has_a_topic_in_the_query():
     query = build_query(flag)
     assert query.startswith("Орендар може здати в суборенду.")
     assert "згоди орендодавця" in query
+
+
+def test_the_lease_of_the_clause_is_not_its_own_source():
+    own = Chunk("lease_1#000", "lease_1", "", [], 10, {})
+    other = Chunk("lease_2#000", "lease_2", "", [], 10, {})
+
+    class Retriever:
+        def search(self, *args, **kwargs):
+            return [Hit(own, 0.9), Hit(other, 0.8)]
+
+    hits = RedlineSearch(Retriever()).search(
+        RedFlag(type="sublease_permitted", quote="Орендар може."), exclude_doc="lease_1"
+    )
+    assert all([h.chunk.doc_id for h in role] == ["lease_2"] for role in hits.values())
