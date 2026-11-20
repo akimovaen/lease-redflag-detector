@@ -9,9 +9,9 @@ Two parts of the policy apply to every red flag but share no words with the clau
 the search never finds them: the risk criteria and levels (1.6–1.7) and who approves
 deviations (section 10). They are always in the context.
 
-An answer with any gap needs the lawyer's decision (`Result.needs_decision`): the code
-refers every point the model names as open, so the model does not have to choose
-between a verdict and not_covered.
+An answer with any gap, or with the verdict not_covered, needs the lawyer's decision
+(`needs_decision`): the code refers every point the model names as open, so the model
+does not have to choose between a verdict and not_covered.
 
 Who approves the clause follows from the verdict by section 10 of the policy and is
 computed here, not asked of the model. The risk level starts from a default per red flag
@@ -101,6 +101,12 @@ def approval(verdict: str, has_gaps: bool) -> str:
     return (
         "спершу юрист — вирішити відкриті пункти; якщо вердикт підтвердиться: " + route
     )
+
+
+def needs_decision(verdict: str, gaps: list) -> bool:
+    """Any gap sends the answer to the lawyer, whatever its verdict; so does
+    not_covered, whose route is the lawyer's decision even without a gap."""
+    return bool(gaps) or verdict == Verdict.NOT_COVERED
 
 
 NEEDS_CLAUSE = {Verdict.BEYOND_CONCESSIONS, Verdict.UNACCEPTABLE}
@@ -302,8 +308,9 @@ class Result:
 
     @property
     def needs_decision(self) -> bool:
-        """Any gap sends the answer to the lawyer, whatever its verdict."""
-        return bool(self.output and self.output.gaps)
+        return bool(self.output) and needs_decision(
+            self.output.verdict, self.output.gaps
+        )
 
 
 class RedlineGenerator:

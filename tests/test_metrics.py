@@ -1,4 +1,5 @@
 from lease_redflag_detector.extraction.metrics import (
+    cost_usd,
     field_correct,
     percentile,
     strings_match,
@@ -51,3 +52,8 @@ def test_rent_needs_period_and_currency():
 def test_percentile_interpolates():
     assert percentile([1, 2, 3, 4], 0.5) == 2.5
     assert percentile([5], 0.95) == 5
+
+
+def test_cost_is_per_million_tokens_and_none_without_a_price():
+    assert cost_usd("claude-haiku-5-5", 1_000_000, 1_000_000) == 0.6
+    assert cost_usd("qwen3:8b", 1000, 1000) is None

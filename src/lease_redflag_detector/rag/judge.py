@@ -14,7 +14,7 @@ judged. Their agreement with the lawyer's grades is measured on a calibration se
 from enum import StrEnum
 
 import anthropic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from lease_redflag_detector.extraction.extractor import RunConfig, load_prompt
 from lease_redflag_detector.rag.redline import gap_line
@@ -134,7 +134,14 @@ def render_claims(row: dict, texts: dict[str, str]) -> str:
     return "\n\n".join(blocks)
 
 
+class JudgeError(Exception):
+    """A judgment that cannot be used: the answer was cut off or broke the schema."""
+
+
 class Judge:
+    # Raised by `ask` for one judgment; the caller records it and goes on.
+    errors = (anthropic.APIError, JudgeError)
+
     def __init__(self, config: RunConfig):
         self.config = config
         self.client = anthropic.Anthropic(
@@ -152,8 +159,13 @@ class Judge:
         )
         self.usage["input_tokens"] += response.usage.input_tokens
         self.usage["output_tokens"] += response.usage.output_tokens
+        if response.stop_reason == "max_tokens":
+            raise JudgeError("the judgment was cut off at the output token limit")
         raw = "".join(b.text for b in response.content if b.type == "text")
-        return schema.model_validate_json(raw)
+        try:
+            return schema.model_validate_json(raw)
+        except ValidationError as e:
+            raise JudgeError(str(e)) from e
 
     def answer(self, row: dict, expected: dict) -> AnswerJudgment:
         return self.ask("judge/answer_v1", render_answer(row, expected), AnswerJudgment)

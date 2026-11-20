@@ -92,7 +92,7 @@ def main() -> None:
 
     if all((p / "judge.json").exists() for p in parts):
         lines = [judged[row["id"]] for row in rows]
-        ok = [line for line in lines if not line.get("failed")]
+        ok = [line for line in lines if "facts" in line]  # judged answers
         judges = [json.loads((p / "judge.json").read_text()) for p in parts]
         totals = {
             "facts": mean([FACT_SCORES[f["grade"]] for l in ok for f in l["facts"]]),

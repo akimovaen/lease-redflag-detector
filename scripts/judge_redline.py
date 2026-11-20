@@ -4,7 +4,8 @@
 
 Writes judge.jsonl (one line per red flag: the grade of every key fact, of the changed
 clause and of every claim) and judge.json (averages, judge model, usage and cost) into
-the run folder. scripts/eval_redline.py adds the averages to its history.
+the run folder. A judgment that fails (an API error, a cut-off or malformed answer) is
+recorded with its error and left out of the averages; judge.json counts them. scripts/eval_redline.py adds the averages to its history.
 
 - facts: share of the key facts the answer states (partial counts as half);
 - clause: grade of the changed clause where one is expected or given;
@@ -20,7 +21,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from lease_redflag_detector.extraction.extractor import RunConfig
-from lease_redflag_detector.extraction.metrics import PRICES
+from lease_redflag_detector.extraction.metrics import cost_usd
 from lease_redflag_detector.rag.judge import (
     CLAUSE_SCORES,
     FACT_SCORES,
@@ -66,8 +67,15 @@ def main() -> None:
         if not row["output"]:
             lines.append({"id": row["id"], "failed": True})
             continue
-        answer = judge.answer(row, expected[row["id"]])
-        faithful = judge.faithfulness(row, texts)
+        try:
+            answer = judge.answer(row, expected[row["id"]])
+            faithful = judge.faithfulness(row, texts)
+        except judge.errors as e:
+            # Left out of the averages, like a failed answer; the rest are kept.
+            error = f"{type(e).__name__}: {e}"
+            lines.append({"id": row["id"], "judge_failed": True, "error": error})
+            print(row["id"], "judge failed:", error, file=sys.stderr)
+            continue
         lines.append(
             {
                 "id": row["id"],
@@ -79,7 +87,7 @@ def main() -> None:
         )
         print(row["id"], answer.clause.value, file=sys.stderr)
 
-    judged = [line for line in lines if not line.get("failed")]
+    judged = [line for line in lines if "facts" in line]
     facts = [FACT_SCORES[f["grade"]] for line in judged for f in line["facts"]]
     clauses = [
         CLAUSE_SCORES[line["clause"]]
@@ -87,11 +95,9 @@ def main() -> None:
         if line["clause"] != "not_needed"
     ]
     claims = [SUPPORT_SCORES[c["support"]] for line in judged for c in line["claims"]]
-    price_in, price_out = PRICES[config.model]
-    cost = (
-        judge.usage["input_tokens"] * price_in
-        + judge.usage["output_tokens"] * price_out
-    ) / 1e6
+    cost = cost_usd(
+        config.model, judge.usage["input_tokens"], judge.usage["output_tokens"]
+    )
     totals = {
         "facts": mean(facts),
         "clause": mean(clauses),
@@ -100,6 +106,7 @@ def main() -> None:
             c["support"] == "no" for l in judged for c in l["claims"]
         ),
         "claims": len(claims),
+        "judge_failed": sum(bool(line.get("judge_failed")) for line in lines),
         "judge": config.model_dump(),
         "prompts": ["judge/answer_v1", "judge/faithfulness_v1"],
         **judge.usage,
@@ -112,11 +119,12 @@ def main() -> None:
     (folder / "judge.json").write_text(
         json.dumps(totals, ensure_ascii=False, indent=1), encoding="utf-8"
     )
-    print(
-        f"{folder.name}: facts {totals['facts']:.2f}, clause {totals['clause']:.2f}, "
-        f"faithfulness {totals['faithfulness']:.2f}, ${cost:.3f}",
-        file=sys.stderr,
+    averages = ", ".join(
+        f"{name} {'–' if totals[name] is None else f'{totals[name]:.2f}'}"
+        for name in ("facts", "clause", "faithfulness")
     )
+    failed = f", {totals['judge_failed']} not judged" if totals["judge_failed"] else ""
+    print(f"{folder.name}: {averages}{failed}, ${cost:.3f}", file=sys.stderr)
 
 
 if __name__ == "__main__":

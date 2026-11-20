@@ -46,3 +46,10 @@ Statuses: **idea** · **deferred** · **rejected** · **done**.
 - **Strict on the redline.** *idea.* All 5 disagreements are the lawyer's "good" against the judge's "minor_edits". The judge penalises additions beyond a minimal edit; the lawyer judges whether the redline can be used. Criterion: "can it go into the lease as is".
 - **Calibrating on the same answers.** *idea.* If the judge prompt is changed, measure agreement on new grades by the lawyer, not on the 12 it was adjusted to.
 - **Deterministic check of clause numbers.** *idea.* The numbers п./ст./Ф- in a claim must appear in the text of the cited chunk — a cheap faithfulness check without an LLM.
+
+## Code (from the review of 2026-11-20)
+
+- **CI cache may overwrite the committed reranker scores.** *idea, not verified.* The fresh, generation and retrieval jobs restore `data/processed/rerank` from the Actions cache over the checked-out file. If a commit adds scores to that file, an older cache can replace it and the missing scores are recomputed (over 45 minutes on a runner). Fix if it happens: restore the cache before checkout, or merge the two files.
+- **Ollama retries client errors.** *idea.* `ollama_extractor._post` retries every HTTP error, a 400 as well as a 503; only transport errors, 429 and 5xx are worth retrying.
+- **Three wrappers of one Claude call.** *deferred.* The stage 1 extractor, the redline generator and the judge each build the request and read the usage in their own way. Not merged: each has its own validation and repair.
+- **Edge cases.** *idea.* `chunk_fixed` fails on a document with no text; `score_config` divides by zero for a run with no golden text.

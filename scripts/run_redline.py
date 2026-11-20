@@ -28,7 +28,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from lease_redflag_detector.extraction.extractor import RunConfig
-from lease_redflag_detector.extraction.metrics import PRICES
+from lease_redflag_detector.extraction.metrics import cost_usd
 from lease_redflag_detector.extraction.schema import RedFlag, RedFlagType
 from lease_redflag_detector.rag.redline import (
     CONTEXT_TOKENS,
@@ -38,6 +38,7 @@ from lease_redflag_detector.rag.redline import (
     Result,
     approval,
     gap_line,
+    needs_decision,
 )
 from lease_redflag_detector.rag.redline_search import RedlineSearch
 from lease_redflag_detector.rag.retrieve import CHUNKS, Retriever, load_chunks
@@ -55,13 +56,6 @@ def git(*args: str) -> str:
     return subprocess.run(
         ["git", *args], cwd=ROOT, capture_output=True, text=True, check=True
     ).stdout.strip()
-
-
-def cost(model: str, input_tokens: int, output_tokens: int) -> float | None:
-    if model not in PRICES:
-        return None
-    price_in, price_out = PRICES[model]
-    return (input_tokens * price_in + output_tokens * price_out) / 1e6
 
 
 def record(flag: dict, result: Result) -> dict:
@@ -142,6 +136,8 @@ def report(info: dict, rows: list[dict]) -> str:
                 *[f"- {gap_line(gap)}" for gap in out["gaps"]],
                 "",
             ]
+        elif needs_decision(out["verdict"], out["gaps"]):
+            lines += ["**Потрібне рішення юриста.** Політика цього не визначає.", ""]
         lines += [
             f"**Ризик:** {out['risk']}"
             + (f" (за замовчуванням {default})" if out["risk"] != default else "")
@@ -214,7 +210,7 @@ def main() -> None:
 
     input_tokens = sum(row["input_tokens"] for row in rows)
     output_tokens = sum(row["output_tokens"] for row in rows)
-    total = cost(config.model, input_tokens, output_tokens)
+    total = cost_usd(config.model, input_tokens, output_tokens)
     info = {
         "name": args.name,
         "note": args.note,

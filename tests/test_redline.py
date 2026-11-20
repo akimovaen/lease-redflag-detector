@@ -11,6 +11,7 @@ from lease_redflag_detector.rag.redline import (
     build_sources,
     fixed_chunks,
     gap_line,
+    needs_decision,
     validate,
 )
 from lease_redflag_detector.rag.retrieve import Hit
@@ -122,3 +123,9 @@ def test_open_points_make_the_verdict_provisional():
     assert provisional.startswith("спершу юрист")
     assert provisional.endswith(APPROVAL[Verdict.BEYOND_CONCESSIONS])
     assert approval("not_covered", True) == APPROVAL[Verdict.NOT_COVERED]
+
+
+def test_any_gap_or_not_covered_needs_the_lawyer():
+    assert needs_decision("compliant", ["Чи діє ліміт для ритейлу?"])
+    assert needs_decision("not_covered", [])
+    assert not needs_decision("unacceptable", [])
