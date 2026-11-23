@@ -5,7 +5,8 @@ NOTE ?=
 RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
-	check check-retrieval check-generation check-fresh evals agent review test lint
+	check check-retrieval check-generation check-fresh evals agent agent-evals review \
+	test lint
 
 run: extract metrics
 
@@ -69,6 +70,12 @@ agent:
 	uv run python -m lease_redflag_detector.agent.cli "$(Q)" \
 		$(if $(MAX_STEPS),--max-steps $(MAX_STEPS)) $(if $(MAX_USD),--max-usd $(MAX_USD)) \
 		$(if $(FAULTS),--faults "$(FAULTS)")
+
+# Stage 3 tasks with deterministic checks (API calls, about $0.15 a run):
+# make agent-evals NAME=my-change [NOTE="…"] [ONLY="n01 q03"] [REPEAT=3]
+agent-evals:
+	uv run python scripts/eval_agent.py --name $(NAME) --note "$(NOTE)" \
+		$(if $(ONLY),--only $(ONLY)) $(if $(REPEAT),--repeat $(REPEAT))
 
 # The approval queue the agent fills: list, show one, decide (a person, not the agent).
 # make review [ID=R-0001] [STATUS=погоджено|відхилено|повернуто COMMENT="…"]

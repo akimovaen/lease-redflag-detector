@@ -68,6 +68,7 @@ def test_nothing_is_created_without_the_lawyers_yes(tmp_path):
     run, queue, confirm = submit(tmp_path, drafts_of("concession"), False)
     result = run(SubmitArgs(lease_id=LEASE))
     assert not result.created and result.status == "not confirmed"
+    assert result.points == 1
     assert queue.all() == [] and len(confirm.asked) == 1
 
 

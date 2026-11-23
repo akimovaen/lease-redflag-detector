@@ -1,16 +1,20 @@
 import time
 from pathlib import Path
 
+import pytest
+
 from lease_redflag_detector.agent.loop import (
     LIMIT_NAMES,
     NO_ANSWER,
     Agent,
     AgentConfig,
+    AnthropicModel,
     Limits,
     Reply,
     StopReason,
     ToolCall,
     ToolResult,
+    client_retries,
 )
 from lease_redflag_detector.agent.trace import Trace
 from lease_redflag_detector.extraction.extractor import load_prompt
@@ -257,3 +261,16 @@ def test_agent_configs_and_their_prompts_load():
         assert load_prompt(config.prompt)
         for reason in LIMIT_NAMES.values():
             assert reason in load_prompt(config.stop_prompt).format(reason=reason)
+
+
+def test_the_client_repeats_a_model_call_only_within_its_time():
+    assert client_retries(210, 60, 2) == 2  # 60 + 8 + 60 + 8 + 60 = 196
+    assert client_retries(120, 60, 2) == 0  # a second attempt would end at 128 s
+    assert client_retries(20, 20, 2) == 0
+    assert client_retries(1000, 60, 2) == 2
+
+
+def test_a_model_without_a_price_is_refused():
+    config = AgentConfig.load(ROOT / "configs" / "agent-haiku-v1.toml")
+    with pytest.raises(ValueError, match="No price for claude-unknown"):
+        AnthropicModel(config.model_copy(update={"model": "claude-unknown"}))

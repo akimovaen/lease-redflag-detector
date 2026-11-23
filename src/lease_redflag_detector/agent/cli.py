@@ -50,9 +50,9 @@ def main() -> None:
     from lease_redflag_detector.agent.trace import Trace
 
     config = AgentConfig.load(args.config)
-    if args.max_steps:
+    if args.max_steps is not None:
         config.limits.max_steps = args.max_steps
-    if args.max_usd:
+    if args.max_usd is not None:
         config.limits.max_usd = args.max_usd
     print("Loading the search models…", flush=True)
     tools = build_toolbox(config)

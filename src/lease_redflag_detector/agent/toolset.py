@@ -26,7 +26,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from lease_redflag_detector.agent.confirm import Confirmer, TerminalConfirmer
-from lease_redflag_detector.agent.loop import AgentConfig
+from lease_redflag_detector.agent.loop import AgentConfig, require_price
 from lease_redflag_detector.agent.queue import (
     ADDRESSEE,
     RISKS,
@@ -520,6 +520,7 @@ def submit_for_review(
                 created=False,
                 request_id=None,
                 status="not confirmed",
+                points=len(items),
                 without_redline=missing,
                 confirmed=False,
                 confirmation=question,
@@ -562,13 +563,13 @@ def build_toolbox(
     )
     if warm:
         retriever.search("орендна плата", k=1)  # loads both models
-    generator = RedlineGenerator(
-        tool_client(RunConfig.load(ROOT / config.redline), DRAFT_TIMEOUT_S),
-        RedlineSearch(retriever),
-    )
+    redline = tool_client(RunConfig.load(ROOT / config.redline), DRAFT_TIMEOUT_S)
     extraction = tool_client(
         RunConfig.load(ROOT / config.extraction), EXTRACT_TIMEOUT_S
     )
+    require_price(redline.model)
+    require_price(extraction.model)
+    generator = RedlineGenerator(redline, RedlineSearch(retriever))
     return Toolbox(
         [
             Tool(

@@ -1,0 +1,81 @@
+{
+ "name": "reviewed",
+ "note": "the task set reviewed by the lawyer",
+ "date": "2026-11-23T11:12:07",
+ "commit": "1d5d9c2",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "agent-haiku-v1",
+  "model": "claude-haiku-5-5",
+  "prompt": "agent/v2",
+  "stop_prompt": "agent/stop_v1",
+  "extraction": "configs/claude-haiku-medium-v3.toml",
+  "redline": "configs/rag-haiku-v3.toml",
+  "user": "lawyer",
+  "max_tokens": 4000,
+  "timeout_s": 60.0,
+  "max_retries": 2,
+  "limits": {
+   "max_steps": 8,
+   "max_usd": 0.05,
+   "tool_timeout_s": 20.0,
+   "request_timeout_s": 240.0,
+   "reserve_s": 30.0
+  },
+  "retries": {
+   "max_attempts": 3,
+   "backoff_s": 1.0,
+   "max_backoff_s": 8.0
+  },
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "agent/v2",
+ "partial": false,
+ "tasks": {
+  "path": "evals/agent_tasks.toml",
+  "hash": "f0617468e88b",
+  "ids": [
+   "n01",
+   "n02",
+   "q03",
+   "q04",
+   "q05",
+   "q06",
+   "x07",
+   "x08",
+   "l09",
+   "l10",
+   "l11",
+   "l12",
+   "c13",
+   "c14",
+   "c15",
+   "c16",
+   "c17",
+   "b18",
+   "b19",
+   "f20",
+   "f21",
+   "f22",
+   "f23",
+   "f24",
+   "f25"
+  ]
+ },
+ "totals": {
+  "tasks": 25,
+  "passed": 23,
+  "pass_rate": 0.92,
+  "tools_ok_rate": 0.8947368421052632,
+  "unauthorized": 0,
+  "errors": 0,
+  "steps_mean": 2.36,
+  "cost_usd": 0.141327,
+  "cost_mean_usd": 0.00565308,
+  "cost_per_1000_usd": 5.65308,
+  "latency_p50_s": 9.6
+ }
+}

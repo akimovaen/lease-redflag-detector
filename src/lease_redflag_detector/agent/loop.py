@@ -31,7 +31,12 @@ in the system prompt. Every retry is in the trace.
 Time works the same way: a model call with tools gets the time left minus the reserve
 for the answer, and if it runs out, the next call is the final one with the reserve.
 A request runs over its timeout only if the final call itself needs the whole reserve
-after an earlier step overran.
+after an earlier step overran. The API client repeats a failed model call only as many
+times as fit in that call's time: a repeat that outlived it would still be paid for,
+unseen by the budget.
+
+A model without a price is refused (`require_price`): its calls would cost nothing to
+the budget, and the budget limit would never stop a request.
 """
 
 import threading
@@ -49,6 +54,7 @@ from pydantic import BaseModel
 
 from lease_redflag_detector.agent.trace import Trace
 from lease_redflag_detector.extraction.extractor import load_prompt
+from lease_redflag_detector.extraction.metrics import cost_usd
 
 
 class StopReason(StrEnum):
@@ -75,6 +81,23 @@ UNAVAILABLE = (
 
 # Shown to the lawyer when the model gave no answer at all.
 NO_ANSWER = "Запит не завершено ({reason}), відповіді немає. Спробуйте звузити питання."
+# The longest pause of the API client between two attempts (anthropic MAX_RETRY_DELAY).
+CLIENT_BACKOFF_S = 8.0
+
+
+def require_price(model: str) -> None:
+    if cost_usd(model, 0, 0) is None:
+        raise ValueError(
+            f"No price for {model} in extraction/metrics.py: its calls would not "
+            "count toward the budget of a request."
+        )
+
+
+def client_retries(timeout: float, attempt_s: float, max_retries: int) -> int:
+    """How many repeats of a model call of `attempt_s` seconds fit in `timeout`, with
+    the client's longest pause before each."""
+    fit = int((timeout + CLIENT_BACKOFF_S) // (attempt_s + CLIENT_BACKOFF_S)) - 1
+    return max(0, min(max_retries, fit))
 
 
 class Limits(BaseModel):
@@ -187,6 +210,7 @@ class AnthropicModel:
     errors = (anthropic.APIError,)
 
     def __init__(self, config: AgentConfig) -> None:
+        require_price(config.model)
         self.name = config.model
         self.config = config
         self.client = anthropic.Anthropic(
@@ -194,6 +218,8 @@ class AnthropicModel:
         )
 
     def call(self, system, messages, tools, final_only, timeout) -> Reply:
+        attempt_s = min(timeout, self.config.timeout_s)
+        retries = client_retries(timeout, attempt_s, self.config.max_retries)
         extra = {}
         if tools:
             # The history may hold tool calls, so the tools stay defined even when
@@ -202,12 +228,12 @@ class AnthropicModel:
             extra["tool_choice"] = {"type": "none" if final_only else "auto"}
         if self.config.sampling:
             extra["output_config"] = self.config.sampling
-        response = self.client.messages.create(
+        response = self.client.with_options(max_retries=retries).messages.create(
             model=self.config.model,
             max_tokens=self.config.max_tokens,
             system=system,
             messages=messages,
-            timeout=min(timeout, self.config.timeout_s),
+            timeout=attempt_s,
             **extra,
         )
         return Reply(

@@ -19,8 +19,10 @@
 `*N` limits a rule to the first N calls of the tool, retries included, so that a task
 can show a service that comes back after a retry. The rules named for a tool replace
 the general ones for that tool: with `503,search_corpus:schema*1` the first search gets
-the schema fault and the later ones none, while every other tool answers 503. The wrapper has the interface of a
-`Toolbox` and is used by `make agent FAULTS=...` and by the evals.
+the schema fault and the later ones none, while every other tool answers 503.
+
+The wrapper has the interface of a `Toolbox` and is used by `make agent FAULTS=...`
+and by the evals.
 """
 
 from collections import Counter

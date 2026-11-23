@@ -40,10 +40,13 @@ class ScriptedConfirmer:
     def __init__(self, *answers: bool):
         self.answers = list(answers)
         self.asked: list[str] = []
+        self.given: list[bool] = []  # the answers given, in order
 
     def __call__(self, question: str) -> bool:
         self.asked.append(question)
-        return self.answers.pop(0) if self.answers else False
+        answer = self.answers.pop(0) if self.answers else False
+        self.given.append(answer)
+        return answer
 
 
 def deny(question: str) -> bool:
