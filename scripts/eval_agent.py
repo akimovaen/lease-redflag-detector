@@ -28,6 +28,7 @@ import statistics
 import subprocess
 import sys
 import tempfile
+import threading
 import tomllib
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -50,7 +51,8 @@ def load_tasks() -> list[dict]:
     return tomllib.loads(TASKS.read_text(encoding="utf-8"))["task"]
 
 
-def run_task(task: dict, config, registry, retriever, folder: Path) -> dict:
+def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
+    """`registries`: the registry client of a user, by user id."""
     from lease_redflag_detector.agent.confirm import ScriptedConfirmer
     from lease_redflag_detector.agent.evaluate import (
         Outcome,
@@ -64,25 +66,31 @@ def run_task(task: dict, config, registry, retriever, folder: Path) -> dict:
     from lease_redflag_detector.agent.toolset import build_toolbox
     from lease_redflag_detector.agent.trace import Trace
 
-    record = {"id": task["id"], "group": task["group"], "question": task["question"]}
+    record = {
+        "id": task["id"],
+        "group": task["group"],
+        "user": task.get("user", config.user),
+        "question": task["question"],
+    }
     with tempfile.TemporaryDirectory() as tmp:
         queue = ApprovalQueue(Path(tmp) / "queue.db")
         confirm = ScriptedConfirmer(*task.get("confirm", []))
-        tools = build_toolbox(
-            config,
-            registry=registry,
-            retriever=retriever,
-            warm=False,
-            queue=queue,
-            confirm=confirm,
-        )
-        if task.get("faults"):
-            tools = FaultyToolbox(tools, task["faults"])
         task_config = config.model_copy(deep=True)
+        task_config.user = task.get("user", config.user)
         for name, value in task.get("limits", {}).items():
             setattr(task_config.limits, name, value)
-        agent = Agent.from_config(task_config, tools)
         try:
+            tools = build_toolbox(
+                task_config,
+                registry=registries(task_config.user),
+                retriever=retriever,
+                warm=False,
+                queue=queue,
+                confirm=confirm,
+            )
+            if task.get("faults"):
+                tools = FaultyToolbox(tools, task["faults"])
+            agent = Agent.from_config(task_config, tools)
             answer = agent.run(
                 task["question"], Trace(folder / "traces" / f"{task['id']}.jsonl")
             )
@@ -170,17 +178,21 @@ def report(info: dict, rows: list[dict]) -> str:
             f"{t['latency_p50_s'] or 0:.0f} s |"
         ),
         "",
-        "| Task | Group | Result | Stop | Steps | $ | Tools | Failed checks |",
-        "|---|---|---|---|---|---|---|---|",
+        "| Task | Group | User | Result | Stop | Steps | $ | Tools | Failed checks |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
     for r in rows:
         if "error" in r:
-            lines.append(f"| {r['id']} | {r['group']} | error | | | | | {r['error']} |")
+            lines.append(
+                f"| {r['id']} | {r['group']} | {r.get('user', '')} | error | | | | | "
+                f"{r['error']} |"
+            )
             continue
         failed = "<br>".join(r["failed"]).replace("|", "\\|")
         tools = ", ".join(r["tools"]) or "–"
         lines.append(
-            f"| {r['id']} | {r['group']} | {'pass' if r['passed'] else 'FAIL'} | "
+            f"| {r['id']} | {r['group']} | {r.get('user', '')} | "
+            f"{'pass' if r['passed'] else 'FAIL'} | "
             f"{r['stop_reason']} | {r['steps']} | {r['cost_usd']:.4f} | {tools} | "
             f"{failed} |"
         )
@@ -242,6 +254,7 @@ def main() -> None:
     from lease_redflag_detector.agent.loop import AgentConfig
     from lease_redflag_detector.agent.registry_client import RegistryClient
     from lease_redflag_detector.agent.toolset import LOCAL_RERANK
+    from lease_redflag_detector.agent.users import get_user
     from lease_redflag_detector.rag.retrieve import RerankScores, Retriever, load_chunks
 
     tasks = load_tasks()
@@ -258,8 +271,16 @@ def main() -> None:
         )
 
     config = AgentConfig.load(args.config)
-    # One registry server for every task, started as for the lawyer at `make agent`.
-    registry = RegistryClient(user=config.user)
+    # One registry server per user, shared by the tasks of that user.
+    clients: dict[str, RegistryClient] = {}
+    lock = threading.Lock()
+
+    def registries(user: str) -> RegistryClient:
+        with lock:
+            if user not in clients:
+                clients[user] = RegistryClient(user=get_user(user).id)
+            return clients[user]
+
     print("Loading the search models…", file=sys.stderr)
     retriever = Retriever(
         load_chunks(),
@@ -273,7 +294,7 @@ def main() -> None:
         (folder / "traces").mkdir(parents=True)
 
         def run(task: dict, folder: Path = folder) -> dict:
-            row = run_task(task, config, registry, retriever, folder)
+            row = run_task(task, config, registries, retriever, folder)
             mark = "pass" if row["passed"] else "FAIL"
             print(f"{row['id']} {mark} {'; '.join(row.get('failed', []))}"[:200],
                   file=sys.stderr)  # fmt: skip

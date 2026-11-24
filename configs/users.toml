@@ -1,0 +1,32 @@
+# Users of the agent and the lease registry. Fictional: the names and the companies
+# are made up for the course project.
+#
+# Who works with the agent is chosen at start (make agent AS_USER=litigator); it goes
+# to the registry server when the server starts, never as an argument of a tool, so the
+# model cannot change it. There is no real authentication: whoever starts the agent says who
+# they are (README).
+#
+# Roles (agent/users.py): lawyer (юрист), litigation (судова команда),
+# head_of_legal (керівник юрдепартаменту).
+
+entities = ["ТОВ «Орендодавець»", "ТОВ «Орендодавець-Б»"]
+
+[users.lawyer]
+name = "Юрист (тестовий)"
+role = "lawyer"
+entity = "ТОВ «Орендодавець»"
+
+[users.litigator]
+name = "Судовий юрист (тестовий)"
+role = "litigation"
+entity = "ТОВ «Орендодавець»"
+
+[users.head]
+name = "Керівник юрдепартаменту (тестовий)"
+role = "head_of_legal"
+entity = "ТОВ «Орендодавець»"
+
+[users.lawyer_b]
+name = "Юрист Б (тестовий)"
+role = "lawyer"
+entity = "ТОВ «Орендодавець-Б»"

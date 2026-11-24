@@ -1,7 +1,7 @@
 """The lease registry as an MCP server, read only.
 
-    uv run python -m lease_redflag_detector.agent.registry_server   (stdio)
-    make mcp
+    REGISTRY_USER=lawyer uv run python -m lease_redflag_detector.agent.registry_server
+    make mcp [AS_USER=litigator]
     npx @modelcontextprotocol/inspector uv run python -m \
         lease_redflag_detector.agent.registry_server                 (to try it by hand)
 
@@ -19,9 +19,15 @@ Nothing here writes, runs a query or opens a path from its arguments: a lease is
 by its id in the registry, filtered by two fields, and every argument is validated.
 An expected failure (an unknown lease) goes to the client as its message; any other
 error reaches the client without its details.
+
+The server works for one user, named when it starts (`REGISTRY_USER`, a user of
+configs/users.toml); a client cannot change it during the session. Without a known
+user the server does not start. What the user may read is checked from step 2.3.
 """
 
+import os
 import re
+import sys
 
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ResourceNotFoundError, ToolError
@@ -40,18 +46,23 @@ from lease_redflag_detector.agent.registry import (
     SectionText,
     SectionTitle,
 )
+from lease_redflag_detector.agent.users import UnknownUser, User, get_user
 from lease_redflag_detector.extraction.extractor import load_prompt
 
 NAME = "lease-registry"
+USER_ENV = "REGISTRY_USER"
 TEXT_URI = "lease://{lease_id}"
 READ_ONLY = ToolAnnotations(read_only_hint=True, open_world_hint=False)
 
 
-def build_server(registry: LeaseRegistry | None = None) -> MCPServer:
+def build_server(user: User, registry: LeaseRegistry | None = None) -> MCPServer:
     registry = registry or LeaseRegistry()
     server = MCPServer(
         NAME,
-        instructions="The landlord's lease registry: find a lease, read its sections.",
+        instructions=(
+            "The landlord's lease registry: find a lease, read its sections. "
+            f"Working for {user.describe()}."
+        ),
         log_level="WARNING",
     )
 
@@ -109,7 +120,11 @@ def build_server(registry: LeaseRegistry | None = None) -> MCPServer:
 
 
 def main() -> None:
-    build_server().run("stdio")
+    try:
+        user = get_user(os.environ.get(USER_ENV))
+    except UnknownUser as e:
+        sys.exit(f"{NAME}: {e} Set {USER_ENV}.")
+    build_server(user).run("stdio")
 
 
 if __name__ == "__main__":

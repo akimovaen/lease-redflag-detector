@@ -20,10 +20,13 @@ from lease_redflag_detector.agent.toolset import (
     draft_redline,
     submit_for_review,
 )
+from lease_redflag_detector.agent.users import get_user
 from lease_redflag_detector.rag.redline import Redline, Result
 
 LEASE = "lease_37032"
-REGISTRY = RegistryClient(build_server())  # the MCP server, in this process
+REGISTRY = RegistryClient(
+    build_server(get_user("lawyer"))
+)  # the MCP server, in this process
 QUOTES = [
     line
     for line in LeaseRegistry().sections(LEASE)[2].text.splitlines()
@@ -61,11 +64,18 @@ def drafts_of(*verdicts) -> Drafts:
     return drafts
 
 
-def submit(tmp_path, drafts, *answers):
+def submit(tmp_path, drafts, *answers, user="lawyer"):
     queue = ApprovalQueue(tmp_path / "queue.db")
     confirm = ScriptedConfirmer(*answers)
-    run = submit_for_review(REGISTRY, drafts, queue, confirm, "lawyer")
+    run = submit_for_review(REGISTRY, drafts, queue, confirm, user)
     return run, queue, confirm
+
+
+def test_a_request_records_who_created_it(tmp_path):
+    run, queue, _ = submit(tmp_path, drafts_of("concession"), True, user="head")
+    request = queue.get(run(SubmitArgs(lease_id=LEASE)).request_id)
+    assert request.created_by == "head"
+    assert queue.history(request.id)[0]["by"] == "head"
 
 
 def test_nothing_is_created_without_the_lawyers_yes(tmp_path):

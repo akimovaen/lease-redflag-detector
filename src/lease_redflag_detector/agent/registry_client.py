@@ -9,7 +9,7 @@ for its answer there.
 By default the server is started as a subprocess over stdio, with only the safe
 environment variables of the MCP SDK: the API keys stay with the agent. Who works with
 the agent goes to the server when it starts (`REGISTRY_USER`), not as an argument of a
-tool, so that the model cannot change it; the server uses it from step 2.2 on.
+tool, so that the model cannot change it.
 
 Failures:
 - what the server answers as a failure (an unknown lease, invalid arguments) raises
@@ -30,10 +30,9 @@ from mcp.server.mcpserver import MCPServer
 from mcp.shared.exceptions import MCPError
 from mcp.types import CONNECTION_CLOSED, REQUEST_TIMEOUT
 
-from lease_redflag_detector.agent.registry_server import TEXT_URI
+from lease_redflag_detector.agent.registry_server import TEXT_URI, USER_ENV
 from lease_redflag_detector.agent.tools import ToolError, TransientError
 
-USER_ENV = "REGISTRY_USER"
 TIMEOUT_S = 10.0
 LOST = (CONNECTION_CLOSED, REQUEST_TIMEOUT)
 
@@ -58,8 +57,9 @@ class RegistryClient:
         user: str = "lawyer",
         timeout_s: float = TIMEOUT_S,
     ):
-        """`server`: an MCPServer runs in this process (tests); by default the server
-        is a subprocess."""
+        """`server`: an MCPServer runs in this process (tests), built for `user`; by
+        default the server is a subprocess started for `user`."""
+        self.user = user
         self.server = server or stdio_server(user)
         self.timeout_s = timeout_s
         self.loop = asyncio.new_event_loop()

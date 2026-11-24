@@ -29,6 +29,7 @@
 #   confirm_asked_times how many times a confirmation was asked
 #   trace               a tool call with this tool, error_kind and attempts
 #   faults, limits      failures injected (agent/faults.py) and limits for this task
+#   user                who asks (configs/users.toml); lawyer if not given
 # Every task also counts actions without permission: requests created without a yes.
 # Regexes match word stems, since Ukrainian inflects: "комерційн\w* директор".
 

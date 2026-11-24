@@ -65,11 +65,13 @@ evals:
 # Stage 3: ask the agent one question (API calls, about $0.001-0.05 per question):
 # make agent Q="Хто погоджує поступки?" [MAX_STEPS=3] [MAX_USD=0.01]
 #   [FAULTS=search_corpus:503] (tool failures on purpose, see agent/faults.py)
+#   [AS_USER=litigator] (another user of configs/users.toml; not USER, the login
+#   name, nor AS, make's assembler)
 agent:
 	@test -n "$(Q)" || (echo 'Usage: make agent Q="питання"'; exit 1)
 	uv run python -m lease_redflag_detector.agent.cli "$(Q)" \
 		$(if $(MAX_STEPS),--max-steps $(MAX_STEPS)) $(if $(MAX_USD),--max-usd $(MAX_USD)) \
-		$(if $(FAULTS),--faults "$(FAULTS)")
+		$(if $(FAULTS),--faults "$(FAULTS)") $(if $(AS_USER),--as $(AS_USER))
 
 # Stage 3 tasks with deterministic checks (API calls, about $0.15 a run):
 # make agent-evals NAME=my-change [NOTE="…"] [ONLY="n01 q03"] [REPEAT=3]
@@ -80,13 +82,15 @@ agent-evals:
 # The lease registry MCP server alone (stdio), for the MCP Inspector or Claude Desktop;
 # the agent starts its own. No API calls.
 mcp:
-	uv run python -m lease_redflag_detector.agent.registry_server
+	REGISTRY_USER=$(or $(AS_USER),lawyer) uv run python -m \
+		lease_redflag_detector.agent.registry_server
 
 # The approval queue the agent fills: list, show one, decide (a person, not the agent).
-# make review [ID=R-0001] [STATUS=погоджено|відхилено|повернуто COMMENT="…"]
+# make review [ID=R-0001] [STATUS=погоджено|відхилено|повернуто BY=lawyer COMMENT="…"]
 review:
 	uv run python -m lease_redflag_detector.agent.review $(if $(ID),--id $(ID)) \
-		$(if $(STATUS),--status $(STATUS)) $(if $(COMMENT),--comment "$(COMMENT)")
+		$(if $(STATUS),--status $(STATUS)) $(if $(BY),--by $(BY)) \
+		$(if $(COMMENT),--comment "$(COMMENT)")
 
 test:
 	uv run pytest

@@ -18,13 +18,16 @@ from lease_redflag_detector.agent.toolset import (
     draft_redline,
     search_filters,
 )
+from lease_redflag_detector.agent.users import get_user
 from lease_redflag_detector.rag.redline import Redline, Result
 from lease_redflag_detector.rag.retrieve import RerankScores
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = AgentConfig.load(ROOT / "configs" / "agent-haiku-v1.toml")
 LEASE = "lease_37032"
-REGISTRY = RegistryClient(build_server())  # the MCP server, in this process
+REGISTRY = RegistryClient(
+    build_server(get_user("lawyer"))
+)  # the MCP server, in this process
 
 
 class Args(BaseModel):
@@ -124,6 +127,18 @@ def test_the_agent_toolbox_sends_the_servers_schema_and_checks_the_result(tmp_pa
         mutate=lambda raw: {"items": raw["leases"]},
     )
     assert renamed.error_kind == "schema"
+
+
+def test_the_registry_and_the_queue_work_for_the_same_user(tmp_path):
+    other = RegistryClient(build_server(get_user("litigator")), user="litigator")
+    with pytest.raises(ValueError, match="works for litigator, the agent for lawyer"):
+        build_toolbox(
+            CONFIG,
+            registry=other,
+            retriever=FakeRetriever(),
+            warm=False,
+            queue=ApprovalQueue(tmp_path / "queue.db"),
+        )
 
 
 def test_search_never_returns_a_lease_of_the_registry():

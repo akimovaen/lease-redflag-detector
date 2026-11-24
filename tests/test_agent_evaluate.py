@@ -6,6 +6,7 @@ from lease_redflag_detector.agent.evaluate import Outcome, check, tools_ok
 from lease_redflag_detector.agent.faults import parse
 from lease_redflag_detector.agent.loop import Limits, StopReason
 from lease_redflag_detector.agent.queue import Request
+from lease_redflag_detector.agent.users import get_user
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = tomllib.loads((ROOT / "evals" / "agent_tasks.toml").read_text())["task"]
@@ -38,6 +39,7 @@ KEYS = {
     "trace",
     "faults",
     "limits",
+    "user",
 }
 
 
@@ -80,6 +82,7 @@ def test_the_task_set_is_well_formed():
         if "faults" in task:
             assert {f.tool for f in parse(task["faults"])} - {None} <= TOOLS
         Limits(**task.get("limits", {}))
+        get_user(task.get("user", "lawyer"))
         assert task.get("stop_reason", "final") in set(StopReason)
 
 

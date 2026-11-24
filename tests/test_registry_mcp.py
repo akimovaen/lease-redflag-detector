@@ -8,10 +8,13 @@ from lease_redflag_detector.agent.registry import DOCUMENTS, FindResult, LeaseRe
 from lease_redflag_detector.agent.registry_client import RegistryClient
 from lease_redflag_detector.agent.registry_server import build_server
 from lease_redflag_detector.agent.tools import ToolError, TransientError
+from lease_redflag_detector.agent.users import get_user
 from lease_redflag_detector.extraction.extractor import load_prompt
 
 LEASE = "lease_37032"
-REGISTRY = RegistryClient(build_server())  # the MCP server, in this process
+REGISTRY = RegistryClient(
+    build_server(get_user("lawyer"))
+)  # the MCP server, in this process
 
 
 def test_the_server_describes_its_tools_with_the_versioned_descriptions():

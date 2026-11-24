@@ -2,9 +2,12 @@
 
     make review                                        every request
     make review ID=R-0001                              one, with its points and history
-    make review ID=R-0001 STATUS=відхилено COMMENT="…" a decision on a pending one
+    make review ID=R-0001 STATUS=відхилено BY=head COMMENT="…"
+                                                       a decision on a pending one
 
-The agent can only create requests; deciding on them is here, outside the agent.
+The agent can only create requests; deciding on them is here, outside the agent. A
+decision names who records it (BY, a user of configs/users.toml): a lawyer or the head
+of legal (`users.DECIDERS`); from step 2.3, for a lease of their own entity.
 """
 
 import argparse
@@ -16,6 +19,7 @@ from lease_redflag_detector.agent.queue import (
     ApprovalQueue,
     Request,
 )
+from lease_redflag_detector.agent.users import DECIDERS, UnknownUser, User, get_user
 
 
 def show(queue: ApprovalQueue, request: Request) -> None:
@@ -46,20 +50,36 @@ def show(queue: ApprovalQueue, request: Request) -> None:
         print(f"  {entry['at']}  {entry['status']}  ({entry['by']}){comment}")
 
 
+def decider(user_id: str | None) -> User:
+    """The user who records a decision, if their role may."""
+    if not user_id:
+        raise SystemExit("A decision needs who records it: BY=lawyer, BY=head, …")
+    try:
+        user = get_user(user_id)
+    except UnknownUser as e:
+        raise SystemExit(str(e)) from None
+    if user.role not in DECIDERS:
+        raise SystemExit(
+            f"{user.describe()} may not record decisions on approval requests."
+        )
+    return user
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--id")
     parser.add_argument("--status", choices=DECISIONS)
     parser.add_argument("--comment", default="")
-    parser.add_argument("--by", default="lawyer")
+    parser.add_argument("--by", help="who records the decision (configs/users.toml)")
     args = parser.parse_args()
     queue = ApprovalQueue()
 
     if args.status:
         if not args.id:
             raise SystemExit("A decision needs the request: ID=R-0001")
+        user = decider(args.by)
         try:
-            queue.decide(args.id, args.status, args.by, args.comment)
+            queue.decide(args.id, args.status, user.id, args.comment)
         except ValueError as e:
             raise SystemExit(str(e)) from None
     if args.id:

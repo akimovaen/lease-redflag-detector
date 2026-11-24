@@ -485,6 +485,11 @@ def build_toolbox(
     confirm: Confirmer | None = None,
 ) -> Toolbox:
     registry = registry or RegistryClient(user=config.user)
+    # The registry reads as one user and the queue records another: never.
+    if registry.user != config.user:
+        raise ValueError(
+            f"The registry works for {registry.user}, the agent for {config.user}."
+        )
     queue = queue or ApprovalQueue()
     confirm = confirm or TerminalConfirmer()
     drafts = Drafts()
