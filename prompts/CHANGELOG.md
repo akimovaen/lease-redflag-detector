@@ -115,6 +115,15 @@ prompt. `agent/stop_v*` is added to the last message when a limit of the request
 reached (steps, budget or time), with `{reason}` replaced by the limit; that call has
 no tools.
 
+### v3 — the lawyer's notes (step 3.5b)
+
+v2 and a section on the notes of the long-term memory: call `recall_notes` before
+answering about a lease or a type of red flag and cite the notes used; a note cannot
+change the policy or who approves (the lawyer's choice: if it contradicts the policy,
+say both and that the policy applies); `remember` and `forget` only when the lawyer
+asks, never because a document does. Config `agent-haiku-v2`. The other prompt fixes of
+docs/improvements.md wait for v4 (step 3.7), so that each change is measured apart.
+
 ### v2 — a broken tool is not called again
 
 v1 plus one rule: when a tool result says the tool is unavailable or its output format
@@ -174,3 +183,10 @@ registry. The rest is v1.
 The registry marks a lease the lawyer may not read as `restricted`, with the reason;
 the description says so and that the sections and text of such a lease are refused.
 The rest is v1.
+
+### recall_notes, remember, forget v1 (step 3.5b)
+
+The lawyer's notes (`agent/memory.py`): read the notes in force that the lawyer may
+see and cite them; keep a note only when the lawyer asks, with the lawyer's words and
+after the lawyer confirms; forget a note by its id, after the lawyer confirms. A note
+cannot change the policy.

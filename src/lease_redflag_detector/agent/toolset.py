@@ -11,10 +11,16 @@
   registry says, and never the lease itself. The verdict, risk,
   approval route and whether the lawyer must decide come from stage 2 and its code,
   not from the agent's own wording, so that later steps can rely on them;
-- submit_for_review: the one tool with a side effect. It puts a lease's contested
-  points on the approval queue (`queue.py`) after the lawyer confirms (`confirm.py`).
-  The model names only the lease: the points are the redlines drafted in this
-  request, so the model cannot soften a verdict on its way to the committee.
+- submit_for_review: puts a lease's contested points on the approval queue
+  (`queue.py`) after the lawyer confirms (`confirm.py`). The model names only the
+  lease: the points are the redlines drafted in this request, or in this conversation
+  (`chat.py`), so the model cannot soften a verdict on its way to the committee;
+- recall_notes, remember, forget: the lawyer's notes (`memory.py`), a note about a
+  lease only for whoever may read the lease. remember and forget keep or forget one
+  after the lawyer confirms.
+
+The three tools with a side effect, submit_for_review, remember and forget, ask the
+lawyer themselves, in the code, and are never retried; no other tool changes anything.
 
 The search runs in memory (`qdrant_path=None`) and writes new reranker scores to a
 local cache, not to the committed one. Loading the embedding model and the reranker
@@ -29,8 +35,10 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from lease_redflag_detector.agent.access import DENIED
 from lease_redflag_detector.agent.confirm import Confirmer, TerminalConfirmer
 from lease_redflag_detector.agent.loop import AgentConfig, require_price
+from lease_redflag_detector.agent.memory import ACTIVE, Note, NoteStore, policy_version
 from lease_redflag_detector.agent.queue import (
     ADDRESSEE,
     RISKS,
@@ -38,6 +46,7 @@ from lease_redflag_detector.agent.queue import (
     ApprovalQueue,
 )
 from lease_redflag_detector.agent.registry import (
+    LEASE_ID,
     FindArgs,
     FindResult,
     LeaseArgs,
@@ -48,12 +57,15 @@ from lease_redflag_detector.agent.registry import (
 from lease_redflag_detector.agent.registry_client import RegistryClient
 from lease_redflag_detector.agent.registry_server import NAME
 from lease_redflag_detector.agent.tools import (
+    AccessDenied,
     Priced,
     Tool,
     Toolbox,
     ToolError,
+    TransientError,
     api_failure,
 )
+from lease_redflag_detector.agent.users import User, get_user
 from lease_redflag_detector.extraction.extractor import RunConfig
 from lease_redflag_detector.extraction.metrics import cost_usd
 from lease_redflag_detector.extraction.quotes import quote_in_text
@@ -504,6 +516,208 @@ def submit_for_review(
     return run
 
 
+# The lawyer's notes (memory.py)
+
+NOTE_ID = r"^N-\d{4}$"
+
+
+class RecallArgs(BaseModel):
+    lease_id: str | None = Field(
+        None, pattern=LEASE_ID, description="Only the notes about this lease."
+    )
+    topic: RedFlagType | None = Field(
+        None, description="Only the notes about this type of red flag."
+    )
+
+
+class NoteOut(BaseModel):
+    id: str
+    date: str
+    author: str
+    lease_id: str | None
+    topic: str | None
+    text: str
+
+
+class Notes(BaseModel):
+    notes: list[NoteOut]
+
+
+class RememberArgs(BaseModel):
+    text: str = Field(
+        min_length=10, max_length=1000, description="The note, in the lawyer's words."
+    )
+    lease_id: str | None = Field(
+        None, pattern=LEASE_ID, description="The lease, if any."
+    )
+    topic: RedFlagType | None = Field(None, description="The red flag type, if any.")
+
+
+class ForgetArgs(BaseModel):
+    note_id: str = Field(pattern=NOTE_ID, description="The note id from recall_notes.")
+
+
+class NoteChange(BaseModel):
+    note_id: str | None
+    changed: bool
+    replaces: str | None = None
+    confirmed: bool | None = None  # None when not asked
+    confirmation: str | None = None  # what the lawyer was shown
+    message: str
+
+
+class Memory:
+    """The notes as one user may see them: a note about a lease only if the registry
+    lets the user read the lease, a general note only within the user's entity."""
+
+    def __init__(self, store: NoteStore, registry: RegistryClient, user: User):
+        self.store = store
+        self.registry = registry
+        self.user = user
+
+    def lease(self, lease_id: str) -> str:
+        """ "open", "denied" or "missing" (no longer in the registry). A registry that
+        does not answer raises TransientError: the loop may try again."""
+        try:
+            self.registry.summary(lease_id)
+        except AccessDenied:
+            return "denied"
+        except TransientError:
+            raise
+        except ToolError:
+            return "missing"
+        return "open"
+
+    def visible(self, note: Note, leases: dict[str, str] | None = None) -> bool:
+        """`leases`: what is already known of the leases in this call."""
+        if not note.lease_id:
+            return note.entity == self.user.entity
+        leases = {} if leases is None else leases
+        if note.lease_id not in leases:
+            leases[note.lease_id] = self.lease(note.lease_id)
+        return leases[note.lease_id] == "open"
+
+    def notes(self) -> list[Note]:
+        """The notes in force the user may see; one about a lease gone from the
+        registry is left out (`make notes` still shows it)."""
+        leases: dict[str, str] = {}
+        return [
+            n for n in self.store.active(policy_version()) if self.visible(n, leases)
+        ]
+
+
+def note_line(note: Note) -> str:
+    about = " · ".join(filter(None, [note.lease_id, note.topic])) or "загальна"
+    return f"{note.id} від {note.created_at[:10]} ({about}): «{note.text}»"
+
+
+def recall_notes(memory: Memory):
+    def run(args: RecallArgs) -> Notes:
+        found = [
+            n
+            for n in memory.notes()
+            if (args.lease_id is None or n.lease_id == args.lease_id)
+            and (args.topic is None or n.topic == args.topic)
+        ]
+        return Notes(
+            notes=[
+                NoteOut(
+                    id=n.id,
+                    date=n.created_at[:10],
+                    author=n.author,
+                    lease_id=n.lease_id,
+                    topic=n.topic,
+                    text=n.text,
+                )
+                for n in found
+            ]
+        )
+
+    return run
+
+
+def remember(memory: Memory, confirm: Confirmer):
+    def run(args: RememberArgs) -> NoteChange:
+        if args.lease_id:
+            state = memory.lease(args.lease_id)
+            if state == "denied":
+                raise AccessDenied(
+                    f"{DENIED}: {args.lease_id}: the lawyer may not read it."
+                )
+            if state == "missing":
+                raise ToolError(f"No lease {args.lease_id} in the registry.")
+        user = memory.user
+        version = policy_version()
+        same = memory.store.same(
+            user.entity, args.lease_id, args.topic, args.text, version
+        )
+        if same:
+            # Nothing to change, so nothing to ask the lawyer.
+            return NoteChange(
+                note_id=same.id,
+                changed=False,
+                message=f"The same note is already kept: {same.id}.",
+            )
+        replaced = memory.store.replaced_by_new(user.entity, args.lease_id, args.topic)
+        lines = [
+            "Зберегти в пам'ять?",
+            f"  Договір: {args.lease_id or '—'} · Тема: {args.topic or '—'}",
+            f"  Текст: «{args.text}»",
+        ]
+        if replaced:
+            lines.append(f"  Замінить нотатку {note_line(replaced)}")
+        question = "\n".join(lines)
+        if not confirm(question):
+            return NoteChange(
+                note_id=None,
+                changed=False,
+                confirmed=False,
+                confirmation=question,
+                message="The lawyer did not confirm; nothing was kept.",
+            )
+        note, created = memory.store.add(
+            args.text, user.id, user.entity, version, args.lease_id, args.topic
+        )
+        return NoteChange(
+            note_id=note.id,
+            changed=created,
+            replaces=replaced.id if replaced and created else None,
+            confirmed=True,
+            confirmation=question,
+            message="Kept." if created else "The same note is already kept.",
+        )
+
+    return run
+
+
+def forget(memory: Memory, confirm: Confirmer):
+    def run(args: ForgetArgs) -> NoteChange:
+        note = memory.store.get(args.note_id)
+        if note is None or note.status != ACTIVE or not memory.visible(note):
+            raise ToolError(
+                f"No note {args.note_id} in force; recall_notes lists them."
+            )
+        question = f"Забути нотатку?\n  {note_line(note)}"
+        if not confirm(question):
+            return NoteChange(
+                note_id=note.id,
+                changed=False,
+                confirmed=False,
+                confirmation=question,
+                message="The lawyer did not confirm; the note stays.",
+            )
+        memory.store.forget(note.id, memory.user.id)
+        return NoteChange(
+            note_id=note.id,
+            changed=True,
+            confirmed=True,
+            confirmation=question,
+            message="Forgotten.",
+        )
+
+    return run
+
+
 def build_toolbox(
     config: AgentConfig,
     registry: RegistryClient | None = None,
@@ -512,11 +726,13 @@ def build_toolbox(
     queue: ApprovalQueue | None = None,
     confirm: Confirmer | None = None,
     session: bool = False,
+    memory: NoteStore | None = None,
 ) -> Toolbox:
     """`session`: the redlines drafted are kept from one question to the next of a
     conversation, so that "yes, submit it" uses them; otherwise every question starts
     with none."""
     registry = registry or RegistryClient(user=config.user)
+    notes = Memory(memory or NoteStore(), registry, get_user(config.user))
     # The registry reads as one user and the queue records another: never.
     if registry.user != config.user:
         raise ValueError(
@@ -579,6 +795,31 @@ def build_toolbox(
                 SubmitArgs,
                 Submission,
                 submit_for_review(registry, drafts, queue, confirm, config.user),
+                side_effect=True,
+                retry_safe=False,
+            ),
+            Tool(
+                "recall_notes",
+                "tools/recall_notes_v1",
+                RecallArgs,
+                Notes,
+                recall_notes(notes),
+            ),
+            Tool(
+                "remember",
+                "tools/remember_v1",
+                RememberArgs,
+                NoteChange,
+                remember(notes, confirm),
+                side_effect=True,
+                retry_safe=False,
+            ),
+            Tool(
+                "forget",
+                "tools/forget_v1",
+                ForgetArgs,
+                NoteChange,
+                forget(notes, confirm),
                 side_effect=True,
                 retry_safe=False,
             ),

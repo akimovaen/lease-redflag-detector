@@ -41,7 +41,7 @@ from lease_redflag_detector.extraction.extractor import load_prompt
 from lease_redflag_detector.extraction.metrics import cost_usd
 
 ROOT = Path(__file__).resolve().parents[3]
-CONFIG = ROOT / "configs" / "agent-haiku-v1.toml"
+CONFIG = ROOT / "configs" / "agent-haiku-v2.toml"
 CHATS = ROOT / "results" / "agent" / "chats"
 SUMMARY_PROMPT = "agent/summary_v1"
 # Above this the older turns are summarized; the last KEEP_TURNS stay as they were.

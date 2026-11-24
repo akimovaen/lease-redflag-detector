@@ -28,6 +28,7 @@ from lease_redflag_detector.agent.loop import (
     Reply,
     ToolCall,
 )
+from lease_redflag_detector.agent.memory import NoteStore
 from lease_redflag_detector.agent.queue import ApprovalQueue
 from lease_redflag_detector.agent.registry import LeaseRegistry
 from lease_redflag_detector.agent.registry_client import RegistryClient
@@ -151,7 +152,13 @@ class AllTools:
         return Reply("Готово.", [], [{"type": "text", "text": "Готово."}])
 
 
-def attempt(user: str, tmp_path, monkeypatch, extra: tuple[ToolCall, ...] = ()):
+def attempt(
+    user: str,
+    tmp_path,
+    monkeypatch,
+    extra: tuple[ToolCall, ...] = (),
+    memory: NoteStore | None = None,
+):
     """Every way to the NDA lease, as `user`, and `extra` calls: the tool events by
     call id, the documents the redline searches found and those it left out."""
     nda_text = phrases(NDA)
@@ -192,6 +199,7 @@ def attempt(user: str, tmp_path, monkeypatch, extra: tuple[ToolCall, ...] = ()):
         warm=False,
         queue=ApprovalQueue(tmp_path / "queue.db"),
         confirm=ScriptedConfirmer(True),
+        memory=memory or NoteStore(tmp_path / "memory.db"),
     )
     agent = Agent(AllTools(calls), tools, "system", Limits(max_usd=1.0), "{reason}")
     events = agent.run("Покажи договір").trace.tool_calls()
@@ -238,3 +246,26 @@ def test_without_the_filters_both_search_paths_bring_the_lease_first():
     for mode in ("bm25", "vector"):
         hits = RETRIEVER.search(query, mode, 1, Filters(status=None))
         assert hits[0].chunk.doc_id == NDA, mode
+
+
+def test_the_lawyer_gets_no_note_about_the_nda_lease(tmp_path, monkeypatch):
+    from lease_redflag_detector.agent.memory import policy_version
+
+    store = NoteStore(tmp_path / "notes.db")
+    secret = "Орендар просить знижку 40 % на перші два роки, не розголошувати."
+    store.add(secret, "head", "ТОВ «Орендодавець»", policy_version(), NDA)
+    calls = (
+        ToolCall("n1", "recall_notes", {}),
+        ToolCall("n2", "recall_notes", {"lease_id": NDA}),
+        ToolCall("n3", "forget", {"note_id": "N-0001"}),
+    )
+    events, _, _ = attempt("lawyer", tmp_path, monkeypatch, calls, store)
+    assert json.loads(events["n1"]["content"])["notes"] == []
+    assert json.loads(events["n2"]["content"])["notes"] == []
+    assert events["n3"]["is_error"]
+    assert store.get("N-0001").status == "чинна"  # not forgotten
+    everything = " ".join(decoded(e["content"]) for e in events.values())
+    assert secret not in everything
+    # the head of legal, who may read the lease, gets the note
+    head_events, _, _ = attempt("head", tmp_path, monkeypatch, calls[:2], store)
+    assert secret in decoded(head_events["n2"]["content"])

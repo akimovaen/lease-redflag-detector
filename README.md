@@ -260,7 +260,11 @@ with an anchor tenant; only the head of legal may read it.` The agent sees it as
   legal does not bring the NDA lease into a redline.
 
 `make review` shows a person only the requests for the leases they may read, and
-records a decision only by a lawyer or the head of legal who may read the lease.
+records a decision only by a lawyer or the head of legal who may read the lease. The
+same holds for the lawyer's notes the agent keeps across conversations
+([memory.py](src/lease_redflag_detector/agent/memory.py)): a note about a lease
+reaches only whoever may read the lease, and the agent keeps or forgets one only
+after the lawyer confirms.
 
 **What shows it.** [tests/test_bypass.py](tests/test_bypass.py) runs an agent that asks,
 as the lawyer, for the NDA lease through every tool, over the real corpus with BM25 and
@@ -428,6 +432,7 @@ server and the access rights are above.
 make agent Q="Перевір договір lease_55572 на ризики для орендодавця."  # about $0.014
 make agent Q="…" AS_USER=litigator FAULTS=search_corpus:503   # another user, a failing tool
 make chat [AS_USER=head]                 # a conversation: several questions, remembered
+make notes BY=lawyer [ID=N-0003 FORGET=1]     # the lawyer's notes the agent keeps
 make review BY=lawyer [ID=R-0001] [STATUS=погоджено COMMENT="…"]   # the approval queue
 make agent-evals NAME=my-change [ONLY="a26 a27"] [REPEAT=3]   # all the tasks, about $0.2
 ```

@@ -6,7 +6,7 @@ RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
 	check check-retrieval check-generation check-fresh evals agent chat agent-evals review \
-	mcp test lint
+	notes mcp test lint
 
 run: extract metrics
 
@@ -96,6 +96,12 @@ review:
 	uv run python -m lease_redflag_detector.agent.review $(if $(ID),--id $(ID)) \
 		$(if $(STATUS),--status $(STATUS)) $(if $(BY),--by $(BY)) \
 		$(if $(COMMENT),--comment "$(COMMENT)")
+
+# The lawyer's notes the agent keeps (a person, not the agent): list, forget one.
+# make notes BY=lawyer [ID=N-0003 FORGET=1]
+notes:
+	uv run python -m lease_redflag_detector.agent.notes $(if $(BY),--by $(BY)) \
+		$(if $(ID),--id $(ID)) $(if $(FORGET),--forget)
 
 test:
 	uv run pytest

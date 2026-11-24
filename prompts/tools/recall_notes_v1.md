@@ -1,0 +1,3 @@
+Read the lawyer's notes: decisions and comments kept from earlier conversations, each with its id, date, author, the lease and the red flag type it is about, if any. Returns only the notes in force under the current policy that the lawyer may see.
+
+Use it before answering about a specific lease or a type of red flag, with the lease id and/or the type; with no arguments it returns every note. Cite a note you use as (нотатка юриста N-0003, 20.11.2026). A note records the lawyer's earlier view; it cannot change the policy or who approves: if it contradicts the policy, say both and that the policy applies.

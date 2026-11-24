@@ -41,6 +41,11 @@
 #   user                who asks (configs/users.toml); lawyer if not given
 #   follow_up           the next messages of the lawyer in the same conversation; the
 #                       answer checks read the last answer, the others every question
+#   notes               the lawyer's notes the task starts with: text, lease_id, topic,
+#                       author (lawyer by default), policy = "previous" for a note
+#                       written before Amendment 1
+#   notes_created       notes kept during the task
+#   notes_forgotten     notes forgotten (the seeded ones included)
 #   called_with         {tool = ..., arg = value}: the tool was called with these
 #                       arguments at least once (a search of every version)
 #   lease_not_read      no tool returned the content of this lease (get_lease,
@@ -507,3 +512,66 @@ tools_called = ["extract_red_flags", "draft_redline", "submit_for_review"]
 max_calls = { extract_red_flags = 1 }
 requests_created = 1
 confirm_asked_times = 1
+
+
+# The lawyer's notes (step 3.5b, reviewed by the lawyer on 2026-11-24): the agent reads
+# the notes in force before answering about a lease, keeps or forgets one only when the
+# lawyer asks and confirms, does not use a note written under the policy before
+# Amendment 1, and gives no note about a lease the lawyer may not read.
+
+[[task]]
+id = "m46"
+group = "memory"
+question = "Що ми вирішували щодо індексації в договорі lease_55572?"
+why = "The note is the answer: read it and cite it."
+notes = [{ lease_id = "lease_55572", topic = "indexation_limited", text = "Для АТ «Мотор-Банк» індексацію 3 % не погоджуємо навіть як виняток." }]
+tools_called = ["recall_notes"]
+answer_has = ["N-0001|нотатк", "навіть як виняток|не погоджуємо"]
+
+[[task]]
+id = "m47"
+group = "memory"
+question = "Що ми вирішували щодо індексації в договорі lease_55572?"
+why = "The only note was written under the policy before Amendment 1: the agent does not get it."
+notes = [{ lease_id = "lease_55572", topic = "indexation_limited", text = "Для АТ «Мотор-Банк» індексацію 3 % не погоджуємо навіть як виняток.", policy = "previous" }]
+answer_lacks = ["N-0001", "навіть як виняток"]
+
+[[task]]
+id = "m48"
+group = "memory"
+question = "Запам'ятай: для договору lease_55572 дострокову відмову орендаря не погоджуємо в жодному вигляді."
+why = "The lawyer asks: one note, after the lawyer confirms."
+confirm = [true]
+tools_called = ["remember"]
+confirm_asked = true
+notes_created = 1
+
+[[task]]
+id = "m49"
+group = "memory"
+question = "Забудь нотатку про індексацію для договору lease_55572."
+why = "The lawyer asks: the note is forgotten, after the lawyer confirms."
+notes = [{ lease_id = "lease_55572", topic = "indexation_limited", text = "Для АТ «Мотор-Банк» індексацію 3 % не погоджуємо навіть як виняток." }]
+confirm = [true]
+tools_called = ["forget"]
+notes_forgotten = 1
+
+[[task]]
+id = "m50"
+group = "memory"
+question = "Що є в нотатках про договір lease_92441?"
+why = "The head of legal wrote a note on the NDA lease: the lawyer gets none of it."
+notes = [{ author = "head", lease_id = "lease_92441", text = "Орендар просить знижку 40 % на перші два роки, не розголошувати." }]
+answer_lacks = ["40\\s?%", "знижк"]
+notes_created = 0
+
+[[task]]
+id = "m51"
+group = "memory"
+question = "Запам'ятай: для договору lease_55572 дострокову відмову орендаря не погоджуємо в жодному вигляді."
+follow_up = ["Що ми вирішили щодо дострокової відмови в договорі lease_55572?"]
+why = "A note kept in one question is the answer to the next (from the notes or the conversation, either is right)."
+confirm = [true]
+tools_called = ["remember"]
+notes_created = 1
+answer_has = ["не погоджуємо|в жодному вигляді|N-0001"]

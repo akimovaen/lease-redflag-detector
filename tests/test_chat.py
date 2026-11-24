@@ -123,3 +123,72 @@ def test_the_model_is_told_what_the_tools_hold_from_earlier_questions():
     talk = Session(Agent(model, Holding(), "SYSTEM", Limits(), "{r}"), FakeSummarizer())
     talk.ask("так")
     assert model.calls[-1]["system"].endswith("lease_1 — 2 clauses.")
+
+
+def test_a_note_kept_in_one_question_is_read_in_the_next(tmp_path):
+    from pathlib import Path
+
+    from lease_redflag_detector.agent.confirm import ScriptedConfirmer
+    from lease_redflag_detector.agent.loop import AgentConfig, ToolCall
+    from lease_redflag_detector.agent.memory import NoteStore
+    from lease_redflag_detector.agent.queue import ApprovalQueue
+    from lease_redflag_detector.agent.registry_client import RegistryClient
+    from lease_redflag_detector.agent.registry_server import build_server
+    from lease_redflag_detector.agent.toolset import build_toolbox
+    from lease_redflag_detector.agent.users import get_user
+
+    class NoSearch:
+        def __init__(self):
+            self.chunks = []
+
+        def search(self, *args, **kwargs):
+            return []
+
+    note = "Для lease_55572 дострокову відмову не погоджуємо."
+    script = {
+        (1, 1): ToolCall("r", "remember", {"text": note, "lease_id": "lease_55572"}),
+        (2, 1): ToolCall("n", "recall_notes", {"lease_id": "lease_55572"}),
+    }
+
+    class Lawyer:
+        """Keeps the note in the first question, reads the notes in the second."""
+
+        name = "fake"
+        errors = ()
+
+        def __init__(self):
+            self.question, self.step = 0, 0
+
+        def call(self, system, messages, tools, final_only, timeout):
+            if messages[-1]["role"] == "user" and isinstance(
+                messages[-1]["content"], str
+            ):
+                self.question, self.step = self.question + 1, 0
+            self.step += 1
+            call = script.get((self.question, self.step))
+            if call:
+                return Reply("", [call], [{"type": "tool_use", "id": call.id}])
+            return Reply("Готово.", [], [{"type": "text", "text": "Готово."}])
+
+    root = Path(__file__).resolve().parents[1]
+    config = AgentConfig.load(root / "configs" / "agent-haiku-v2.toml")
+    store = NoteStore(tmp_path / "memory.db")
+    tools = build_toolbox(
+        config,
+        registry=RegistryClient(build_server(get_user("lawyer")), user="lawyer"),
+        retriever=NoSearch(),
+        warm=False,
+        queue=ApprovalQueue(tmp_path / "queue.db"),
+        confirm=ScriptedConfirmer(True),
+        session=True,
+        memory=store,
+    )
+    talk = Session(Agent(Lawyer(), tools, "SYSTEM", Limits(), "{r}"), FakeSummarizer())
+    talk.ask("Запам'ятай: для lease_55572 дострокову відмову не погоджуємо.")
+    talk.ask("Що ми вирішили щодо дострокової відмови в lease_55572?")
+    read = [
+        e for e in talk.events if e["kind"] == "tool" and e["name"] == "recall_notes"
+    ]
+    assert [e["question"] for e in read] == [2]
+    assert note in read[0]["content"]
+    assert [n.text for n in store.all()] == [note]

@@ -39,7 +39,7 @@ from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = ROOT / "evals" / "agent_tasks.toml"
-CONFIG = ROOT / "configs" / "agent-haiku-v1.toml"
+CONFIG = ROOT / "configs" / "agent-haiku-v2.toml"
 OUT = ROOT / "results" / "agent" / "runs"
 
 
@@ -51,6 +51,28 @@ def git(*args: str) -> str:
 
 def load_tasks() -> list[dict]:
     return tomllib.loads(TASKS.read_text(encoding="utf-8"))["task"]
+
+
+def seed_notes(store, notes: list[dict]):
+    """The notes a task starts with: written by `author` (lawyer by default) under
+    the policy in force, or under the policy before Amendment 1 (`policy = "previous"`)."""
+    from lease_redflag_detector.agent.memory import policy_version
+    from lease_redflag_detector.agent.users import get_user
+
+    for note in notes:
+        author = get_user(note.get("author", "lawyer"))
+        version = (
+            "policy_2026" if note.get("policy") == "previous" else policy_version()
+        )
+        store.add(
+            note["text"],
+            author.id,
+            author.entity,
+            version,
+            note.get("lease_id"),
+            note.get("topic"),
+        )
+    return store
 
 
 def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
@@ -65,6 +87,7 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
     )
     from lease_redflag_detector.agent.faults import FaultyToolbox
     from lease_redflag_detector.agent.loop import Agent
+    from lease_redflag_detector.agent.memory import NoteStore
     from lease_redflag_detector.agent.queue import ApprovalQueue
     from lease_redflag_detector.agent.toolset import build_toolbox
 
@@ -76,6 +99,7 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
     }
     with tempfile.TemporaryDirectory() as tmp:
         queue = ApprovalQueue(Path(tmp) / "queue.db")
+        memory = seed_notes(NoteStore(Path(tmp) / "memory.db"), task.get("notes", []))
         confirm = ScriptedConfirmer(*task.get("confirm", []))
         task_config = config.model_copy(deep=True)
         task_config.user = task.get("user", config.user)
@@ -90,6 +114,7 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
                 queue=queue,
                 confirm=confirm,
                 session=True,
+                memory=memory,
             )
             if task.get("faults"):
                 tools = FaultyToolbox(tools, task["faults"])
@@ -106,7 +131,14 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
         except Exception as e:  # noqa: BLE001 - one broken task must not end the run
             # What it did before it broke still counts toward actions without permission.
             left = Outcome(
-                "", "", [], queue.all(), confirm.asked, confirm.given.count(True)
+                "",
+                "",
+                [],
+                queue.all(),
+                confirm.asked,
+                confirm.given.count(True),
+                [n.as_dict() for n in memory.all()],
+                len(task.get("notes", [])),
             )
             return record | {
                 "passed": False,
@@ -120,6 +152,8 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
             queue.all(),
             confirm.asked,
             confirm.given.count(True),
+            [n.as_dict() for n in memory.all()],
+            len(task.get("notes", [])),
         )
         checks = check(task, outcome)
     failed = [c for c in checks if not c.passed]

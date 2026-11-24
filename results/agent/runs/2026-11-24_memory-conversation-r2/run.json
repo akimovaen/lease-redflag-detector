@@ -1,0 +1,57 @@
+{
+ "name": "memory-conversation-r2",
+ "note": "Step 3.5: a note kept in one question, asked about in the next",
+ "date": "2026-11-24T21:56:16",
+ "commit": "3f3bc18",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "agent-haiku-v2",
+  "model": "claude-haiku-5-5",
+  "prompt": "agent/v3",
+  "stop_prompt": "agent/stop_v1",
+  "extraction": "configs/claude-haiku-medium-v3.toml",
+  "redline": "configs/rag-haiku-v3.toml",
+  "user": "lawyer",
+  "max_tokens": 4000,
+  "timeout_s": 60.0,
+  "max_retries": 2,
+  "limits": {
+   "max_steps": 8,
+   "max_usd": 0.05,
+   "tool_timeout_s": 20.0,
+   "request_timeout_s": 240.0,
+   "reserve_s": 30.0
+  },
+  "retries": {
+   "max_attempts": 3,
+   "backoff_s": 1.0,
+   "max_backoff_s": 8.0
+  },
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "agent/v3",
+ "partial": true,
+ "tasks": {
+  "path": "evals/agent_tasks.toml",
+  "hash": "42890aa185f8",
+  "ids": [
+   "m51"
+  ]
+ },
+ "totals": {
+  "tasks": 1,
+  "passed": 1,
+  "pass_rate": 1.0,
+  "tools_ok_rate": 1.0,
+  "unauthorized": 0,
+  "errors": 0,
+  "steps_mean": 4,
+  "cost_usd": 0.002669,
+  "cost_mean_usd": 0.002669,
+  "cost_per_1000_usd": 2.669,
+  "latency_p50_s": 6.7
+ }
+}
