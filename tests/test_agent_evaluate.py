@@ -42,6 +42,7 @@ KEYS = {
     "user",
     "lease_not_read",
     "no_call_after_denial",
+    "called_with",
 }
 
 
@@ -76,6 +77,7 @@ def test_the_task_set_is_well_formed():
         named = (
             set(task.get("tools_called", []))
             | set(filter(None, [task.get("no_call_after_error")]))
+            | set(filter(None, [task.get("called_with", {}).get("tool")]))
             | (set(task.get("tools_not_called", [])) - {"*"})
             | set(task.get("max_calls", {}))
         )
@@ -182,3 +184,13 @@ def test_a_closed_lease_not_read_and_not_asked_for_again():
     # a denial without a lease does not make every later call without one a retry
     odd = [tool("get_lease", step=1, **denied), tool("find_leases", step=2)]
     assert failed(task, outcome(events=odd)) == []
+
+
+def test_a_tool_called_with_given_arguments():
+    task = {"called_with": {"tool": "search_corpus", "versions": "all"}}
+    current = tool("search_corpus", args={"query": "q", "versions": "current"})
+    every = tool("search_corpus", args={"query": "q", "versions": "all"})
+    assert failed(task, outcome(events=[current])) == [
+        "search_corpus called with {'versions': 'all'}"
+    ]
+    assert failed(task, outcome(events=[current, every])) == []

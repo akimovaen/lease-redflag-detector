@@ -90,6 +90,16 @@ def check(task: dict, outcome: Outcome) -> list[Check]:
             not later,
             f"called again in steps {later}",
         )
+    if expected := task.get("called_with"):
+        # A call of the tool with these arguments, e.g. a search of every version.
+        args = {k: v for k, v in expected.items() if k != "tool"}
+        calls = [e for e in outcome.tool_events() if e["name"] == expected["tool"]]
+        add(
+            "tools",
+            f"{expected['tool']} called with {args}",
+            any(all(e["args"].get(k) == v for k, v in args.items()) for e in calls),
+            f"arguments: {[e['args'] for e in calls]}",
+        )
     if lease := task.get("lease_not_read"):
         read = [
             e["name"]
