@@ -21,6 +21,7 @@ from pydantic import BaseModel, ValidationError
 
 from lease_redflag_detector.extraction.quotes import quote_in_text
 from lease_redflag_detector.extraction.schema import LeaseAbstract
+from lease_redflag_detector.markup import neutral
 
 PROMPTS = Path(__file__).resolve().parents[3] / "prompts"
 REPAIR_PROMPT = "repair/v1"
@@ -122,7 +123,8 @@ class BaseExtractor:
         raise NotImplementedError
 
     def extract(self, text: str) -> Extraction:
-        messages = [{"role": "user", "content": f"<lease>\n{text}\n</lease>"}]
+        content = f"<lease>\n{neutral(text)}\n</lease>"
+        messages = [{"role": "user", "content": content}]
         completions: list[Completion] = []
         first_error = None
         start = time.perf_counter()

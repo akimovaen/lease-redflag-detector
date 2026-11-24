@@ -42,6 +42,7 @@ from lease_redflag_detector.extraction.extractor import (
     load_prompt,
 )
 from lease_redflag_detector.extraction.schema import RedFlag, RedFlagType
+from lease_redflag_detector.markup import attr, neutral
 from lease_redflag_detector.rag.chunking import Chunk
 from lease_redflag_detector.rag.redline_search import RedlineSearch
 from lease_redflag_detector.rag.retrieve import Hit
@@ -97,10 +98,15 @@ APPROVAL = {
         "пункт потребує додаткового аналізу юриста (п. 10.5 в редакції Змін № 1)"
     ),
 }
-# Point 10.5: a point with open questions goes into the request too, marked.
+# Point 10.5: a point with open questions goes into the request too, marked; an
+# unacceptable one, which the committee does not approve, only for its information.
 FURTHER_ANALYSIS = (
     "потребує додаткового аналізу юриста — подається до комітету з цією позначкою "
     "(п. 10.5 в редакції Змін № 1); за вердиктом: "
+)
+FOR_INFORMATION = (
+    "для відома комітету, з позначкою, що пункт потребує додаткового аналізу юриста "
+    "(п. 10.5 в редакції Змін № 1); "
 )
 
 
@@ -111,6 +117,8 @@ def approval(verdict: str, has_gaps: bool) -> str:
     route = APPROVAL[Verdict(verdict)]
     if not has_gaps or verdict == Verdict.NOT_COVERED:
         return route
+    if verdict == Verdict.UNACCEPTABLE:
+        return FOR_INFORMATION + route
     return FURTHER_ANALYSIS + route
 
 
@@ -257,8 +265,8 @@ def build_sources(
 def render_context(red_flag: RedFlag, sources: list[Source]) -> str:
     blocks = [
         f'<source id="{s.id}" role="{ROLE_NAMES[s.role]}" '
-        f'document="{s.chunk.meta.get("title", s.chunk.doc_id)}" '
-        f'section="{s.chunk.section}">\n{s.chunk.text}\n</source>'
+        f'document="{attr(s.chunk.meta.get("title", s.chunk.doc_id))}" '
+        f'section="{attr(s.chunk.section)}">\n{neutral(s.chunk.text)}\n</source>'
         for s in sources
     ]
     return "\n\n".join(
@@ -269,7 +277,7 @@ def render_context(red_flag: RedFlag, sources: list[Source]) -> str:
             (
                 f'<red_flag type="{red_flag.type}" '
                 f'default_risk="{DEFAULT_RISK[red_flag.type]}">\n'
-                f"{red_flag.quote}\n</red_flag>"
+                f"{neutral(red_flag.quote)}\n</red_flag>"
             ),
         ]
     )

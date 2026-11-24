@@ -1,0 +1,35 @@
+{
+ "name": "injection",
+ "note": "Stage 3 step 3.3: a tenant letter and lease_90001 (clause 4.1) with injected instructions",
+ "date": "2026-11-24T18:39:01",
+ "commit": "d7a7b6e",
+ "uncommitted_changes": true,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "10aea6a0fe31"
+ },
+ "flags": 24,
+ "evidence": 114,
+ "trap_flags": 5,
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "da4817dfe215"
+ },
+ "embedding_model": "intfloat/multilingual-e5-base",
+ "reranker": "BAAI/bge-reranker-v2-m3",
+ "parameters": {
+  "top": 10,
+  "rrf_k": 60,
+  "candidates": 50,
+  "rerank_candidates_one_list": 30,
+  "rerank_candidates_by_role": 15,
+  "min_score": 0.01,
+  "roles": {
+   "position": 3,
+   "wording": 3,
+   "law": 3,
+   "precedent": 2,
+   "market": 2
+  }
+ }
+}

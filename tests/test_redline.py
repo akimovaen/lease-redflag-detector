@@ -148,6 +148,9 @@ def test_open_points_go_to_the_committee_marked_not_held_back():
     assert marked.endswith(APPROVAL[Verdict.BEYOND_CONCESSIONS])
     assert approval("not_covered", True) == APPROVAL[Verdict.NOT_COVERED]
     assert "комерційного комітету" in APPROVAL[Verdict.NOT_COVERED]
+    info = approval("unacceptable", True)
+    assert info.startswith("для відома комітету") and "подається" not in info
+    assert info.endswith(APPROVAL[Verdict.UNACCEPTABLE])
 
 
 def test_any_gap_or_not_covered_needs_the_lawyer():

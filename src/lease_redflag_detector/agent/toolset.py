@@ -346,15 +346,16 @@ class Submission(BaseModel):
 
 
 def queue_items(drafts: dict[tuple[str, str], Draft]) -> list[dict]:
-    """The points of a request: those to approve (a concession, beyond concessions,
-    or anything the lawyer must decide) and the unacceptable ones for information.
+    """The points of a request (point 10.5 of the policy): those to approve (a
+    concession, beyond concessions, or one that needs the lawyer's further analysis)
+    and the unacceptable ones for information, marked if they need analysis too.
     Compliant points are left out."""
     items = []
     for (flag_type, quote), draft in drafts.items():
-        if draft.needs_decision or draft.verdict in TO_APPROVE:
-            section = "погодження"
-        elif draft.verdict == "unacceptable":
+        if draft.verdict == "unacceptable":
             section = "до відома"
+        elif draft.needs_decision or draft.verdict in TO_APPROVE:
+            section = "погодження"
         else:
             continue
         cited = set(draft.proposed_sources) | {

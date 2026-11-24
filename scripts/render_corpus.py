@@ -49,6 +49,9 @@ RENDER = {
     "commercial_committee_minutes_2026_03": ("docx", "Конфіденційно"),
     "demo_city_brochure": ("pdf", "ТРЦ «Демо Сіті» · пропозиція для орендарів"),
     "market_research_2025": ("pdf", "Для внутрішнього використання"),
+    # Step 3.3: documents with an injected instruction for the AI that reads them.
+    "tenant_letter_2026_11": ("pdf", "ТОВ «Зелена Полиця» · вих. № 214/11"),
+    "lease_90001": ("pdf", "Договір оренди № 90001"),
 }
 COPY = ["demo_plaza_page.html", "staff_newsletter_2026_04.md"]
 
