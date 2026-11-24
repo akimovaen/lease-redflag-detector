@@ -61,13 +61,39 @@ def test_the_registry_server_does_not_start_for_an_unknown_user():
         client.tools()
 
 
-def test_only_a_lawyer_or_the_head_of_legal_records_a_decision():
-    assert decider("lawyer_b").id == "lawyer_b"
-    assert decider("head").id == "head"
+def test_only_a_lawyer_or_the_head_of_legal_who_may_read_the_lease_decides():
+    assert decider("lawyer", "lease_55572").id == "lawyer"
+    assert decider("head", "lease_55572").id == "head"
+    assert decider("lawyer_b", "lease_56855").id == "lawyer_b"
     with pytest.raises(SystemExit, match="may not record decisions"):
-        decider("litigator")
+        decider("litigator", "lease_55572")
+    with pytest.raises(SystemExit, match="another legal entity"):
+        decider("lawyer_b", "lease_55572")
+    with pytest.raises(SystemExit, match="another legal entity"):
+        decider("head", "lease_56855")
+    with pytest.raises(SystemExit, match="NDA"):
+        decider("lawyer", "lease_92441")  # a lawyer of the entity, but not this lease
+    assert decider("head", "lease_92441").id == "head"
     with pytest.raises(SystemExit, match="BY="):
-        decider(None)
+        decider(None, "lease_55572")
+
+
+def test_the_queue_shows_a_person_only_the_requests_they_may_read():
+    from lease_redflag_detector.agent.access import Access
+    from lease_redflag_detector.agent.queue import Request
+    from lease_redflag_detector.agent.review import visible
+
+    requests = [
+        Request(f"R-{i}", lease, "k", "очікує", "", "", "head", [], None)
+        for i, lease in enumerate(["lease_55572", "lease_92441", "lease_56855"])
+    ]
+
+    def ids(user):
+        return [r.lease_id for r in visible(requests, get_user(user), Access())]
+
+    assert ids("lawyer") == ["lease_55572"]
+    assert ids("head") == ["lease_55572", "lease_92441"]
+    assert ids("lawyer_b") == ["lease_56855"]
 
 
 def make_dry_run(*args: str) -> str:

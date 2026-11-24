@@ -51,8 +51,13 @@ class LeaseSummary(BaseModel):
     date: str
 
 
+class FoundLease(LeaseSummary):
+    # Why the user may not read it (access.py); None if they may.
+    restricted: str | None = None
+
+
 class FindResult(BaseModel):
-    leases: list[LeaseSummary]
+    leases: list[FoundLease]
 
 
 class LeaseArgs(BaseModel):

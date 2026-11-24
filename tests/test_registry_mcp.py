@@ -6,7 +6,7 @@ from mcp.server.mcpserver import MCPServer
 
 from lease_redflag_detector.agent.registry import DOCUMENTS, FindResult, LeaseRegistry
 from lease_redflag_detector.agent.registry_client import RegistryClient
-from lease_redflag_detector.agent.registry_server import build_server
+from lease_redflag_detector.agent.registry_server import DESCRIPTIONS, build_server
 from lease_redflag_detector.agent.tools import ToolError, TransientError
 from lease_redflag_detector.agent.users import get_user
 from lease_redflag_detector.extraction.extractor import load_prompt
@@ -21,7 +21,7 @@ def test_the_server_describes_its_tools_with_the_versioned_descriptions():
     tools = {t["name"]: t for t in REGISTRY.tools()}
     assert list(tools) == ["find_leases", "get_lease", "read_lease_section"]
     for name, tool in tools.items():
-        assert tool["description"] == load_prompt(f"tools/{name}_v1")
+        assert tool["description"] == load_prompt(DESCRIPTIONS[name])
     lease_id = tools["get_lease"]["input_schema"]["properties"]["lease_id"]
     assert lease_id["pattern"] == r"^lease_\d+$"
     assert set(tools["find_leases"]["input_schema"]["properties"]) == {"party", "city"}

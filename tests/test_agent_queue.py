@@ -166,7 +166,7 @@ def test_only_a_person_decides_and_only_on_a_pending_request(tmp_path):
 class Generator:
     config = type("C", (), {"model": "fake"})()
 
-    def generate(self, red_flag, exclude_doc=None):
+    def generate(self, red_flag, exclude_docs=()):
         output = Redline(
             verdict="concession",
             findings=[{"text": "Поступка.", "sources": ["S1"]}],
@@ -215,7 +215,7 @@ def test_a_lost_answer_and_a_second_call_create_one_request(tmp_path):
     tools = Toolbox(
         [
             Tool("draft_redline", "tools/draft_redline_v1", DraftArgs, Draft,
-                 draft_redline(REGISTRY, Generator(), drafts)),
+                 draft_redline(REGISTRY, Generator(), drafts, set())),
             Tool("submit_for_review", "tools/submit_for_review_v1", SubmitArgs,
                  Submission, submit_in, side_effect=True, retry_safe=False),
         ],

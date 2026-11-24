@@ -1,12 +1,11 @@
 from lease_redflag_detector.extraction.schema import RedFlag, RedFlagType
-from lease_redflag_detector.rag.chunking import Chunk
 from lease_redflag_detector.rag.redline_search import (
     ROLES,
     TOPICS,
     RedlineSearch,
     build_query,
 )
-from lease_redflag_detector.rag.retrieve import Filters, Hit, rrf
+from lease_redflag_detector.rag.retrieve import Filters, rrf
 
 POLICY = {"type": "policy", "status": "current"}
 CIVIL_CODE = {"type": "law", "status": "current"}
@@ -65,15 +64,26 @@ def test_every_red_flag_type_has_a_topic_in_the_query():
     assert "згоди орендодавця" in query
 
 
-def test_the_lease_of_the_clause_is_not_its_own_source():
-    own = Chunk("lease_1#000", "lease_1", "", [], 10, {})
-    other = Chunk("lease_2#000", "lease_2", "", [], 10, {})
+def test_excluded_documents_and_types_are_must_not_conditions():
+    filters = Filters(status=None, exclude_docs=["lease_1"], exclude_types=["lease"])
+    assert not filters.matches(POLICY | {"doc_id": "lease_1"})
+    assert not filters.matches(LEASE | {"doc_id": "lease_2"})
+    assert filters.matches(POLICY | {"doc_id": "policy_2026"})
+    excluded = {c.key: c.match.any for c in filters.to_qdrant().must_not}
+    assert excluded == {"type": ["lease"], "doc_id": ["lease_1"]}
 
-    class Retriever:
-        def search(self, *args, **kwargs):
-            return [Hit(own, 0.9), Hit(other, 0.8)]
 
-    hits = RedlineSearch(Retriever()).search(
-        RedFlag(type="sublease_permitted", quote="Орендар може."), exclude_doc="lease_1"
+def test_redline_search_passes_the_excluded_documents_to_every_role():
+    seen = []
+
+    class FakeRetriever:
+        def search(self, query, mode, k, filters, **kwargs):
+            seen.append(filters)
+            return []
+
+    RedlineSearch(FakeRetriever()).search(
+        RedFlag(type="sublease_permitted", quote="Орендар може."),
+        exclude_docs=["lease_1", "lease_2"],
     )
-    assert all([h.chunk.doc_id for h in role] == ["lease_2"] for role in hits.values())
+    assert seen and all(f.exclude_docs == ["lease_1", "lease_2"] for f in seen)
+    assert seen[0].types == ["policy"]  # the role's own filter stays

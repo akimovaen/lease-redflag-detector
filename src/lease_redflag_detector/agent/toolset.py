@@ -2,12 +2,13 @@
 
 - search_corpus: the stage 2 search, by source role, over the documents in force or
   over every version. It never returns a lease of the registry, so that a lease is
-  read only through the registry and its access rights; the redline generator still
-  uses signed leases as market practice, inside `draft_redline`;
+  read only through the registry and its access rights;
 - find_leases, get_lease, read_lease_section: the lease registry, tools of its MCP
   server (`registry_server.py`) with the descriptions and schemas the server gives;
 - extract_red_flags: the stage 1 extractor on a lease the registry server gives;
-- draft_redline: the stage 2 redline for one red flag of a lease. The verdict, risk,
+- draft_redline: the stage 2 redline for one red flag of a lease, with signed leases
+  as market practice: only those every user of the lawyer's entity may read, as the
+  registry says, and never the lease itself. The verdict, risk,
   approval route and whether the lawyer must decide come from stage 2 and its code,
   not from the agent's own wording, so that later steps can rely on them;
 - submit_for_review: the one tool with a side effect. It puts a lease's contested
@@ -274,8 +275,15 @@ class Drafts:
 
 
 def draft_redline(
-    registry: RegistryClient, generator: RedlineGenerator, drafts: Drafts
+    registry: RegistryClient,
+    generator: RedlineGenerator,
+    drafts: Drafts,
+    corpus_leases: set[str],
 ):
+    """`corpus_leases`: the registry leases in the search corpus. A redline uses
+    one as market practice only if every user of the lawyer's entity may read it:
+    the redline goes to the approval queue, where others read it."""
+
     def run(args: DraftArgs) -> Priced:
         if not quote_in_text(args.quote, registry.text(args.lease_id)):
             raise ToolError(
@@ -283,7 +291,9 @@ def draft_redline(
                 "extract_red_flags or read_lease_section."
             )
         red_flag = RedFlag(type=args.type, quote=args.quote)
-        result = generator.generate(red_flag, exclude_doc=args.lease_id)
+        # Never the lease itself, nor a lease closed to anyone of the entity.
+        excluded = corpus_leases - (registry.shared() - {args.lease_id})
+        result = generator.generate(red_flag, exclude_docs=sorted(excluded))
         cost = cost_usd(
             generator.config.model, result.input_tokens, result.output_tokens
         )
@@ -499,6 +509,11 @@ def build_toolbox(
         qdrant_path=None,
         reranker=RerankScores(local_dir=LOCAL_RERANK),
     )
+    corpus_leases = {
+        chunk.doc_id
+        for chunk in retriever.chunks
+        if chunk.meta.get("type") in REGISTRY_TYPES
+    }
     if warm:
         retriever.search("орендна плата", k=1)  # loads both models
     redline = tool_client(RunConfig.load(ROOT / config.redline), DRAFT_TIMEOUT_S)
@@ -533,7 +548,7 @@ def build_toolbox(
                 "tools/draft_redline_v1",
                 DraftArgs,
                 Draft,
-                draft_redline(registry, generator, drafts),
+                draft_redline(registry, generator, drafts, corpus_leases),
                 timeout_s=DRAFT_TIMEOUT_S,
             ),
             Tool(

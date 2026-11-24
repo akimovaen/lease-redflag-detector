@@ -160,3 +160,9 @@ The search no longer returns the leases of the registry, in code
 (`toolset.search_filters`): a lease is read only through the registry and its access
 rights. The description drops "signed leases" and says that leases are only in the
 registry. The rest is v1.
+
+### find_leases v2 (step 2.3)
+
+The registry marks a lease the lawyer may not read as `restricted`, with the reason;
+the description says so and that the sections and text of such a lease are refused.
+The rest is v1.

@@ -86,7 +86,7 @@ mcp:
 		lease_redflag_detector.agent.registry_server
 
 # The approval queue the agent fills: list, show one, decide (a person, not the agent).
-# make review [ID=R-0001] [STATUS=погоджено|відхилено|повернуто BY=lawyer COMMENT="…"]
+# make review BY=lawyer [ID=R-0001] [STATUS=погоджено|відхилено|повернуто COMMENT="…"]
 review:
 	uv run python -m lease_redflag_detector.agent.review $(if $(ID),--id $(ID)) \
 		$(if $(STATUS),--status $(STATUS)) $(if $(BY),--by $(BY)) \

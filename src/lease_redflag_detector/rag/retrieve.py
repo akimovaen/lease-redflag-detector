@@ -56,6 +56,7 @@ class Filters:
     # Documents without a regime (the policy, research) always pass.
     exclude_regimes: list[str] | None = None
     exclude_types: list[str] | None = None
+    exclude_docs: list[str] | None = None  # document ids
 
     def matches(self, meta: dict) -> bool:
         date = str(meta.get("date", ""))
@@ -69,6 +70,7 @@ class Filters:
                 self.exclude_regimes and meta.get("regime") in self.exclude_regimes
             )
             and not (self.exclude_types and meta.get("type") in self.exclude_types)
+            and not (self.exclude_docs and meta.get("doc_id") in self.exclude_docs)
         )
 
     def to_qdrant(self):
@@ -95,6 +97,7 @@ class Filters:
             for key, values in [
                 ("regime", self.exclude_regimes),
                 ("type", self.exclude_types),
+                ("doc_id", self.exclude_docs),
             ]
             if values
         ]
@@ -269,7 +272,12 @@ class Retriever:
 
     def bm25_ranking(self, query: str, filters: Filters, limit: int) -> list[int]:
         scores = self.bm25.scores(query)
-        allowed = np.array([filters.matches(chunk.meta) for chunk in self.chunks])
+        allowed = np.array(
+            [
+                filters.matches(chunk.meta | {"doc_id": chunk.doc_id})
+                for chunk in self.chunks
+            ]
+        )
         scores = np.where(allowed, scores, -np.inf)
         order = np.argsort(-scores, kind="stable")[:limit]
         return [int(i) for i in order if scores[i] > 0]

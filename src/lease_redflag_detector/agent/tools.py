@@ -11,9 +11,9 @@ and whether a failed call may be repeated (`retry_safe`); the loop and the fault
 handling read these flags, not the descriptions.
 
 A tool reports an expected failure (an unknown lease, a quote not in the lease) by
-raising `ToolError`, whose message goes to the model, and a failure that may pass on
-a repeat (429, 503, a timeout of the service behind it) by raising `TransientError`;
-the loop decides whether to repeat. A tool that calls a model itself returns `Priced`
+raising `ToolError`, whose message goes to the model (`AccessDenied` when the lawyer
+may not see it), and a failure that may pass on a repeat (429, 503, a timeout of the
+service behind it) by raising `TransientError`; the loop decides whether to repeat. A tool that calls a model itself returns `Priced`
 so that the cost counts toward the budget of the request, even when the call failed.
 
 Every failed call gets an `error_kind`, which the loop and the trace use.
@@ -44,6 +44,10 @@ class TransientError(ToolError):
     ):
         super().__init__(message, cost_usd)
         self.retry_after = retry_after
+
+
+class AccessDenied(ToolError):
+    """The lawyer may not see this: no retry and no other tool can get past it."""
 
 
 # Errors of the Anthropic SDK that a repeat may get past; the other ones (a bad
@@ -162,6 +166,8 @@ class Toolbox:
                 error_kind="transient",
                 retry_after=e.retry_after,
             )
+        except AccessDenied as e:
+            return ToolResult(str(e), True, e.cost_usd, error_kind="denied")
         except ToolError as e:
             return ToolResult(str(e), True, e.cost_usd, error_kind="tool_error")
         if isinstance(output, Priced):

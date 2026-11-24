@@ -13,7 +13,7 @@ tool, so that the model cannot change it.
 
 Failures:
 - what the server answers as a failure (an unknown lease, invalid arguments) raises
-  `ToolError` with its message;
+  `ToolError` with its message, and a denial of access `AccessDenied`;
 - a server that does not answer in time or whose connection broke raises
   `TransientError`; the next call starts the server again.
 """
@@ -30,8 +30,13 @@ from mcp.server.mcpserver import MCPServer
 from mcp.shared.exceptions import MCPError
 from mcp.types import CONNECTION_CLOSED, REQUEST_TIMEOUT
 
-from lease_redflag_detector.agent.registry_server import TEXT_URI, USER_ENV
-from lease_redflag_detector.agent.tools import ToolError, TransientError
+from lease_redflag_detector.agent.access import DENIED
+from lease_redflag_detector.agent.registry_server import (
+    SHARED_URI,
+    TEXT_URI,
+    USER_ENV,
+)
+from lease_redflag_detector.agent.tools import AccessDenied, ToolError, TransientError
 
 TIMEOUT_S = 10.0
 LOST = (CONNECTION_CLOSED, REQUEST_TIMEOUT)
@@ -43,6 +48,11 @@ def stdio_server(user: str) -> StdioServerParameters:
         args=["-m", "lease_redflag_detector.agent.registry_server"],
         env={USER_ENV: user},
     )
+
+
+def refusal(message: str) -> ToolError:
+    """The server's refusal: a denial of access, or another expected failure."""
+    return (AccessDenied if message.startswith(DENIED) else ToolError)(message)
 
 
 def unavailable(error: BaseException) -> TransientError:
@@ -68,6 +78,7 @@ class RegistryClient:
         self.stop: asyncio.Event | None = None
         self.lock = asyncio.Lock()
         self._tools: list[dict] | None = None
+        self._shared: set[str] | None = None
         atexit.register(self.close)
 
     # The connection, on the background loop
@@ -115,7 +126,7 @@ class RegistryClient:
                 if e.code in LOST:
                     await self.drop()
                     raise unavailable(e) from e
-                raise ToolError(e.error.message) from e
+                raise refusal(e.error.message) from e
             except (ToolError, asyncio.CancelledError):
                 raise
             except Exception as e:  # a broken transport, a dead server
@@ -155,7 +166,7 @@ class RegistryClient:
         result = self.run(lambda c: c.call_tool(name, args))
         text = " ".join(getattr(block, "text", "") for block in result.content)
         if result.is_error:
-            raise ToolError(text.removeprefix(f"Error executing tool {name}: "))
+            raise refusal(text.removeprefix(f"Error executing tool {name}: "))
         if result.structured_content is None:
             raise ToolError(f"{name} returned no structured result.")
         return result.structured_content
@@ -167,6 +178,15 @@ class RegistryClient:
         if not text.strip():
             raise ToolError(f"The registry returned no text of {lease_id}.")
         return text
+
+    def shared(self) -> set[str]:
+        """The leases every user of this user's entity may read, as the server says;
+        asked once, since the rights of a session do not change."""
+        if self._shared is None:
+            result = self.run(lambda c: c.read_resource(SHARED_URI))
+            text = "".join(getattr(content, "text", "") for content in result.contents)
+            self._shared = set(text.split())
+        return self._shared
 
     def summary(self, lease_id: str) -> dict:
         return self.call("get_lease", {"lease_id": lease_id})

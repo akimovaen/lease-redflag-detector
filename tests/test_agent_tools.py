@@ -183,8 +183,9 @@ class FakeGenerator:
     def __init__(self):
         self.calls = 0
 
-    def generate(self, red_flag, exclude_doc=None):
-        assert exclude_doc == LEASE
+    def generate(self, red_flag, exclude_docs=()):
+        # the lease itself and a lease closed to some of the entity (A: a court dispute)
+        assert exclude_docs == ["lease_35532", LEASE]
         self.calls += 1
         output = Redline(
             verdict="not_covered",
@@ -201,7 +202,9 @@ class FakeGenerator:
 
 def test_draft_redline_needs_a_verbatim_quote_and_reports_stage_2_routing():
     generator = FakeGenerator()
-    draft = draft_redline(REGISTRY, generator, Drafts())
+    draft = draft_redline(
+        REGISTRY, generator, Drafts(), {LEASE, "lease_35532", "lease_55572"}
+    )
     with pytest.raises(ToolError, match="not in lease_37032 word for word"):
         draft(
             DraftArgs(

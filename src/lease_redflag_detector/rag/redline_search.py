@@ -22,6 +22,8 @@ Hits the reranker scores below `min_score` are dropped, so a role with nothing r
         "Орендар має право передавати приміщення в суборенду без згоди Орендодавця."
 """
 
+import dataclasses
+from collections.abc import Collection
 from dataclasses import dataclass, field
 
 from lease_redflag_detector.extraction.schema import RedFlag, RedFlagType
@@ -107,10 +109,11 @@ class RedlineSearch:
         self.mode = mode
 
     def search(
-        self, red_flag: RedFlag, exclude_doc: str | None = None
+        self, red_flag: RedFlag, exclude_docs: Collection[str] = ()
     ) -> dict[str, list[Hit]]:
-        """The hits for every role, best first; a role may come back empty. The lease
-        the clause comes from (`exclude_doc`) is not its own market practice."""
+        """The hits for every role, best first; a role may come back empty. Documents
+        in `exclude_docs` are never found: the lease the clause comes from (not its own
+        market practice) and the leases the lawyer may not read."""
         query = build_query(red_flag, self.topic)
         return {
             role.name: [
@@ -119,10 +122,16 @@ class RedlineSearch:
                     query,
                     self.mode,
                     role.k,
-                    role.filters,
+                    (
+                        dataclasses.replace(
+                            role.filters, exclude_docs=list(exclude_docs)
+                        )
+                        if exclude_docs
+                        else role.filters
+                    ),
                     rerank_candidates=RERANK_CANDIDATES,
                 )
-                if hit.score >= self.min_score and hit.chunk.doc_id != exclude_doc
+                if hit.score >= self.min_score
             ]
             for role in ROLES
         }

@@ -150,7 +150,7 @@ class ToolResult:
     content: str
     is_error: bool = False
     cost_usd: float = 0.0  # model calls the tool made itself
-    # Why a call failed: transient, timeout, schema, invalid_args, tool_error,
+    # Why a call failed: transient, timeout, schema, invalid_args, tool_error, denied,
     # unknown_tool, exception, not_run; None if it did not.
     error_kind: str | None = None
     retry_after: float | None = None  # the pause a service asked for, seconds
