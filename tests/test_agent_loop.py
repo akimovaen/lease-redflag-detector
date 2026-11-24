@@ -274,3 +274,9 @@ def test_a_model_without_a_price_is_refused():
     config = AgentConfig.load(ROOT / "configs" / "agent-haiku-v1.toml")
     with pytest.raises(ValueError, match="No price for claude-unknown"):
         AnthropicModel(config.model_copy(update={"model": "claude-unknown"}))
+
+
+def test_the_trace_records_who_asked():
+    model = ScriptedModel([final()])
+    answer = Agent(model, Tools(), "system", Limits(), STOP, user="litigator").run("?")
+    assert answer.trace.events[0]["user"] == "litigator"

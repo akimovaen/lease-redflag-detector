@@ -27,6 +27,7 @@ check are in commit 5c6bae2.
 """
 
 import time
+from collections.abc import Collection
 from dataclasses import dataclass, field
 from enum import StrEnum
 
@@ -345,10 +346,10 @@ class RedlineGenerator:
             return None, "the answer was cut off at the output token limit"
         return validate(completion.raw, ids)
 
-    def generate(self, red_flag: RedFlag, exclude_doc: str | None = None) -> Result:
-        """`exclude_doc`: the lease the clause comes from, kept out of its sources."""
+    def generate(self, red_flag: RedFlag, exclude_docs: Collection[str] = ()) -> Result:
+        """`exclude_docs`: documents kept out of the sources (`RedlineSearch.search`)."""
         start = time.perf_counter()
-        sources = build_sources(self.search.search(red_flag, exclude_doc), self.fixed)
+        sources = build_sources(self.search.search(red_flag, exclude_docs), self.fixed)
         search_s = time.perf_counter() - start
         ids = {source.id for source in sources}
         messages = [{"role": "user", "content": render_context(red_flag, sources)}]

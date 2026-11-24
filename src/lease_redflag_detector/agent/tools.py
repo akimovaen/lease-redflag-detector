@@ -1,7 +1,8 @@
 """Tools of the agent: a description, schemas of the arguments and the result, a function.
 
 The description the model reads lives in `prompts/tools/<name>_v<N>.md`, versioned like
-the prompts; the argument schema goes to the model with it. Before a call the arguments
+the prompts; the argument schema goes to the model with it. A tool of an MCP server
+comes with the description and schema the server gives (`spec`). Before a call the arguments
 are validated against that schema, and after it the result against its own: a tool
 whose result changed shape fails loudly instead of handing the model a silent None.
 
@@ -10,9 +11,9 @@ and whether a failed call may be repeated (`retry_safe`); the loop and the fault
 handling read these flags, not the descriptions.
 
 A tool reports an expected failure (an unknown lease, a quote not in the lease) by
-raising `ToolError`, whose message goes to the model, and a failure that may pass on
-a repeat (429, 503, a timeout of the service behind it) by raising `TransientError`;
-the loop decides whether to repeat. A tool that calls a model itself returns `Priced`
+raising `ToolError`, whose message goes to the model (`AccessDenied` when the lawyer
+may not see it), and a failure that may pass on a repeat (429, 503, a timeout of the
+service behind it) by raising `TransientError`; the loop decides whether to repeat. A tool that calls a model itself returns `Priced`
 so that the cost counts toward the budget of the request, even when the call failed.
 
 Every failed call gets an `error_kind`, which the loop and the trace use.
@@ -43,6 +44,10 @@ class TransientError(ToolError):
     ):
         super().__init__(message, cost_usd)
         self.retry_after = retry_after
+
+
+class AccessDenied(ToolError):
+    """The lawyer may not see this: no retry and no other tool can get past it."""
 
 
 # Errors of the Anthropic SDK that a repeat may get past; the other ones (a bad
@@ -81,8 +86,13 @@ class Tool:
     side_effect: bool = False
     retry_safe: bool = True
     timeout_s: float | None = None  # None: the default of the agent's limits
+    # A tool of an MCP server: the name, description and schema the server gives,
+    # sent to the model as they are. The arguments are still validated by `args`.
+    spec: dict | None = None
 
     def schema(self) -> dict:
+        if self.spec:
+            return self.spec
         return {
             "name": self.name,
             "description": load_prompt(self.description),
@@ -156,6 +166,8 @@ class Toolbox:
                 error_kind="transient",
                 retry_after=e.retry_after,
             )
+        except AccessDenied as e:
+            return ToolResult(str(e), True, e.cost_usd, error_kind="denied")
         except ToolError as e:
             return ToolResult(str(e), True, e.cost_usd, error_kind="tool_error")
         if isinstance(output, Priced):

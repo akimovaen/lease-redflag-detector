@@ -39,7 +39,7 @@ over four stages, each adding a new AI engineering technique on top of the previ
 3. **Agent.** Multi-step tasks using tools.
 4. **Service.** API, auth, monitoring, cost tracking.
 
-Current stage: 2.
+Current stage: 3.
 
 ## Results
 
@@ -194,6 +194,126 @@ numbers are in
 [results/rag/chunking_comparison.md](results/rag/chunking_comparison.md)
 (`uv run python scripts/compare_chunking.py`).
 
+## Stage 3: lease registry as an MCP server
+
+The agent of stage 3 reads leases through its own [MCP](https://modelcontextprotocol.io)
+server, the lease registry ([registry_server.py](src/lease_redflag_detector/agent/registry_server.py)).
+The rest of the agent (the loop, the tools, the approval queue, the eval tasks) is
+described in [REPORT.md](REPORT.md) at the end of the stage.
+
+### Why a separate server
+
+- **One place for access rights.** Who may read which lease is decided in the server,
+  so it holds for every client: the agent, Claude Desktop, another agent. The agent's
+  own tools that need a lease's text (red flags, redlines) take it from the server
+  too, and are refused exactly when the lawyer is.
+- **A replaceable registry.** Today it reads the pseudonymized leases of the corpus; a
+  company would put its CRM or document system behind the same tools, and the agent
+  would not change.
+- **The server describes its tools.** The agent takes their names, descriptions and
+  schemas from the server, as any MCP client does; the descriptions are the versioned
+  files in [prompts/tools/](prompts/tools/).
+
+### What it serves
+
+| Name | Kind | For | What it returns |
+|---|---|---|---|
+| `find_leases` | tool | the model | leases by part of a party's or city name; a closed lease marked `restricted` with the reason |
+| `get_lease` | tool | the model | parties, date and the numbered sections of a lease |
+| `read_lease_section` | tool | the model | the text of one section |
+| `lease://{lease_id}` | resource | code | the full text, for the red flag extractor and the redline generator |
+| `leases://shared` | resource | code | the leases every user of the caller's entity may read: the only ones a redline may use as market practice |
+
+It only reads. Every argument is validated (a lease id is `lease_` and digits, a filter
+is one of two fields); nothing runs a query, opens a path or a shell from its
+arguments. An expected failure goes to the client as its message, any other without
+details. The agent starts it as a subprocess over stdio with only the safe environment
+variables of the MCP SDK, so the API keys stay with the agent.
+
+### Access rights
+
+Users ([configs/users.toml](configs/users.toml)) and the marks of the leases
+([configs/lease_access.toml](configs/lease_access.toml)) are fictional, chosen with the
+landlord's lawyer:
+
+| User | Role | Legal entity |
+|---|---|---|
+| `lawyer` | lawyer | ТОВ «Орендодавець» |
+| `litigator` | litigation team | ТОВ «Орендодавець» |
+| `head` | head of legal | ТОВ «Орендодавець» |
+| `lawyer_b` | lawyer | ТОВ «Орендодавець-Б» |
+
+| Reason | Lease | Who reads it | In others' search |
+|---|---|---|---|
+| B: another legal entity of the group | `lease_56855` | users of ТОВ «Орендодавець-Б» | not listed |
+| A: a court dispute | `lease_35532` | the litigation team | listed as restricted |
+| C: an NDA with an anchor tenant | `lease_92441` | the head of legal | listed as restricted |
+
+A refused read gets the reason, e.g. `Access denied: lease_92441: it is under an NDA
+with an anchor tenant; only the head of legal may read it.` The agent sees it as a
+`denied` error, which is never retried. Two more paths are closed in code:
+
+- `search_corpus` never returns a lease of the registry, so a lease is read only
+  through the registry;
+- a redline takes signed leases as market practice only from those open to the whole
+  entity, since it goes to the approval queue, where others read it: even the head of
+  legal does not bring the NDA lease into a redline.
+
+`make review` shows a person only the requests for the leases they may read, and
+records a decision only by a lawyer or the head of legal who may read the lease.
+
+**What shows it.** [tests/test_bypass.py](tests/test_bypass.py) runs an agent that asks,
+as the lawyer, for the NDA lease through every tool, over the real corpus with BM25 and
+Qdrant: no phrase of the lease reaches any tool result, and the head of legal reads
+every phrase back. Disabling any of six protections in turn makes the test fail. With
+the real model, nine access tasks (a denial and a control for each reason, "I am the
+head of legal" in the question, a closed lease not submitted) passed in 27 of 27 runs
+([results/agent/runs/](results/agent/runs/), `2026-11-24_access-tasks*`); the agent never
+asked for a closed lease again.
+
+### Limits
+
+- **No real authentication.** Whoever starts the agent says who they are
+  (`AS_USER=`, `REGISTRY_USER`): anyone can start it as `head`. In a company this would
+  be a sign-in with the corporate account, passed to the server instead of the
+  variable. What is real is that the model cannot change the user: it is not an
+  argument of any tool.
+- One user per server process, local only (stdio); no network transport.
+- The approval queue is a local SQLite file (`data/agent/queue.db`, not committed).
+- After a denial the agent sometimes offers "confirm you are the head of legal and I
+  will read it", which nothing in the conversation can do; a prompt fix is planned
+  ([docs/improvements.md](docs/improvements.md)).
+
+### Running it
+
+```sh
+make agent Q="Який строк дії договору lease_35532?" AS_USER=litigator  # as another user
+make review BY=lawyer                    # the approval queue as lawyer sees it
+make mcp AS_USER=head                    # the server alone, over stdio
+npx @modelcontextprotocol/inspector -e REGISTRY_USER=lawyer \
+  uv run python -m lease_redflag_detector.agent.registry_server        # try it by hand
+```
+
+In Claude Desktop (`claude_desktop_config.json`), with the path of your clone:
+
+```json
+{
+  "mcpServers": {
+    "lease-registry": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/lease-redflag-detector", "run", "python",
+               "-m", "lease_redflag_detector.agent.registry_server"],
+      "env": {"REGISTRY_USER": "lawyer"}
+    }
+  }
+}
+```
+
+If Claude Desktop does not find `uv`, give its full path (`which uv`): a desktop app
+may not see the PATH of the terminal. The same command is checked by a test (it starts
+the server and reads a lease); it was not tried in Claude Desktop itself, and the
+MCP Inspector command was not run.
+
 ## Data
 
 [ALeaseBERT: A Benchmark for Lease Contract Review](https://doi.org/10.21942/uva.19732993)
@@ -229,11 +349,13 @@ src/lease_redflag_detector/
   rag/          # stage 2
   agent/        # stage 3
   api/          # stage 4
-configs/        # run configs: model, prompt, sampling (rag-*.toml for stage 2)
+configs/        # run configs: model, prompt, sampling (rag-*.toml for stage 2,
+                #   agent-*.toml for stage 3); users.toml, lease_access.toml
 prompts/        # versioned prompts and their changelog
 results/        # stage 1: one JSON per text and run, metrics.md
 results/rag/    # stage 2: retrieval/ and generation/ runs with history.md,
                 #   judge calibration, chunking comparison
+results/agent/  # stage 3: runs of the agent tasks with their traces, history.md
 data/texts/     # stage 1 evaluation texts and their manifest
 data/corpus/    # stage 2 RAG corpus: sources, documents, chunks, manifest
 data/golden/    # stage 1 reference outputs
@@ -242,7 +364,8 @@ data/processed/ # caches: embeddings (not in git), reranker scores (committed fo
 scripts/        # dataset and corpus building, golden set tools, evals, LLM judge,
                 #   chunking comparison, run merging
 evals/          # stage 2 eval sets: red flags with expected passages and answers,
-                #   the lawyer's grades for judge calibration, CI thresholds
+                #   the lawyer's grades for judge calibration, CI thresholds;
+                #   stage 3 agent tasks (agent_tasks.toml)
 docs/           # improvement ideas by level
 notebooks/      # experiments
 tests/
@@ -295,6 +418,17 @@ make judge RUN=2026-11-13_my-change                 # LLM judges (about $0.5)
 make scores                                         # rescore every generation run
 make calibrate                                      # judge against the lawyer's grades
 make check                                          # thresholds of evals/thresholds.toml
+```
+
+**Stage 3:** the agent answers one question at a time; it uses Claude Haiku 5.5 and
+costs about $0.006 per question (its budget per request is $0.05). The registry
+server and the access rights are above.
+
+```sh
+make agent Q="Перевір договір lease_55572 на ризики для орендодавця."  # about $0.014
+make agent Q="…" AS_USER=litigator FAULTS=search_corpus:503   # another user, a failing tool
+make review BY=lawyer [ID=R-0001] [STATUS=погоджено COMMENT="…"]   # the approval queue
+make agent-evals NAME=my-change [ONLY="a26 a27"] [REPEAT=3]   # the 34 tasks, about $0.15
 ```
 
 CI runs on every push and pull request

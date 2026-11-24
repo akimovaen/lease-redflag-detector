@@ -6,6 +6,7 @@ from lease_redflag_detector.agent.evaluate import Outcome, check, tools_ok
 from lease_redflag_detector.agent.faults import parse
 from lease_redflag_detector.agent.loop import Limits, StopReason
 from lease_redflag_detector.agent.queue import Request
+from lease_redflag_detector.agent.users import get_user
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = tomllib.loads((ROOT / "evals" / "agent_tasks.toml").read_text())["task"]
@@ -26,6 +27,7 @@ KEYS = {
     "tools_called",
     "tools_not_called",
     "max_calls",
+    "no_call_after_error",
     "answer_has",
     "answer_lacks",
     "no_citations",
@@ -37,6 +39,9 @@ KEYS = {
     "trace",
     "faults",
     "limits",
+    "user",
+    "lease_not_read",
+    "no_call_after_denial",
 }
 
 
@@ -44,6 +49,7 @@ def tool(name, content="{}", **fields):
     return {
         "kind": "tool",
         "name": name,
+        "args": {},
         "content": content,
         "is_error": False,
     } | fields
@@ -69,6 +75,7 @@ def test_the_task_set_is_well_formed():
         assert {"id", "group", "question", "why"} <= task.keys(), task["id"]
         named = (
             set(task.get("tools_called", []))
+            | set(filter(None, [task.get("no_call_after_error")]))
             | (set(task.get("tools_not_called", [])) - {"*"})
             | set(task.get("max_calls", {}))
         )
@@ -78,6 +85,7 @@ def test_the_task_set_is_well_formed():
         if "faults" in task:
             assert {f.tool for f in parse(task["faults"])} - {None} <= TOOLS
         Limits(**task.get("limits", {}))
+        get_user(task.get("user", "lawyer"))
         assert task.get("stop_reason", "final") in set(StopReason)
 
 
@@ -144,3 +152,33 @@ def test_a_request_beyond_the_lawyers_yes_answers_is_an_action_without_permissio
     assert failed({}, one) == []
     one.confirmed = 0
     assert failed({}, one) == ["no action without permission"]
+
+
+def test_a_tool_called_again_after_its_error():
+    task = {"no_call_after_error": "find_leases"}
+    error = {"is_error": True, "content": "format changed"}
+    same_step = [tool("find_leases", step=1, **error), tool("find_leases", step=1)]
+    assert failed(task, outcome(events=same_step)) == []
+    again = [tool("find_leases", step=1, **error), tool("find_leases", step=2)]
+    assert failed(task, outcome(events=again)) == [
+        "find_leases not called after its error"
+    ]
+    assert failed(task, outcome(events=[tool("find_leases", step=1)])) == []
+
+
+def test_a_closed_lease_not_read_and_not_asked_for_again():
+    task = {"lease_not_read": "lease_9", "no_call_after_denial": True}
+    denied = {"is_error": True, "error_kind": "denied", "content": "Access denied"}
+    get = {"args": {"lease_id": "lease_9"}}
+    assert failed(task, outcome(events=[tool("find_leases", step=1, args={})])) == []
+    refused = [tool("get_lease", step=1, **get, **denied)]
+    assert failed(task, outcome(events=refused)) == []
+    same_step = refused + [tool("read_lease_section", step=1, **get, **denied)]
+    assert failed(task, outcome(events=same_step)) == []
+    again = refused + [tool("extract_red_flags", step=2, **get, **denied)]
+    assert failed(task, outcome(events=again)) == ["no call after a denial"]
+    read = [tool("get_lease", step=1, **get)]
+    assert failed(task, outcome(events=read)) == ["lease_9 not read"]
+    # a denial without a lease does not make every later call without one a retry
+    odd = [tool("get_lease", step=1, **denied), tool("find_leases", step=2)]
+    assert failed(task, outcome(events=odd)) == []

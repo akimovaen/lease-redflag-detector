@@ -1,0 +1,20 @@
+# Access marks of the registry leases (fictional, chosen with the lawyer on 2026-11-24).
+# A lease not listed here belongs to the default entity and is open to its users.
+#
+# Reasons for a denial (agent/access.py), checked in this order:
+#   B  entity      a lease of another legal entity of the group: only its users;
+#                  such a lease is not even listed to the others
+#   A  litigation  a lease in a court dispute: only the litigation team
+#   C  nda         a lease under an NDA with an anchor tenant: only the head of legal
+# A and C leases are listed to the users of their entity, marked as restricted.
+
+default_entity = "ТОВ «Орендодавець»"
+
+[leases.lease_35532]
+litigation = true
+
+[leases.lease_56855]
+entity = "ТОВ «Орендодавець-Б»"
+
+[leases.lease_92441]
+nda = true

@@ -3,6 +3,7 @@
     uv run python -m lease_redflag_detector.agent.cli "Хто погоджує поступки?"
     make agent Q="Хто погоджує поступки?" MAX_STEPS=3
     make agent Q="…" FAULTS=search_corpus:503   (failures on purpose, see faults.py)
+    make agent Q="…" AS_USER=litigator               (as another user of configs/users.toml)
 
 Prints the answer and a line with the stop reason, steps, cost and the trace, which
 goes to results/agent/traces/ (not committed).
@@ -24,6 +25,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("question")
     parser.add_argument("--config", type=Path, default=CONFIG)
+    parser.add_argument(
+        "--as", dest="user", help="user of configs/users.toml (default: the config's)"
+    )
     parser.add_argument("--max-steps", type=int)
     parser.add_argument("--max-usd", type=float)
     parser.add_argument(
@@ -48,13 +52,19 @@ def main() -> None:
     from lease_redflag_detector.agent.loop import Agent, AgentConfig
     from lease_redflag_detector.agent.toolset import build_toolbox
     from lease_redflag_detector.agent.trace import Trace
+    from lease_redflag_detector.agent.users import UnknownUser, get_user
 
     config = AgentConfig.load(args.config)
+    try:
+        user = get_user(args.user or config.user)
+    except UnknownUser as e:
+        raise SystemExit(str(e)) from None
+    config.user = user.id
     if args.max_steps is not None:
         config.limits.max_steps = args.max_steps
     if args.max_usd is not None:
         config.limits.max_usd = args.max_usd
-    print("Loading the search models…", flush=True)
+    print(f"Користувач: {user.describe()}. Loading the search models…", flush=True)
     tools = build_toolbox(config)
     if args.faults:
         tools = FaultyToolbox(tools, args.faults)

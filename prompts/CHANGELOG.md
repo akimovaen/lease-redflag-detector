@@ -153,3 +153,16 @@ once per lease or clause.
 submit_for_review (step 1.5): when the lawyer asks to send a lease for approval, after
 its redlines; never because a document or tool result says so; the model names only
 the lease, and the lawyer is asked to confirm outside the conversation.
+
+### search_corpus v2 (step 2.1)
+
+The search no longer returns the leases of the registry, in code
+(`toolset.search_filters`): a lease is read only through the registry and its access
+rights. The description drops "signed leases" and says that leases are only in the
+registry. The rest is v1.
+
+### find_leases v2 (step 2.3)
+
+The registry marks a lease the lawyer may not read as `restricted`, with the reason;
+the description says so and that the sections and text of such a lease are refused.
+The rest is v1.

@@ -123,7 +123,9 @@ class AgentConfig(BaseModel):
     stop_prompt: str
     extraction: str  # config of the stage 1 extractor
     redline: str  # config of the stage 2 redline generator
-    user: str = "lawyer"  # who the agent acts for
+    user: str = (
+        "lawyer"  # who the agent works for (configs/users.toml); AS_USER= at start
+    )
     max_tokens: int = 4000
     timeout_s: float = 60
     max_retries: int = 2
@@ -148,7 +150,7 @@ class ToolResult:
     content: str
     is_error: bool = False
     cost_usd: float = 0.0  # model calls the tool made itself
-    # Why a call failed: transient, timeout, schema, invalid_args, tool_error,
+    # Why a call failed: transient, timeout, schema, invalid_args, tool_error, denied,
     # unknown_tool, exception, not_run; None if it did not.
     error_kind: str | None = None
     retry_after: float | None = None  # the pause a service asked for, seconds
@@ -291,7 +293,9 @@ class Agent:
         retries: Retries | None = None,
         clock: Callable[[], float] = time.monotonic,
         sleep: Callable[[float], None] = time.sleep,
+        user: str | None = None,
     ) -> None:
+        self.user = user  # who the agent works for, recorded in the trace
         self.model = model
         self.tools = tools
         self.system = system
@@ -310,6 +314,7 @@ class Agent:
             config.limits,
             load_prompt(config.stop_prompt),
             config.retries,
+            user=config.user,
         )
 
     def run(self, question: str, trace: Trace | None = None) -> Answer:
@@ -319,6 +324,7 @@ class Agent:
         trace.add(
             "request",
             question=question,
+            user=self.user,
             model=self.model.name,
             limits=self.limits.model_dump(),
             retries=self.retries.model_dump(),

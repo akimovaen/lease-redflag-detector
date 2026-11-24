@@ -1,10 +1,14 @@
 """The tools of the lawyer's agent, each doing one thing.
 
 - search_corpus: the stage 2 search, by source role, over the documents in force or
-  over every version;
-- find_leases, get_lease, read_lease_section: the lease registry (`registry.py`);
-- extract_red_flags: the stage 1 extractor on a lease from the registry;
-- draft_redline: the stage 2 redline for one red flag of a lease. The verdict, risk,
+  over every version. It never returns a lease of the registry, so that a lease is
+  read only through the registry and its access rights;
+- find_leases, get_lease, read_lease_section: the lease registry, tools of its MCP
+  server (`registry_server.py`) with the descriptions and schemas the server gives;
+- extract_red_flags: the stage 1 extractor on a lease the registry server gives;
+- draft_redline: the stage 2 redline for one red flag of a lease, with signed leases
+  as market practice: only those every user of the lawyer's entity may read, as the
+  registry says, and never the lease itself. The verdict, risk,
   approval route and whether the lawyer must decide come from stage 2 and its code,
   not from the agent's own wording, so that later steps can rely on them;
 - submit_for_review: the one tool with a side effect. It puts a lease's contested
@@ -33,7 +37,16 @@ from lease_redflag_detector.agent.queue import (
     VERDICTS,
     ApprovalQueue,
 )
-from lease_redflag_detector.agent.registry import LeaseNotFound, LeaseRegistry
+from lease_redflag_detector.agent.registry import (
+    FindArgs,
+    FindResult,
+    LeaseArgs,
+    LeaseInfo,
+    SectionArgs,
+    SectionText,
+)
+from lease_redflag_detector.agent.registry_client import RegistryClient
+from lease_redflag_detector.agent.registry_server import NAME
 from lease_redflag_detector.agent.tools import (
     Priced,
     Tool,
@@ -68,6 +81,8 @@ LOCAL_RERANK = ROOT / "data" / "processed" / "rerank_local"
 # Retrying is the loop's decision, not the client's.
 EXTRACT_TIMEOUT_S = 120
 DRAFT_TIMEOUT_S = 90
+# The registry client gives up after its own timeout (registry_client.TIMEOUT_S), first.
+REGISTRY_TIMEOUT_S = 20
 SEARCH_MARGIN_S = 10
 
 
@@ -77,12 +92,13 @@ def tool_client(config: RunConfig, tool_timeout_s: float) -> RunConfig:
     return config.model_copy(update={"timeout_s": timeout, "max_retries": 0})
 
 
-LEASE_ID = r"^lease_\d+$"
-
 RoleName = Literal["position", "wording", "law", "precedent", "market"]
 
 
 # search_corpus
+
+# Document types that only the lease registry gives (corpus documents of type lease).
+REGISTRY_TYPES = ["lease"]
 
 
 class SearchArgs(BaseModel):
@@ -94,7 +110,7 @@ class SearchArgs(BaseModel):
         description=(
             "Kind of source: position (the landlord's policy), wording (approved "
             "clauses), law, precedent (commercial committee decisions), market "
-            "(research and signed leases). Omit to search every kind."
+            "(market research). Omit to search every kind."
         ),
     )
     versions: Literal["current", "all"] = Field(
@@ -119,11 +135,14 @@ class SearchResult(BaseModel):
 
 
 def search_filters(role: str | None, versions: str) -> Filters:
+    """The leases of the registry are never found: a lease is read only through the
+    registry, which checks who may read it."""
     filters = (
         next(r.filters for r in ROLES if r.name == role)
         if role
         else Filters(exclude_regimes=STATE_PROPERTY)
     )
+    filters = dataclasses.replace(filters, exclude_types=REGISTRY_TYPES)
     return dataclasses.replace(filters, status=None) if versions == "all" else filters
 
 
@@ -151,103 +170,19 @@ def search_corpus(retriever: Retriever):
     return run
 
 
-# The lease registry
+# The lease registry: tools of its MCP server
 
 
-class FindArgs(BaseModel):
-    party: str | None = Field(
-        None, max_length=100, description="Part of the landlord's or tenant's name."
-    )
-    city: str | None = Field(None, max_length=100, description="Part of the city name.")
+def registry_tool(registry: RegistryClient, name: str, args: type[BaseModel], result):
+    """A registry tool as the server describes it; the call goes to the server."""
+    spec = next((t for t in registry.tools() if t["name"] == name), None)
+    if spec is None:
+        raise RuntimeError(f"The lease registry server has no tool {name}.")
 
+    def run(validated: BaseModel) -> dict:
+        return registry.call(name, validated.model_dump(exclude_none=True))
 
-class LeaseSummary(BaseModel):
-    lease_id: str
-    title: str
-    landlord: str
-    tenant: str
-    city: str
-    date: str
-
-
-class FindResult(BaseModel):
-    leases: list[LeaseSummary]
-
-
-class LeaseArgs(BaseModel):
-    lease_id: str = Field(pattern=LEASE_ID, description="Lease id, e.g. lease_37032.")
-
-
-class SectionTitle(BaseModel):
-    number: int
-    title: str
-
-
-class LeaseInfo(LeaseSummary):
-    sections: list[SectionTitle]
-
-
-class SectionArgs(LeaseArgs):
-    section: int = Field(ge=1, description="Section number from get_lease.")
-
-
-class SectionText(BaseModel):
-    lease_id: str
-    number: int
-    title: str
-    text: str
-
-
-def not_found(lease_id: str) -> ToolError:
-    return ToolError(f"No lease {lease_id} in the registry; find_leases lists them.")
-
-
-def find_leases(registry: LeaseRegistry):
-    def run(args: FindArgs) -> FindResult:
-        return FindResult(leases=registry.find(args.party, args.city))
-
-    return run
-
-
-def get_lease(registry: LeaseRegistry):
-    def run(args: LeaseArgs) -> LeaseInfo:
-        try:
-            summary = registry.summary(args.lease_id)
-            sections = registry.sections(args.lease_id)
-        except LeaseNotFound:
-            raise not_found(args.lease_id) from None
-        return LeaseInfo(
-            **summary,
-            sections=[SectionTitle(number=s.number, title=s.title) for s in sections],
-        )
-
-    return run
-
-
-def read_lease_section(registry: LeaseRegistry):
-    def run(args: SectionArgs) -> SectionText:
-        try:
-            sections = registry.sections(args.lease_id)
-        except LeaseNotFound:
-            raise not_found(args.lease_id) from None
-        if args.section > len(sections):
-            raise ToolError(f"{args.lease_id} has {len(sections)} sections.")
-        section = sections[args.section - 1]
-        return SectionText(
-            lease_id=args.lease_id,
-            number=section.number,
-            title=section.title,
-            text=section.text,
-        )
-
-    return run
-
-
-def lease_text(registry: LeaseRegistry, lease_id: str) -> str:
-    try:
-        return registry.text(lease_id)
-    except LeaseNotFound:
-        raise not_found(lease_id) from None
+    return Tool(name, NAME, args, result, run, spec=spec, timeout_s=REGISTRY_TIMEOUT_S)
 
 
 # extract_red_flags
@@ -259,11 +194,11 @@ class RedFlags(BaseModel):
     terms: dict = Field(description="Parties, premises, term, rent and indexation.")
 
 
-def extract_red_flags(registry: LeaseRegistry, config: RunConfig, drafts: "Drafts"):
+def extract_red_flags(registry: RegistryClient, config: RunConfig, drafts: "Drafts"):
     extractor = make_extractor(config)
 
     def run(args: LeaseArgs) -> Priced:
-        extraction = extractor.extract(lease_text(registry, args.lease_id))
+        extraction = extractor.extract(registry.text(args.lease_id))
         cost = cost_usd(config.model, extraction.input_tokens, extraction.output_tokens)
         if extraction.output is None:
             raise api_failure("Extraction failed", extraction.error, cost or 0.0)
@@ -339,15 +274,26 @@ class Drafts:
         )
 
 
-def draft_redline(registry: LeaseRegistry, generator: RedlineGenerator, drafts: Drafts):
+def draft_redline(
+    registry: RegistryClient,
+    generator: RedlineGenerator,
+    drafts: Drafts,
+    corpus_leases: set[str],
+):
+    """`corpus_leases`: the registry leases in the search corpus. A redline uses
+    one as market practice only if every user of the lawyer's entity may read it:
+    the redline goes to the approval queue, where others read it."""
+
     def run(args: DraftArgs) -> Priced:
-        if not quote_in_text(args.quote, lease_text(registry, args.lease_id)):
+        if not quote_in_text(args.quote, registry.text(args.lease_id)):
             raise ToolError(
                 f"The quote is not in {args.lease_id} word for word; copy it from "
                 "extract_red_flags or read_lease_section."
             )
         red_flag = RedFlag(type=args.type, quote=args.quote)
-        result = generator.generate(red_flag, exclude_doc=args.lease_id)
+        # Never the lease itself, nor a lease closed to anyone of the entity.
+        excluded = corpus_leases - (registry.shared() - {args.lease_id})
+        result = generator.generate(red_flag, exclude_docs=sorted(excluded))
         cost = cost_usd(
             generator.config.model, result.input_tokens, result.output_tokens
         )
@@ -475,17 +421,14 @@ def confirmation(
 
 
 def submit_for_review(
-    registry: LeaseRegistry,
+    registry: RegistryClient,
     drafts: Drafts,
     queue: ApprovalQueue,
     confirm: Confirmer,
     user: str,
 ):
     def run(args: SubmitArgs) -> Submission:
-        try:
-            title = registry.summary(args.lease_id)["title"]
-        except LeaseNotFound:
-            raise not_found(args.lease_id) from None
+        title = registry.summary(args.lease_id)["title"]
         lease_drafts = drafts.by_lease.get(args.lease_id)
         if not lease_drafts:
             raise ToolError(
@@ -545,13 +488,18 @@ def submit_for_review(
 
 def build_toolbox(
     config: AgentConfig,
-    registry: LeaseRegistry | None = None,
+    registry: RegistryClient | None = None,
     retriever: Retriever | None = None,
     warm: bool = True,
     queue: ApprovalQueue | None = None,
     confirm: Confirmer | None = None,
 ) -> Toolbox:
-    registry = registry or LeaseRegistry()
+    registry = registry or RegistryClient(user=config.user)
+    # The registry reads as one user and the queue records another: never.
+    if registry.user != config.user:
+        raise ValueError(
+            f"The registry works for {registry.user}, the agent for {config.user}."
+        )
     queue = queue or ApprovalQueue()
     confirm = confirm or TerminalConfirmer()
     drafts = Drafts()
@@ -561,6 +509,11 @@ def build_toolbox(
         qdrant_path=None,
         reranker=RerankScores(local_dir=LOCAL_RERANK),
     )
+    corpus_leases = {
+        chunk.doc_id
+        for chunk in retriever.chunks
+        if chunk.meta.get("type") in REGISTRY_TYPES
+    }
     if warm:
         retriever.search("орендна плата", k=1)  # loads both models
     redline = tool_client(RunConfig.load(ROOT / config.redline), DRAFT_TIMEOUT_S)
@@ -574,32 +527,14 @@ def build_toolbox(
         [
             Tool(
                 "search_corpus",
-                "tools/search_corpus_v1",
+                "tools/search_corpus_v2",
                 SearchArgs,
                 SearchResult,
                 search_corpus(retriever),
             ),
-            Tool(
-                "find_leases",
-                "tools/find_leases_v1",
-                FindArgs,
-                FindResult,
-                find_leases(registry),
-            ),
-            Tool(
-                "get_lease",
-                "tools/get_lease_v1",
-                LeaseArgs,
-                LeaseInfo,
-                get_lease(registry),
-            ),
-            Tool(
-                "read_lease_section",
-                "tools/read_lease_section_v1",
-                SectionArgs,
-                SectionText,
-                read_lease_section(registry),
-            ),
+            registry_tool(registry, "find_leases", FindArgs, FindResult),
+            registry_tool(registry, "get_lease", LeaseArgs, LeaseInfo),
+            registry_tool(registry, "read_lease_section", SectionArgs, SectionText),
             Tool(
                 "extract_red_flags",
                 "tools/extract_red_flags_v1",
@@ -613,7 +548,7 @@ def build_toolbox(
                 "tools/draft_redline_v1",
                 DraftArgs,
                 Draft,
-                draft_redline(registry, generator, drafts),
+                draft_redline(registry, generator, drafts, corpus_leases),
                 timeout_s=DRAFT_TIMEOUT_S,
             ),
             Tool(

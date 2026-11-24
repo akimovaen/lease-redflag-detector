@@ -8,6 +8,8 @@ from lease_redflag_detector.agent.faults import FaultyToolbox
 from lease_redflag_detector.agent.loop import Agent, Limits, Reply, ToolCall
 from lease_redflag_detector.agent.queue import PENDING, REPLACED, ApprovalQueue
 from lease_redflag_detector.agent.registry import LeaseRegistry
+from lease_redflag_detector.agent.registry_client import RegistryClient
+from lease_redflag_detector.agent.registry_server import build_server
 from lease_redflag_detector.agent.tools import Tool, Toolbox, ToolError
 from lease_redflag_detector.agent.toolset import (
     Draft,
@@ -18,12 +20,17 @@ from lease_redflag_detector.agent.toolset import (
     draft_redline,
     submit_for_review,
 )
+from lease_redflag_detector.agent.users import get_user
 from lease_redflag_detector.rag.redline import Redline, Result
 
 LEASE = "lease_37032"
-REGISTRY = LeaseRegistry()
+REGISTRY = RegistryClient(
+    build_server(get_user("lawyer"))
+)  # the MCP server, in this process
 QUOTES = [
-    line for line in REGISTRY.sections(LEASE)[2].text.splitlines() if len(line) > 40
+    line
+    for line in LeaseRegistry().sections(LEASE)[2].text.splitlines()
+    if len(line) > 40
 ]
 
 
@@ -57,11 +64,18 @@ def drafts_of(*verdicts) -> Drafts:
     return drafts
 
 
-def submit(tmp_path, drafts, *answers):
+def submit(tmp_path, drafts, *answers, user="lawyer"):
     queue = ApprovalQueue(tmp_path / "queue.db")
     confirm = ScriptedConfirmer(*answers)
-    run = submit_for_review(REGISTRY, drafts, queue, confirm, "lawyer")
+    run = submit_for_review(REGISTRY, drafts, queue, confirm, user)
     return run, queue, confirm
+
+
+def test_a_request_records_who_created_it(tmp_path):
+    run, queue, _ = submit(tmp_path, drafts_of("concession"), True, user="head")
+    request = queue.get(run(SubmitArgs(lease_id=LEASE)).request_id)
+    assert request.created_by == "head"
+    assert queue.history(request.id)[0]["by"] == "head"
 
 
 def test_nothing_is_created_without_the_lawyers_yes(tmp_path):
@@ -152,7 +166,7 @@ def test_only_a_person_decides_and_only_on_a_pending_request(tmp_path):
 class Generator:
     config = type("C", (), {"model": "fake"})()
 
-    def generate(self, red_flag, exclude_doc=None):
+    def generate(self, red_flag, exclude_docs=()):
         output = Redline(
             verdict="concession",
             findings=[{"text": "Поступка.", "sources": ["S1"]}],
@@ -201,7 +215,7 @@ def test_a_lost_answer_and_a_second_call_create_one_request(tmp_path):
     tools = Toolbox(
         [
             Tool("draft_redline", "tools/draft_redline_v1", DraftArgs, Draft,
-                 draft_redline(REGISTRY, Generator(), drafts)),
+                 draft_redline(REGISTRY, Generator(), drafts, set())),
             Tool("submit_for_review", "tools/submit_for_review_v1", SubmitArgs,
                  Submission, submit_in, side_effect=True, retry_safe=False),
         ],

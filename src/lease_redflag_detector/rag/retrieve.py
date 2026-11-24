@@ -55,6 +55,8 @@ class Filters:
     date_to: str | None = None
     # Documents without a regime (the policy, research) always pass.
     exclude_regimes: list[str] | None = None
+    exclude_types: list[str] | None = None
+    exclude_docs: list[str] | None = None  # document ids
 
     def matches(self, meta: dict) -> bool:
         date = str(meta.get("date", ""))
@@ -67,6 +69,8 @@ class Filters:
             and not (
                 self.exclude_regimes and meta.get("regime") in self.exclude_regimes
             )
+            and not (self.exclude_types and meta.get("type") in self.exclude_types)
+            and not (self.exclude_docs and meta.get("doc_id") in self.exclude_docs)
         )
 
     def to_qdrant(self):
@@ -88,15 +92,15 @@ class Filters:
                     range=models.DatetimeRange(gte=self.date_from, lte=self.date_to),
                 )
             )
-        excluded = (
-            [
-                models.FieldCondition(
-                    key="regime", match=models.MatchAny(any=self.exclude_regimes)
-                )
+        excluded = [
+            models.FieldCondition(key=key, match=models.MatchAny(any=values))
+            for key, values in [
+                ("regime", self.exclude_regimes),
+                ("type", self.exclude_types),
+                ("doc_id", self.exclude_docs),
             ]
-            if self.exclude_regimes
-            else []
-        )
+            if values
+        ]
         if not conditions and not excluded:
             return None
         return models.Filter(must=conditions or None, must_not=excluded or None)
@@ -268,7 +272,12 @@ class Retriever:
 
     def bm25_ranking(self, query: str, filters: Filters, limit: int) -> list[int]:
         scores = self.bm25.scores(query)
-        allowed = np.array([filters.matches(chunk.meta) for chunk in self.chunks])
+        allowed = np.array(
+            [
+                filters.matches(chunk.meta | {"doc_id": chunk.doc_id})
+                for chunk in self.chunks
+            ]
+        )
         scores = np.where(allowed, scores, -np.inf)
         order = np.argsort(-scores, kind="stable")[:limit]
         return [int(i) for i in order if scores[i] > 0]
