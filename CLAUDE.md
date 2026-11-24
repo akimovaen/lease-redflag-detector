@@ -16,6 +16,10 @@ Red flags are judged from the landlord's side. See README.md and REPORT.md.
 - `make check` checks the saved runs against `evals/thresholds.toml`, no API calls.
 - `make retrieval`, `make redline`, `make evals` call models or cost money: say what a
   run will cost before starting it.
+- Stage 3: `make agent Q="…"` costs about $0.006 a question (budget $0.05 a request),
+  `make agent-evals` about $0.15 for all tasks (`ONLY=`, `REPEAT=`); `make mcp` and
+  `make review` call no model. The user is `AS_USER=` for the agent and the server,
+  `BY=` for `make review` (configs/users.toml); not `USER` or `AS`, which are taken.
 - Set `HF_HUB_DISABLE_IMPLICIT_TOKEN=1` for local runs that load Hugging Face models.
 - Start Ollama only for a local run that needs it, and stop it afterwards.
 

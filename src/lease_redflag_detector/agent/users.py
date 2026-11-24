@@ -6,9 +6,9 @@ registry server refuses to start (`registry_server.py`), and so do the agent and
 `make review`.
 
 What a role may do:
-- read leases: the registry server decides, from step 2.3;
+- read leases: the registry server decides, by the rules of `access.py`;
 - record a decision on an approval request (`make review`): a lawyer or the head of
-  legal, for a lease of their own entity (the entity of a lease comes in step 2.3).
+  legal (`DECIDERS`) who may read the lease, which is then of their own entity.
 """
 
 import tomllib

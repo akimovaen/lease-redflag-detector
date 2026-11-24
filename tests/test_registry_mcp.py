@@ -132,3 +132,38 @@ def test_a_server_without_a_registry_tool_is_refused_at_start():
 
     with pytest.raises(RuntimeError, match="has no tool find_leases"):
         registry_tool(RegistryClient(server), "find_leases", object, object)
+
+
+def test_the_command_of_the_readme_starts_the_server():
+    """The Claude Desktop config of the README: uv in the repository, the user in env."""
+    import shutil
+    from pathlib import Path
+
+    from mcp import StdioServerParameters
+
+    uv = shutil.which("uv")
+    if uv is None:
+        pytest.skip("uv is not on PATH")
+    root = Path(__file__).resolve().parents[1]
+    server = StdioServerParameters(
+        command=uv,
+        args=[
+            "--directory",
+            str(root),
+            "run",
+            "python",
+            "-m",
+            "lease_redflag_detector.agent.registry_server",
+        ],
+        env={"REGISTRY_USER": "head"},
+    )
+    client = RegistryClient(server, user="head", timeout_s=60)
+    try:
+        assert {t["name"] for t in client.tools()} == {
+            "find_leases",
+            "get_lease",
+            "read_lease_section",
+        }
+        assert client.summary("lease_92441")["lease_id"] == "lease_92441"  # NDA: head
+    finally:
+        client.close()

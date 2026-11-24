@@ -2,13 +2,13 @@
 
     REGISTRY_USER=lawyer uv run python -m lease_redflag_detector.agent.registry_server
     make mcp [AS_USER=litigator]
-    npx @modelcontextprotocol/inspector uv run python -m \
+    npx @modelcontextprotocol/inspector -e REGISTRY_USER=lawyer uv run python -m \
         lease_redflag_detector.agent.registry_server                 (to try it by hand)
 
 The agent starts it as a subprocess and talks to it over stdio (`registry_client.py`);
 Claude Desktop or the MCP Inspector can start it the same way. Every client gets the
-same leases through the same checks, so the access rights added in step 2.3 hold for
-all of them, the agent's search and redline tools included.
+same leases through the same checks, so the access rights hold for all of them, the
+agent's red flag and redline tools included.
 
 - Tools for a model: find_leases, get_lease, read_lease_section. Their descriptions
   are the versioned files in prompts/tools/.
