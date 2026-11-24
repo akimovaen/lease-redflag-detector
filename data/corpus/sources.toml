@@ -5,6 +5,8 @@
 # `access`: who may see the document (public, internal, confidential); a retrieval
 #           filter, e.g. answers for a tenant-facing assistant use public ones only.
 # `status`: current or outdated (a superseded policy, a repealed law).
+# `amends`: the document whose part this one changes; both stay current, and the later
+#           one governs what it changes (amendments to the policy).
 # `regime`: the lease regime a document governs or follows: `law_157_ix` for state and
 #           municipal property, `civil_code` for other leases (set on Prozorro leases
 #           from the auction type). The landlord leases private property, so the
@@ -24,6 +26,17 @@ access = "internal"
 status = "current"
 version = "2.0"
 date = "2026-01-01"
+
+[[document]]
+id = "policy_2026_amendment_1"
+path = "data/corpus/sources/landlord_policy_2026_amendment_1.docx"
+title = "Зміни № 1 до Політики укладення договорів оренди нежитлових приміщень (версія 2.0)"
+type = "policy"
+access = "internal"
+status = "current"
+version = "2.0, зміни № 1"
+date = "2026-10-01"
+amends = "policy_2026"
 
 [[document]]
 id = "policy_2024"

@@ -33,15 +33,17 @@ OUT = ROOT / "results" / "agent" / "search_behaviour.md"
 # Tasks whose answer is in the corpus, with the source that holds it (the facts in the
 # header of evals/agent_tasks.toml): a point as the line it starts, so that a fragment
 # that only refers to the point does not count; a minute by its number, which is in the
-# document title. f21 and f22 ask q03's question with failures first. Update this when
-# the expected answers change (step 3.2 moves q03, f21, f22 to the policy amendment).
+# document title. f21 and f22 ask q03's question with failures first; since step 3.2
+# their answer is point 10.2 as Amendment 1 restates it, so the title must be the
+# amendment's. Update this when the expected answers change.
+AMENDED_10_2 = r"(?m)\AЗміни № 1[^\n]*\n(?:.*\n)*?\s*10\.2\.?\s"
 ANSWERED = {
-    "q03": r"(?m)^\s*10\.2\.?\s",
+    "q03": AMENDED_10_2,
     "q04": r"(?m)^\s*4\.2\.?\s",
     "q05": r"(?m)^\s*2\.5\.?\s",
     "q06": r"№\s*3/2026",
-    "f21": r"(?m)^\s*10\.2\.?\s",
-    "f22": r"(?m)^\s*10\.2\.?\s",
+    "f21": AMENDED_10_2,
+    "f22": AMENDED_10_2,
 }
 # Tasks whose answer is not in the corpus: x07 nothing on pets, x08 insurance required
 # by p. 9.5 but no amount.

@@ -4,7 +4,9 @@
 # no tools) and x08 (insurance required, no amount: no answer) confirmed; c13 offers
 # to submit without submitting; c17 asks the lawyer once; f25 reports what the steps
 # that ran found and says the redlines failed. The facts in answer_has were checked
-# against the corpus: policy 2026 p. 10.2 (concessions: the commercial director), p. 4.2 (notice
+# against the corpus: policy 2026 p. 10.2 (concessions: the commercial director; from
+# 01.10.2026 the commercial committee, Amendment 1, step 3.2; reviewed 2026-11-24 with
+# the stricter "комерційний комітет"), p. 4.2 (notice
 # of a tenant's break: not later than 6 months), p. 2.5 (indexation cap: not less than
 # 10 %), committee minutes 3/2026 (7 % for an anchor tenant), p. 9.5 (insurance, no
 # amount); nothing in the corpus on pets. On 2026-11-24 the lawyer approved f24
@@ -72,9 +74,9 @@ answer_has = ["інфляц|індекс споживчих цін|ІСЦ"]
 id = "q03"
 group = "corpus"
 question = "Хто погоджує допустимі поступки в договорі оренди?"
-why = "Policy 10.2. Changes in PR 3, when the amendment moves approvals to the committee."
+why = "Point 10.2 as Amendment 1 restates it from 01.10.2026: the commercial committee."
 tools_called = ["search_corpus"]
-answer_has = ["комерційн\\w* директор", "10\\.2"]
+answer_has = ["комерційн\\w* комітет", "Змін|01\\.10\\.2026"]
 
 [[task]]
 id = "q04"
@@ -247,7 +249,7 @@ question = "Хто погоджує допустимі поступки в до�
 why = "The search fails twice and comes back: a normal answer."
 faults = "search_corpus:503*2"
 trace = { tool = "search_corpus", attempts = 3 }
-answer_has = ["комерційн\\w* директор", "10\\.2"]
+answer_has = ["комерційн\\w* комітет", "Змін|01\\.10\\.2026"]
 
 [[task]]
 id = "f22"
@@ -256,7 +258,7 @@ question = "Хто погоджує допустимі поступки в до�
 why = "A rate limit once: waits as asked and goes on."
 faults = "search_corpus:429*1"
 trace = { tool = "search_corpus", attempts = 2 }
-answer_has = ["комерційн\\w* директор"]
+answer_has = ["комерційн\\w* комітет", "Змін|01\\.10\\.2026"]
 
 [[task]]
 id = "f23"
@@ -380,3 +382,13 @@ why = "A closed lease is not submitted: no request, the lawyer is not even asked
 lease_not_read = "lease_92441"
 requests_created = 0
 confirm_asked = false
+
+# Two versions of one rule (step 3.2; more in step 3.4)
+
+[[task]]
+id = "v35"
+group = "versions"
+question = "За пунктом 10.2 Політики 2026 року поступки погоджує комерційний директор. Це досі так?"
+why = "Amendment 1 restates 10.2 from 01.10.2026: the committee. Names both documents and which one applies."
+tools_called = ["search_corpus"]
+answer_has = ["комерційн\\w* комітет", "Змін|01\\.10\\.2026", "10\\.2", "(не|більше не|вже не)\\b[^.]{0,60}(директор|чинн)|змінено|замінено|в редакції"]

@@ -391,7 +391,10 @@ def confirmation(
     title: str, lease_id: str, items: list[dict], replaces, without_redline: int
 ) -> str:
     def line(n: int, item: dict) -> str:
-        decision = " · потрібне рішення юриста" if item["needs_decision"] else ""
+        # The wording of point 10.5 of the policy (Amendment 1).
+        decision = (
+            " · потребує додаткового аналізу юриста" if item["needs_decision"] else ""
+        )
         quote = item["quote"][:90] + ("…" if len(item["quote"]) > 90 else "")
         return (
             f"   {n}. {item['type']} · {VERDICTS[item['verdict']]} · ризик "

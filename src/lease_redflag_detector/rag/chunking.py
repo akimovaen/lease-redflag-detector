@@ -221,7 +221,7 @@ def pack_section(
 
 def chunk_meta(document: Document) -> dict:
     keys = [
-        "type", "access", "status", "version", "date", "replaced_by", "format",
+        "type", "access", "status", "version", "date", "replaced_by", "amends", "format",
         "source", "source_url", "license", "near_duplicate_of", "landlord",
         "tenant", "city", "regime",
     ]  # fmt: skip

@@ -42,7 +42,7 @@ def run(tmp_path, traces: dict[str, list[dict]]) -> Path:
 
 
 def test_only_a_search_after_the_results_counts_as_searching_again(tmp_path):
-    point = fragment("10.2. Поступки погоджує комерційний директор.")
+    point = fragment("10.2. Поступки погоджує комітет.", document="Зміни № 1")
     traces = {
         "q03": [search(1, point), search(1, point)],  # asked for together
         "x07": [search(1), search(2)],  # the second after seeing the first
@@ -55,11 +55,18 @@ def test_only_a_search_after_the_results_counts_as_searching_again(tmp_path):
 
 
 def test_the_source_is_the_point_itself_or_the_minute_in_the_title():
-    q03, q06 = sb.ANSWERED["q03"], sb.ANSWERED["q06"]
-    assert sb.has([fragment("Вступ.\n10.2. Поступки погоджує…")], q03)
-    assert not sb.has([fragment("Відступи погоджуються за п. 10.2 Політики.")], q03)
-    assert not sb.has([fragment("Ф-10.2.1 формулювання")], q03)
+    q04, q06 = sb.ANSWERED["q04"], sb.ANSWERED["q06"]
+    assert sb.has([fragment("Вступ.\n4.2. Орендар повідомляє…")], q04)
+    assert not sb.has([fragment("Строк повідомлення — за п. 4.2 Політики.")], q04)
+    assert not sb.has([fragment("Ф-4.2.1 формулювання")], q04)
     assert sb.has([fragment(document="Протокол комітету № 3/2026")], q06)
+
+
+def test_point_10_2_counts_only_as_amendment_1_restates_it():
+    q03 = sb.ANSWERED["q03"]
+    amended = fragment("10.1. Юрист.\n10.2. Комітет.", document="Зміни № 1 до Політики")
+    assert sb.has([amended], q03)
+    assert not sb.has([fragment("10.2. Комерційний директор.")], q03)
 
 
 def test_the_tasks_named_by_the_script_are_in_the_task_set():
