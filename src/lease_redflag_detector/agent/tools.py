@@ -109,13 +109,21 @@ def errors_text(error: ValidationError) -> str:
 
 class Toolbox:
     def __init__(
-        self, tools: list[Tool], on_request: list[Callable[[], None]] | None = None
+        self,
+        tools: list[Tool],
+        on_request: list[Callable[[], None]] | None = None,
+        state: Callable[[], str] | None = None,
     ):
         """`on_request`: what to reset at the start of every request, such as the
-        redlines a request has drafted."""
+        redlines a request has drafted. `state`: what the tools hold from earlier
+        questions of a conversation, told to the model (`chat.Session`)."""
         self.tools = {tool.name: tool for tool in tools}
         self._schemas = [tool.schema() for tool in tools]
         self.on_request = on_request or []
+        self._state = state
+
+    def state(self) -> str:
+        return self._state() if self._state else ""
 
     def start_request(self) -> None:
         for reset in self.on_request:

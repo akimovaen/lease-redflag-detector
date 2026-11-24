@@ -33,17 +33,18 @@ OUT = ROOT / "results" / "agent" / "search_behaviour.md"
 # Tasks whose answer is in the corpus, with the source that holds it (the facts in the
 # header of evals/agent_tasks.toml): a point as the line it starts, so that a fragment
 # that only refers to the point does not count; a minute by its number, which is in the
-# document title. f21 and f22 ask q03's question with failures first; since step 3.2
-# their answer is point 10.2 as Amendment 1 restates it, so the title must be the
-# amendment's. Update this when the expected answers change.
-AMENDED_10_2 = r"(?m)\AЗміни № 1[^\n]*\n(?:.*\n)*?\s*10\.2\.?\s"
+# document title. f21 and f22 ask q03's question with failures first. Their answer is
+# point 10.2: of the policy in the runs before step 3.2, as Amendment 1 restates it
+# since; both count, so that an older run is not judged by a newer corpus. Update this
+# when the expected answers change.
+POINT_10_2 = r"(?m)^\s*10\.2\.?\s"
 ANSWERED = {
-    "q03": AMENDED_10_2,
+    "q03": POINT_10_2,
     "q04": r"(?m)^\s*4\.2\.?\s",
     "q05": r"(?m)^\s*2\.5\.?\s",
     "q06": r"№\s*3/2026",
-    "f21": AMENDED_10_2,
-    "f22": AMENDED_10_2,
+    "f21": POINT_10_2,
+    "f22": POINT_10_2,
 }
 # Tasks whose answer is not in the corpus: x07 nothing on pets, x08 insurance required
 # by p. 9.5 but no amount.
@@ -76,7 +77,8 @@ def searches(trace: Path) -> list[dict]:
             continue
         found.append(
             {
-                "step": event["step"],
+                # steps start from 1 at each question of a conversation
+                "step": (event.get("question", 1), event["step"]),
                 "query": event["args"].get("query", ""),
                 "role": event["args"].get("role") or "any",
                 "versions": event["args"].get("versions", "current"),
@@ -132,7 +134,7 @@ def table(header: list[str], rows: list[list]) -> list[str]:
 
 def queries(task: dict) -> str:
     return "; ".join(
-        f"«{s['query']}» ({s['role']}, step {s['step']})" for s in task["searches"]
+        f"«{s['query']}» ({s['role']}, step {s['step'][1]})" for s in task["searches"]
     )
 
 

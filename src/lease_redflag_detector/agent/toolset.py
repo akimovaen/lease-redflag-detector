@@ -264,6 +264,20 @@ class Drafts:
     def add(self, args: DraftArgs, draft: Draft) -> None:
         self.by_lease.setdefault(args.lease_id, {})[(args.type, args.quote)] = draft
 
+    def describe(self) -> str:
+        """What a conversation has drafted so far, for the next question to know."""
+        if not self.by_lease:
+            return ""
+        leases = "; ".join(
+            f"{lease_id} — {len(drafts)} clauses "
+            f"({', '.join(sorted({flag_type for flag_type, _ in drafts}))})"
+            for lease_id, drafts in self.by_lease.items()
+        )
+        return (
+            "Redlines drafted earlier in this conversation, kept for submit_for_review, "
+            f"which uses them as they are: {leases}."
+        )
+
     def without_redline(self, lease_id: str) -> int:
         """Red flags extracted from the lease that have no redline; a redline counts
         for a flag of its type whose quote holds its quote or is held in it."""
@@ -497,7 +511,11 @@ def build_toolbox(
     warm: bool = True,
     queue: ApprovalQueue | None = None,
     confirm: Confirmer | None = None,
+    session: bool = False,
 ) -> Toolbox:
+    """`session`: the redlines drafted are kept from one question to the next of a
+    conversation, so that "yes, submit it" uses them; otherwise every question starts
+    with none."""
     registry = registry or RegistryClient(user=config.user)
     # The registry reads as one user and the queue records another: never.
     if registry.user != config.user:
@@ -565,5 +583,6 @@ def build_toolbox(
                 retry_safe=False,
             ),
         ],
-        on_request=[drafts.reset],
+        on_request=[] if session else [drafts.reset],
+        state=drafts.describe if session else None,
     )

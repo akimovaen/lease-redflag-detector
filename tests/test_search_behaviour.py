@@ -62,11 +62,12 @@ def test_the_source_is_the_point_itself_or_the_minute_in_the_title():
     assert sb.has([fragment(document="Протокол комітету № 3/2026")], q06)
 
 
-def test_point_10_2_counts_only_as_amendment_1_restates_it():
+def test_point_10_2_counts_from_the_policy_or_the_amendment():
     q03 = sb.ANSWERED["q03"]
     amended = fragment("10.1. Юрист.\n10.2. Комітет.", document="Зміни № 1 до Політики")
     assert sb.has([amended], q03)
-    assert not sb.has([fragment("10.2. Комерційний директор.")], q03)
+    assert sb.has([fragment("10.2. Комерційний директор.")], q03)  # runs before 3.2
+    assert not sb.has([fragment("Див. п. 10.2 Політики.")], q03)
 
 
 def test_the_tasks_named_by_the_script_are_in_the_task_set():

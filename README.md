@@ -427,8 +427,9 @@ server and the access rights are above.
 ```sh
 make agent Q="Перевір договір lease_55572 на ризики для орендодавця."  # about $0.014
 make agent Q="…" AS_USER=litigator FAULTS=search_corpus:503   # another user, a failing tool
+make chat [AS_USER=head]                 # a conversation: several questions, remembered
 make review BY=lawyer [ID=R-0001] [STATUS=погоджено COMMENT="…"]   # the approval queue
-make agent-evals NAME=my-change [ONLY="a26 a27"] [REPEAT=3]   # the 34 tasks, about $0.15
+make agent-evals NAME=my-change [ONLY="a26 a27"] [REPEAT=3]   # all the tasks, about $0.2
 ```
 
 CI runs on every push and pull request

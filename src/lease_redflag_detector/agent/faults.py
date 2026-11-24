@@ -82,6 +82,9 @@ class FaultyToolbox:
     def side_effect(self, name: str) -> bool:
         return self.toolbox.side_effect(name)
 
+    def state(self) -> str:
+        return self.toolbox.state()
+
     def start_request(self) -> None:
         """Every request starts with the faults as given: `*N` counts from zero."""
         self.calls.clear()

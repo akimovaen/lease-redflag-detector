@@ -35,6 +35,11 @@ class Outcome:
         return [e["name"] for e in self.tool_events()]
 
 
+def when(event: dict) -> tuple[int, int]:
+    """The order of an event in a conversation: steps start from 1 at each question."""
+    return event.get("question", 1), event["step"]
+
+
 @dataclass
 class Check:
     kind: str  # tools, answer, stop, queue, trace, access, permission
@@ -75,14 +80,14 @@ def check(task: dict, outcome: Outcome) -> list[Check]:
     if tool := task.get("no_call_after_error"):
         # Calls asked for in the same step went out before the error was known.
         failed = [
-            e["step"]
+            when(e)
             for e in outcome.tool_events()
             if e["name"] == tool and e["is_error"]
         ]
         later = [
-            e["step"]
+            when(e)
             for e in outcome.tool_events()
-            if e["name"] == tool and failed and e["step"] > failed[0]
+            if e["name"] == tool and failed and when(e) > failed[0]
         ]
         add(
             "tools",
@@ -115,12 +120,12 @@ def check(task: dict, outcome: Outcome) -> list[Check]:
         for e in outcome.tool_events():
             lease = e["args"].get("lease_id")
             if e.get("error_kind") == "denied" and lease:
-                denied.setdefault(lease, e["step"])
+                denied.setdefault(lease, when(e))
         again = [
             f"{e['name']}({lease})"
             for e in outcome.tool_events()
             if (lease := e["args"].get("lease_id")) in denied
-            and e["step"] > denied[lease]
+            and when(e) > denied[lease]
         ]
         add("access", "no call after a denial", not again, f"then {', '.join(again)}")
     for pattern in task.get("answer_has", []):

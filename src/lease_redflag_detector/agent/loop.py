@@ -317,8 +317,18 @@ class Agent:
             user=config.user,
         )
 
-    def run(self, question: str, trace: Trace | None = None) -> Answer:
+    def run(
+        self,
+        question: str,
+        trace: Trace | None = None,
+        history: list[dict] | None = None,
+        context: str = "",
+    ) -> Answer:
+        """Answer `question`. In a conversation (`chat.py`), `history` holds the
+        earlier questions and answers as messages and `context` a summary of what is
+        older still, added to the system prompt; the limits apply to this question."""
         trace = trace or Trace()
+        history = history or []
         start = self.clock()
         deadline = start + self.limits.request_timeout_s
         trace.add(
@@ -330,9 +340,12 @@ class Agent:
             retries=self.retries.model_dump(),
             # Failures injected on purpose (faults.py), if any.
             faults=getattr(self.tools, "faults", None),
+            history_messages=len(history),
+            context=context or None,
         )
         self.tools.start_request()
-        messages = [{"role": "user", "content": question}]
+        system = f"{self.system}\n\n{context}" if context else self.system
+        messages = [*(dict(m) for m in history), {"role": "user", "content": question}]
         schemas = self.tools.schemas()
         forced: StopReason | None = None
         estimate = 0.0  # cost of the last model call
@@ -365,7 +378,7 @@ class Agent:
             try:
                 call = partial(
                     self.model.call,
-                    self.system,
+                    system,
                     messages,
                     schemas,
                     bool(forced),

@@ -39,6 +39,8 @@
 #   trace               a tool call with this tool, error_kind and attempts
 #   faults, limits      failures injected (agent/faults.py) and limits for this task
 #   user                who asks (configs/users.toml); lawyer if not given
+#   follow_up           the next messages of the lawyer in the same conversation; the
+#                       answer checks read the last answer, the others every question
 #   called_with         {tool = ..., arg = value}: the tool was called with these
 #                       arguments at least once (a search of every version)
 #   lease_not_read      no tool returned the content of this lease (get_lease,
@@ -489,3 +491,19 @@ question = "Чи можемо ми встановити орендну плат�
 why = "Policy 2026: hryvnia, or euro for retail and class A offices; the dollar was Policy 2024."
 tools_called = ["search_corpus"]
 answer_has = ["євро|EUR", "гривн"]
+
+# A conversation (step 3.5a): c13 goes on. Agreed with the lawyer in step 1.6: on
+# "check" alone the agent offers to submit; the next "yes" submits with the redlines
+# already drafted, without checking the lease again.
+
+[[task]]
+id = "c45"
+group = "conversation"
+question = "Перевір договір lease_55572 на ризики для орендодавця."
+follow_up = ["так"]
+why = "The yes after the offer submits the lease once, from the redlines of the first question: the red flags are not extracted again."
+confirm = [true]
+tools_called = ["extract_red_flags", "draft_redline", "submit_for_review"]
+max_calls = { extract_red_flags = 1 }
+requests_created = 1
+confirm_asked_times = 1

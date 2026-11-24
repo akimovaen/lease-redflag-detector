@@ -315,3 +315,10 @@ CREATE TABLE requests (
     replaces TEXT
 );
 """
+
+
+def test_the_drafts_of_a_conversation_describe_what_is_kept():
+    assert Drafts().describe() == ""
+    described = drafts_of("concession", "unacceptable").describe()
+    assert described.startswith("Redlines drafted earlier in this conversation")
+    assert f"{LEASE} — 2 clauses (tenant_break_option)" in described

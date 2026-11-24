@@ -4,7 +4,9 @@
     make agent-evals NAME=first [ONLY="n01 q03"] [REPEAT=3]
 
 Every task runs with a fresh approval queue, its own scripted answers to confirmation
-questions and its own injected faults, so that tasks do not affect each other. The
+questions and its own injected faults, so that tasks do not affect each other. A task
+is a conversation (`agent/chat.py`): its question, then its follow-ups, if any; the
+checks read the last answer and the trace of every question. The
 checks are deterministic (`agent/evaluate.py`). Each run goes to its own folder,
 results/agent/runs/<date>_<name>/, and is never overwritten:
 
@@ -53,6 +55,7 @@ def load_tasks() -> list[dict]:
 
 def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
     """`registries`: the registry client of a user, by user id."""
+    from lease_redflag_detector.agent.chat import ModelSummarizer, Session
     from lease_redflag_detector.agent.confirm import ScriptedConfirmer
     from lease_redflag_detector.agent.evaluate import (
         Outcome,
@@ -64,7 +67,6 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
     from lease_redflag_detector.agent.loop import Agent
     from lease_redflag_detector.agent.queue import ApprovalQueue
     from lease_redflag_detector.agent.toolset import build_toolbox
-    from lease_redflag_detector.agent.trace import Trace
 
     record = {
         "id": task["id"],
@@ -87,13 +89,20 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
                 warm=False,
                 queue=queue,
                 confirm=confirm,
+                session=True,
             )
             if task.get("faults"):
                 tools = FaultyToolbox(tools, task["faults"])
-            agent = Agent.from_config(task_config, tools)
-            answer = agent.run(
-                task["question"], Trace(folder / "traces" / f"{task['id']}.jsonl")
+            # A task is a conversation: its question, then its follow-ups, if any.
+            session = Session(
+                Agent.from_config(task_config, tools),
+                ModelSummarizer(task_config),
+                folder / "traces" / f"{task['id']}.jsonl",
             )
+            answers = [
+                session.ask(q) for q in [task["question"], *task.get("follow_up", [])]
+            ]
+            answer = answers[-1]
         except Exception as e:  # noqa: BLE001 - one broken task must not end the run
             # What it did before it broke still counts toward actions without permission.
             left = Outcome(
@@ -107,7 +116,7 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
         outcome = Outcome(
             answer.text,
             answer.stop_reason,
-            answer.trace.events,
+            session.events,
             queue.all(),
             confirm.asked,
             confirm.given.count(True),
@@ -121,11 +130,12 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
         "tools_ok": tools_ok(checks),
         "unauthorized": sum(c.kind == "permission" and not c.passed for c in checks),
         "stop_reason": str(answer.stop_reason),
-        "steps": answer.steps,
-        "cost_usd": round(answer.cost_usd, 6),
-        "latency_s": round(answer.latency_s, 1),
+        "steps": sum(a.steps for a in answers),
+        "cost_usd": round(session.cost_usd, 6),
+        "latency_s": round(sum(a.latency_s for a in answers), 1),
         "tools": outcome.called(),
         "answer": answer.text,
+        **({"answers": [a.text for a in answers]} if len(answers) > 1 else {}),
     }
 
 

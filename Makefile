@@ -5,7 +5,7 @@ NOTE ?=
 RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
-	check check-retrieval check-generation check-fresh evals agent agent-evals review \
+	check check-retrieval check-generation check-fresh evals agent chat agent-evals review \
 	mcp test lint
 
 run: extract metrics
@@ -73,7 +73,12 @@ agent:
 		$(if $(MAX_STEPS),--max-steps $(MAX_STEPS)) $(if $(MAX_USD),--max-usd $(MAX_USD)) \
 		$(if $(FAULTS),--faults "$(FAULTS)") $(if $(AS_USER),--as $(AS_USER))
 
-# Stage 3 tasks with deterministic checks (API calls, about $0.15 a run):
+# A conversation with the agent in the terminal (API calls, about $0.006 a question):
+# make chat [AS_USER=litigator]
+chat:
+	uv run python -m lease_redflag_detector.agent.chat $(if $(AS_USER),--as $(AS_USER))
+
+# Stage 3 tasks with deterministic checks (API calls, about $0.2 a run):
 # make agent-evals NAME=my-change [NOTE="…"] [ONLY="n01 q03"] [REPEAT=3]
 agent-evals:
 	uv run python scripts/eval_agent.py --name $(NAME) --note "$(NOTE)" \

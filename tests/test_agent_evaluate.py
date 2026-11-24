@@ -43,6 +43,7 @@ KEYS = {
     "lease_not_read",
     "no_call_after_denial",
     "called_with",
+    "follow_up",
 }
 
 
@@ -194,3 +195,22 @@ def test_a_tool_called_with_given_arguments():
         "search_corpus called with {'versions': 'all'}"
     ]
     assert failed(task, outcome(events=[current, every])) == []
+
+
+def test_events_are_ordered_by_question_then_step():
+    task = {"no_call_after_error": "find_leases", "no_call_after_denial": True}
+    error = {"is_error": True, "content": "format changed"}
+    # step 3 of question 1, then step 1 of question 2: the second comes later
+    again = [
+        tool("find_leases", step=3, question=1, **error),
+        tool("find_leases", step=1, question=2),
+    ]
+    assert failed(task, outcome(events=again)) == [
+        "find_leases not called after its error"
+    ]
+    denied = {"is_error": True, "error_kind": "denied", "args": {"lease_id": "lease_9"}}
+    asked_again = [
+        tool("get_lease", step=2, question=1, **denied),
+        tool("read_lease_section", step=1, question=2, args={"lease_id": "lease_9"}),
+    ]
+    assert failed(task, outcome(events=asked_again)) == ["no call after a denial"]

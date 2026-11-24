@@ -250,3 +250,18 @@ def test_model_calls_inside_tools_fit_in_the_tool_time_limit():
         config = tool_client(RunConfig.load(ROOT / path), limit)
         # an answer and one repair, no client retries
         assert config.max_retries == 0 and 2 * config.timeout_s < limit
+
+
+def test_a_conversation_keeps_its_redlines_from_one_question_to_the_next(tmp_path):
+    per_question = toolbox_without_search(tmp_path)
+    assert per_question.on_request  # the drafts are reset at every question
+    conversation = build_toolbox(
+        CONFIG,
+        registry=REGISTRY,
+        retriever=FakeRetriever(),
+        warm=False,
+        queue=ApprovalQueue(tmp_path / "q2.db"),
+        confirm=ScriptedConfirmer(),
+        session=True,
+    )
+    assert conversation.on_request == []

@@ -13,16 +13,27 @@ from lease_redflag_detector.extraction.metrics import cost_usd
 
 
 class Trace:
-    def __init__(self, path: Path | None = None) -> None:
+    def __init__(
+        self,
+        path: Path | None = None,
+        append: bool = False,
+        question: int | None = None,
+    ) -> None:
+        """`append`: add to the file, as the next question of a conversation does;
+        `question`: its number, written into every event."""
         self.path = path
+        self.question = question
         self.events: list[dict] = []
         self.cost_usd = 0.0
         if path:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text("")
+            if not append:
+                path.write_text("")
 
     def add(self, kind: str, **fields) -> dict:
         event = {"kind": kind, "time": round(time.time(), 3), **fields}
+        if self.question is not None:
+            event["question"] = self.question
         self.events.append(event)
         if self.path:
             with self.path.open("a") as f:
@@ -62,6 +73,12 @@ class Trace:
             cost_usd=round(result.cost_usd, 6),
             latency_s=round(latency_s, 3),
         )
+
+    def charge(self, kind: str, cost_usd: float, **fields) -> dict:
+        """A model call made outside the loop, e.g. a summary of the conversation:
+        its cost counts toward the budget of the request."""
+        self.cost_usd += cost_usd
+        return self.add(kind, cost_usd=round(cost_usd, 6), **fields)
 
     def tool_calls(self) -> list[dict]:
         return [e for e in self.events if e["kind"] == "tool"]
