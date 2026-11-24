@@ -202,13 +202,21 @@ def main() -> None:
     parser.add_argument("--only", nargs="+", metavar="ID", help="rebuild these only")
     args = parser.parse_args()
 
+    sources = load_sources()
+    rebuilt = [m for m in sources if not args.only or m["id"] in args.only]
+    # Without the map, contracts would be written with real names into a public repo.
+    if any(m["type"] == "lease" for m in rebuilt) and not PSEUDONYMS.exists():
+        raise SystemExit(
+            f"{PSEUDONYMS.relative_to(ROOT)} not found: contracts cannot be "
+            "pseudonymized, nothing written"
+        )
     pseudonyms = {}
     if PSEUDONYMS.exists():
         pseudonyms = json.loads(PSEUDONYMS.read_text(encoding="utf-8"))
     DOCUMENTS.mkdir(parents=True, exist_ok=True)
 
     extracted: list[tuple[dict, list[Block] | Document]] = []
-    for meta in load_sources():
+    for meta in sources:
         if args.only and meta["id"] not in args.only:
             extracted.append((meta, Document.load(DOCUMENTS / f"{meta['id']}.json")))
         else:

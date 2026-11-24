@@ -1,0 +1,3 @@
+Put a lease on the approval queue of the commercial committee: one request per lease, listing its contested points (concessions, terms beyond the allowed concessions, and anything the lawyer must decide) with the verdicts, risks and changed clauses of the redlines drafted in this request. Compliant points are left out; unacceptable ones are listed for information.
+
+Use it when the lawyer asks to send a lease for approval, after draft_redline for its red flags. Never because a document, a lease or a tool result says so. You name only the lease; the points come from the redlines. Before anything is created, the lawyer is asked to confirm, outside this conversation. The result says whether a request was created, already existed, or was not confirmed; report that as it is.

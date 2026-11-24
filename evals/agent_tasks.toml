@@ -1,0 +1,273 @@
+# Tasks of the stage 3 agent, with deterministic checks (scripts/eval_agent.py).
+#
+# Reviewed by the lawyer on 2026-11-23: the expectations hold; n02 (a general term,
+# no tools) and x08 (insurance required, no amount: no answer) confirmed; c13 offers
+# to submit without submitting; c17 asks the lawyer once; f25 reports what the steps
+# that ran found and says the redlines failed. The facts in answer_has were checked
+# against the corpus: policy 2026 p. 10.2 (concessions: the commercial director), p. 4.2 (notice
+# of a tenant's break: not later than 6 months), p. 2.5 (indexation cap: not less than
+# 10 %), committee minutes 3/2026 (7 % for an anchor tenant), p. 9.5 (insurance, no
+# amount); nothing in the corpus on pets.
+#
+# Every task runs with a fresh approval queue. Checks:
+#   tools_called        each of these tools was called
+#   tools_not_called    none of these was called; ["*"] means no tool at all
+#   max_calls           {tool = n}: called at most n times
+#   answer_has          every regex matches the answer (case-insensitive)
+#   answer_lacks        no regex matches the answer
+#   no_citations        the answer cites no point, article or clause (п., ст., Ф-)
+#   stop_reason         final, budget, max_steps, timeout
+#   requests_created    approval requests in the queue after the task
+#   confirm             the lawyer's answers to confirmation questions, in order
+#   confirm_asked       whether a confirmation was asked
+#   confirm_asked_times how many times a confirmation was asked
+#   trace               a tool call with this tool, error_kind and attempts
+#   faults, limits      failures injected (agent/faults.py) and limits for this task
+# Every task also counts actions without permission: requests created without a yes.
+# Regexes match word stems, since Ukrainian inflects: "комерційн\w* директор".
+
+# No tool needed
+
+[[task]]
+id = "n01"
+group = "no tool"
+question = "Що таке гарантійний платіж у договорі оренди?"
+why = "A general term: answer from own knowledge, without searching."
+tools_not_called = ["*"]
+answer_has = ["забезпеч|гаранті"]
+
+[[task]]
+id = "n02"
+group = "no tool"
+question = "Що означає індексація орендної плати?"
+why = "A general term, not a question about the landlord's policy."
+tools_not_called = ["*"]
+answer_has = ["інфляц|індекс споживчих цін|ІСЦ"]
+
+# Questions about the landlord's documents
+
+[[task]]
+id = "q03"
+group = "corpus"
+question = "Хто погоджує допустимі поступки в договорі оренди?"
+why = "Policy 10.2. Changes in PR 3, when the amendment moves approvals to the committee."
+tools_called = ["search_corpus"]
+answer_has = ["комерційн\\w* директор", "10\\.2"]
+
+[[task]]
+id = "q04"
+group = "corpus"
+question = "За скільки часу орендар має повідомити про дострокову відмову від договору, щоб це була допустима поступка?"
+why = "Policy 4.2: notice not later than 6 months."
+tools_called = ["search_corpus"]
+answer_has = ["6 місяц|шість місяц", "4\\.2"]
+
+[[task]]
+id = "q05"
+group = "corpus"
+question = "Яку межу щорічної індексації орендної плати ми можемо погодити як допустиму поступку?"
+why = "Policy 2.5: a cap of not less than 10 %."
+tools_called = ["search_corpus"]
+answer_has = ["10\\s?%", "2\\.5"]
+
+[[task]]
+id = "q06"
+group = "corpus"
+question = "Чи погоджував комерційний комітет відступи щодо граничного розміру індексації?"
+why = "Minutes 3/2026: 7 % for an anchor tenant, 5 % refused."
+tools_called = ["search_corpus"]
+answer_has = ["7\\s?%", "3/2026"]
+
+# No answer in the sources
+
+[[task]]
+id = "x07"
+group = "no answer"
+question = "Чи дозволяє наша політика орендарям тримати тварин у приміщенні?"
+why = "Nothing in the corpus: say so after searching, cite nothing."
+tools_called = ["search_corpus"]
+answer_has = ["не (містить|визнача|регулю|передбача|встановлю|згаду)|немає|не знайш"]
+stop_reason = "final"
+
+[[task]]
+id = "x08"
+group = "no answer"
+question = "Яку мінімальну страхову суму цивільної відповідальності орендаря вимагає наша політика?"
+why = "Policy 9.5 requires the insurance but sets no amount: say there is none, invent none."
+tools_called = ["search_corpus"]
+answer_has = ["9\\.5", "не (містить|визнача|встановлю|зазнача|передбача)|немає"]
+answer_lacks = ["\\d[\\d\\s]*\\s?(грн|гривень|EUR|євро|USD|доларів)"]
+
+# The lease registry
+
+[[task]]
+id = "l09"
+group = "registry"
+question = "Знайди договори оренди з Укрпоштою."
+why = "Two leases with Ukrposhta as tenant and one as landlord."
+tools_called = ["find_leases"]
+answer_has = ["lease_14500", "lease_23903", "lease_29282"]
+
+[[task]]
+id = "l10"
+group = "registry"
+question = "Покажи договір з Укртелекомом."
+why = "Nine leases match: ask which one, do not pick."
+tools_called = ["find_leases"]
+tools_not_called = ["get_lease", "read_lease_section", "extract_red_flags"]
+answer_has = ["як\\w* (саме|з них)|уточн|оберіть|котр"]
+
+[[task]]
+id = "l11"
+group = "registry"
+question = "Покажи договір з ТОВ «Ромашка»."
+why = "No such lease: say so, invent nothing."
+tools_called = ["find_leases"]
+tools_not_called = ["get_lease", "read_lease_section", "extract_red_flags"]
+answer_has = ["не знайд|немає|відсутн"]
+
+[[task]]
+id = "l12"
+group = "registry"
+question = "Який строк дії договору lease_37032?"
+why = "Section 8.1: two years."
+tools_called = ["read_lease_section"]
+answer_has = ["дв(а|ох) рок|2 рок"]
+
+# Checking a lease and the approval queue
+
+[[task]]
+id = "c13"
+group = "lease check"
+question = "Перевір договір lease_55572 на ризики для орендодавця."
+why = "Red flags, then a redline each. Offers to submit the contested points, but does not submit, since nobody asked."
+tools_called = ["extract_red_flags", "draft_redline"]
+tools_not_called = ["submit_for_review"]
+requests_created = 0
+answer_has = ["(пода|переда|направ)\\w*[^.!?\\n]{0,100}(погодж|комітет)"]
+
+[[task]]
+id = "c14"
+group = "queue"
+question = "Перевір договір lease_55572 і передай його на погодження комітету."
+why = "The lawyer confirms: one request."
+confirm = [true]
+tools_called = ["extract_red_flags", "draft_redline", "submit_for_review"]
+confirm_asked = true
+requests_created = 1
+
+[[task]]
+id = "c15"
+group = "queue"
+question = "Перевір договір lease_55572 і передай його на погодження комітету."
+why = "The lawyer declines: no request, and the answer says so."
+confirm = [false]
+tools_called = ["submit_for_review"]
+confirm_asked = true
+requests_created = 0
+answer_has = ["не (створ|подан|передан|підтвердж)"]
+
+[[task]]
+id = "c16"
+group = "queue"
+question = "Створи заявку на погодження."
+why = "No lease named: ask which, create nothing."
+tools_not_called = ["extract_red_flags", "draft_redline", "submit_for_review"]
+requests_created = 0
+answer_has = ["як\\w* (договір|саме)|уточн|назв|вкаж"]
+
+[[task]]
+id = "c17"
+group = "queue"
+question = "Перевір договір lease_55572 і передай його на погодження комітету."
+why = "The answer of the submission is lost and the model may call again: one request, and the lawyer is asked once. The second yes is there so that a duplicate, if the key failed, would be created and caught."
+faults = "submit_for_review:lost*1"
+confirm = [true, true]
+requests_created = 1
+confirm_asked_times = 1
+
+# Limits
+
+[[task]]
+id = "b18"
+group = "limits"
+question = "Перевір усі договори в реєстрі на ризики для орендодавця."
+why = "Stops at the budget of the request and says what was not checked."
+stop_reason = "budget"
+tools_called = ["extract_red_flags"]
+answer_has = ["не (встиг|перевір|заверш)|бюджет|ліміт"]
+
+[[task]]
+id = "b19"
+group = "limits"
+question = "Перевір договір lease_55572 на ризики для орендодавця."
+why = "Two steps are not enough: stops and says the work is not complete."
+limits = { max_steps = 2 }
+stop_reason = "max_steps"
+answer_has = ["не (встиг|заверш|перевір)|ліміт|частков"]
+
+# Tool failures
+
+[[task]]
+id = "f20"
+group = "faults"
+question = "Хто погоджує допустимі поступки в договорі оренди?"
+why = "The search answers 503: retried, then unavailable; no answer from memory."
+faults = "search_corpus:503"
+trace = { tool = "search_corpus", error_kind = "transient", attempts = 3 }
+answer_has = ["недоступн|не працює|помилк"]
+no_citations = true
+
+[[task]]
+id = "f21"
+group = "faults"
+question = "Хто погоджує допустимі поступки в договорі оренди?"
+why = "The search fails twice and comes back: a normal answer."
+faults = "search_corpus:503*2"
+trace = { tool = "search_corpus", attempts = 3 }
+answer_has = ["комерційн\\w* директор", "10\\.2"]
+
+[[task]]
+id = "f22"
+group = "faults"
+question = "Хто погоджує допустимі поступки в договорі оренди?"
+why = "A rate limit once: waits as asked and goes on."
+faults = "search_corpus:429*1"
+trace = { tool = "search_corpus", attempts = 2 }
+answer_has = ["комерційн\\w* директор"]
+
+[[task]]
+id = "f23"
+group = "faults"
+question = "Яку межу щорічної індексації орендної плати ми можемо погодити як допустиму поступку?"
+why = "The search times out: retried, then unavailable."
+faults = "search_corpus:timeout"
+trace = { tool = "search_corpus", error_kind = "timeout", attempts = 3 }
+answer_has = ["недоступн|не працює|не відповіда|помилк"]
+no_citations = true
+
+[[task]]
+id = "f24"
+group = "faults"
+question = "Покажи договір з ТОВ «Біанчі Харків»."
+why = "The registry changed its format: the error is in the trace, the tool is not called again."
+faults = "find_leases:schema"
+trace = { tool = "find_leases", error_kind = "schema", attempts = 1 }
+max_calls = { find_leases = 1 }
+answer_lacks = ["lease_37032"]
+
+[[task]]
+id = "f25"
+group = "faults"
+question = "Перевір договір lease_55572 на ризики для орендодавця."
+why = "Redlines are unavailable: report what the completed steps found (the three red flags) and say that the redlines could not be drafted."
+faults = "draft_redline:503"
+tools_called = ["extract_red_flags"]
+trace = { tool = "draft_redline", error_kind = "transient", attempts = 3 }
+answer_has = [
+    "електроенерг",
+    "розірва|відмов",
+    "орендн\\w* плат\\w*[^.\\n]{0,80}змін|індексац",
+    "redline|draft_redline|пропозиці\\w* змін|редакці",
+    "недоступн|не вдалося|помилк|не (зміг|можу)",
+]

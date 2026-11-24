@@ -21,6 +21,7 @@ regimes (state-property acts and leases).
 import atexit
 import hashlib
 import json
+import threading
 from dataclasses import dataclass, field
 from functools import cache, cached_property
 from pathlib import Path
@@ -142,17 +143,33 @@ def qdrant_client(path: Path | None):
     return client
 
 
-class RerankScores:
-    """The cross-encoder with an on-disk cache of its scores."""
+def read_scores(path: Path) -> dict[str, float]:
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
 
-    def __init__(self, model: str = RERANKER, cache_dir: Path = RERANK_CACHE):
+
+class RerankScores:
+    """The cross-encoder with an on-disk cache of its scores.
+
+    The cache in `cache_dir` is committed for CI. With `local_dir`, that file is only
+    read: new scores go to a cache in `local_dir`, so that interactive use (the agent)
+    does not rewrite a committed file on every new query. Scoring is locked, since the
+    agent runs tools in threads.
+    """
+
+    def __init__(
+        self,
+        model: str = RERANKER,
+        cache_dir: Path = RERANK_CACHE,
+        local_dir: Path | None = None,
+    ):
         self.model_name = model
-        self.cache_path = cache_dir / f"{model.replace('/', '__')}.json"
-        self.cache: dict[str, float] = (
-            json.loads(self.cache_path.read_text(encoding="utf-8"))
-            if self.cache_path.exists()
-            else {}
-        )
+        name = f"{model.replace('/', '__')}.json"
+        self.cache_path = (local_dir or cache_dir) / name
+        self.cache = read_scores(cache_dir / name)
+        # The scores written to cache_path: all of them, or only the local ones.
+        self.written = self.cache if local_dir is None else read_scores(self.cache_path)
+        self.cache.update(self.written)
+        self.lock = threading.Lock()
 
     @cached_property
     def model(self):
@@ -167,19 +184,20 @@ class RerankScores:
 
     def predict(self, pairs: list[tuple[str, str]]) -> list[float]:
         keys = [self.key(query, text) for query, text in pairs]
-        missing = [
-            (k, pair)
-            for k, pair in zip(keys, pairs, strict=True)
-            if k not in self.cache
-        ]
-        if missing:
-            scores = self.model.predict([pair for _, pair in missing])
-            self.cache.update(
-                (k, float(s)) for (k, _), s in zip(missing, scores, strict=True)
-            )
-            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
-            self.cache_path.write_text(json.dumps(self.cache), encoding="utf-8")
-        return [self.cache[k] for k in keys]
+        with self.lock:
+            missing = [
+                (k, pair)
+                for k, pair in zip(keys, pairs, strict=True)
+                if k not in self.cache
+            ]
+            if missing:
+                scores = self.model.predict([pair for _, pair in missing])
+                new = {k: float(s) for (k, _), s in zip(missing, scores, strict=True)}
+                self.cache.update(new)
+                self.written.update(new)
+                self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+                self.cache_path.write_text(json.dumps(self.written), encoding="utf-8")
+            return [self.cache[k] for k in keys]
 
 
 def rrf(rankings: list[list[int]], k: int = RRF_K) -> list[tuple[int, float]]:
@@ -193,7 +211,8 @@ def rrf(rankings: list[list[int]], k: int = RRF_K) -> list[tuple[int, float]]:
 
 class Retriever:
     """Indexes `chunks` in the Qdrant collection `collection` (rebuilt on creation;
-    the embeddings are cached) and in BM25."""
+    the embeddings are cached) and in BM25. With `qdrant_path` None the collection is
+    in memory: local Qdrant locks its folder, so a second process cannot open it."""
 
     def __init__(
         self,
@@ -201,12 +220,14 @@ class Retriever:
         collection: str = "chunks",
         embedder: Embedder | None = None,
         qdrant_path: Path | None = QDRANT,
+        reranker: RerankScores | None = None,
     ):
         from qdrant_client import models
 
         self.chunks = chunks
         self.collection = collection
         self.embedder = embedder or Embedder()
+        self._reranker = reranker
         self.bm25 = BM25([chunk.search_text for chunk in chunks])
         vectors = self.embedder.passages([chunk.search_text for chunk in chunks])
         self.qdrant = qdrant_client(qdrant_path)
@@ -230,9 +251,11 @@ class Retriever:
             ],
         )
 
-    @cached_property
-    def reranker(self):
-        return RerankScores()
+    @property
+    def reranker(self) -> RerankScores:
+        if self._reranker is None:
+            self._reranker = RerankScores()
+        return self._reranker
 
     def vector_ranking(self, query: str, filters: Filters, limit: int) -> list[int]:
         response = self.qdrant.query_points(

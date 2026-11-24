@@ -1,0 +1,1 @@
+You have reached {reason} of this request, so no more tools can be called. Answer the lawyer now with what you have found so far. Say plainly that the work is not complete, what is done, and what was not checked. Do not guess what the missing steps would have found.

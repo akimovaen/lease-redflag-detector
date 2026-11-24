@@ -63,6 +63,8 @@ def main() -> None:
     facts, clauses, disagreements = [], [], []
     for answer in form["answer"]:
         judge = judged[answer["id"]]
+        if "facts" not in judge:
+            raise SystemExit(f"{answer['id']}: the run has no judgment for this answer")
         if not answer["clause"] or any(not f["grade"] for f in answer["facts"]):
             raise SystemExit(f"{answer['id']}: not every grade is filled in")
         for number, (fact, verdict) in enumerate(

@@ -106,8 +106,11 @@ class RedlineSearch:
         self.topic = topic
         self.mode = mode
 
-    def search(self, red_flag: RedFlag) -> dict[str, list[Hit]]:
-        """The hits for every role, best first; a role may come back empty."""
+    def search(
+        self, red_flag: RedFlag, exclude_doc: str | None = None
+    ) -> dict[str, list[Hit]]:
+        """The hits for every role, best first; a role may come back empty. The lease
+        the clause comes from (`exclude_doc`) is not its own market practice."""
         query = build_query(red_flag, self.topic)
         return {
             role.name: [
@@ -119,7 +122,7 @@ class RedlineSearch:
                     role.filters,
                     rerank_candidates=RERANK_CANDIDATES,
                 )
-                if hit.score >= self.min_score
+                if hit.score >= self.min_score and hit.chunk.doc_id != exclude_doc
             ]
             for role in ROLES
         }

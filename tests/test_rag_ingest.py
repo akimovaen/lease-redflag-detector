@@ -1,8 +1,12 @@
+import sys
+
 import docx
+import pytest
 from bs4 import BeautifulSoup
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
+from lease_redflag_detector.rag import ingest
 from lease_redflag_detector.rag.clean import (
     clean_blocks,
     fix_script,
@@ -205,3 +209,14 @@ def test_table_broken_by_a_page_break_is_joined():
     assert len(blocks) == 2
     assert blocks[0].rows == [header, ["Розірвання", "62 %"], ["Суборенда", "35 %"]]
     assert "Суборенда" in blocks[0].text and blocks[0].page == 1
+
+
+def test_contracts_are_not_rebuilt_without_the_pseudonym_map(tmp_path, monkeypatch):
+    monkeypatch.setattr(ingest, "ROOT", tmp_path)
+    monkeypatch.setattr(ingest, "PSEUDONYMS", tmp_path / "pseudonyms.json")
+    monkeypatch.setattr(ingest, "DOCUMENTS", tmp_path / "documents")
+    monkeypatch.setattr(ingest, "load_sources", lambda: [{"id": "l", "type": "lease"}])
+    monkeypatch.setattr(sys, "argv", ["ingest"])
+    with pytest.raises(SystemExit, match="cannot be pseudonymized"):
+        ingest.main()
+    assert not (tmp_path / "documents").exists()

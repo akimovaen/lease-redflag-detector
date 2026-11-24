@@ -37,6 +37,15 @@ PRICES = {
     "claude-opus-5-5": (4.0, 20.0),
 }
 
+
+def cost_usd(model: str, input_tokens: float, output_tokens: float) -> float | None:
+    """Cost of a call at base rates; None for a model without a price."""
+    if model not in PRICES:
+        return None
+    price_in, price_out = PRICES[model]
+    return (input_tokens * price_in + output_tokens * price_out) / 1e6
+
+
 STRING_FIELDS = ["lessor", "lessee", "premises_address"]
 EXACT_FIELDS = ["document_type", "start_date", "end_date", "indexation"]
 FIELDS = [
@@ -144,10 +153,9 @@ def score_config(folder: Path, golden: dict[str, dict]) -> ConfigMetrics:
     if first["provider"] == "ollama":
         cost = 0.0
     elif first["model"] in PRICES:
-        price_in, price_out = PRICES[first["model"]]
         mean_in = statistics.mean(r["input_tokens"] for r in records)
         mean_out = statistics.mean(r["output_tokens"] for r in records)
-        cost = 1000 * (mean_in * price_in + mean_out * price_out) / 1e6
+        cost = 1000 * cost_usd(first["model"], mean_in, mean_out)
 
     return ConfigMetrics(
         config=first["config"],

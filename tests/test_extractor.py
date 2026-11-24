@@ -71,6 +71,8 @@ def test_end_before_start_fails():
 
 def test_configs_and_their_prompts_load():
     for path in (ROOT / "configs").glob("*.toml"):
+        if path.stem.startswith("agent-"):
+            continue  # agent configs: tests/test_agent_loop.py
         config = RunConfig.load(path)
         assert config.name == path.stem
         assert load_prompt(config.prompt)

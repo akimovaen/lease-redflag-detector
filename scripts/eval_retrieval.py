@@ -10,8 +10,8 @@ Every red flag is searched three ways:
    without the default filter, to show what the filter keeps out.
 2. **By role** (`rag/redline_search.py`): each role with its own filter and k, with
    and without the type description in the query, with it over the fixed-size
-   windows, and without the reranker (and so without a threshold). The scored roles return at most 3 + 3 + 3 + 2 = 11 chunks, about the
-   budget of the one list (10).
+   windows, and without the reranker (and so without a threshold). The scored roles
+   return at most 3 + 3 + 3 + 2 = 11 chunks, about the budget of the one list (10).
 3. **Thresholds**: the role search scored without a threshold and cut at several
    reranker scores, for the recall of each role and the share of flags with no
    precedent whose precedent slot comes back empty.
@@ -265,9 +265,7 @@ def by_role(flags: list[dict], retrievers: dict) -> tuple[dict, dict]:
     metrics = {
         "query": QUERIES[True],
         "by_role": scores,
-        "thresholds": {
-            f"{t:g}": role_scores(flags, production, t) for t in THRESHOLDS
-        },
+        "thresholds": {f"{t:g}": role_scores(flags, production, t) for t in THRESHOLDS},
         "per_flag": per_flag(flags, production),
     }
     hits = {

@@ -5,7 +5,8 @@ NOTE ?=
 RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
-	check check-retrieval check-generation check-fresh evals test lint
+	check check-retrieval check-generation check-fresh evals agent agent-evals review \
+	test lint
 
 run: extract metrics
 
@@ -61,8 +62,30 @@ evals:
 	$(MAKE) scores
 	$(MAKE) check-generation RUN=$$(date +%F)_$(NAME)
 
+# Stage 3: ask the agent one question (API calls, about $0.001-0.05 per question):
+# make agent Q="Хто погоджує поступки?" [MAX_STEPS=3] [MAX_USD=0.01]
+#   [FAULTS=search_corpus:503] (tool failures on purpose, see agent/faults.py)
+agent:
+	@test -n "$(Q)" || (echo 'Usage: make agent Q="питання"'; exit 1)
+	uv run python -m lease_redflag_detector.agent.cli "$(Q)" \
+		$(if $(MAX_STEPS),--max-steps $(MAX_STEPS)) $(if $(MAX_USD),--max-usd $(MAX_USD)) \
+		$(if $(FAULTS),--faults "$(FAULTS)")
+
+# Stage 3 tasks with deterministic checks (API calls, about $0.15 a run):
+# make agent-evals NAME=my-change [NOTE="…"] [ONLY="n01 q03"] [REPEAT=3]
+agent-evals:
+	uv run python scripts/eval_agent.py --name $(NAME) --note "$(NOTE)" \
+		$(if $(ONLY),--only $(ONLY)) $(if $(REPEAT),--repeat $(REPEAT))
+
+# The approval queue the agent fills: list, show one, decide (a person, not the agent).
+# make review [ID=R-0001] [STATUS=погоджено|відхилено|повернуто COMMENT="…"]
+review:
+	uv run python -m lease_redflag_detector.agent.review $(if $(ID),--id $(ID)) \
+		$(if $(STATUS),--status $(STATUS)) $(if $(COMMENT),--comment "$(COMMENT)")
+
 test:
 	uv run pytest
 
 lint:
 	uv run ruff check .
+	uv run ruff format --check .

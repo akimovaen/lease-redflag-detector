@@ -11,10 +11,10 @@ Deterministic scores, per red flag and averaged over the run:
 - cite: share of the expected documents among the documents the answer cites;
 - gaps: the answer names points the sources do not settle exactly when expected.
 
-Routing, over the run: an answer with any gap is shown to the lawyer as needing a
-decision (`needs_decision` in the run report), whatever its verdict. The model does
-not have to choose between a verdict and not_covered; the code refers every point it
-names as open.
+Routing, over the run: an answer with any gap, or with the verdict not_covered, is
+shown to the lawyer as needing a decision (`needs_decision` in the run report). The
+model does not have to choose between a verdict and not_covered; the code refers
+every point it names as open.
 
 - referred: share of the flags with expected gaps that were referred;
 - no_answer: share of the flags expected not_covered that were referred, the "I don't
@@ -31,6 +31,8 @@ import json
 import sys
 import tomllib
 from pathlib import Path
+
+from lease_redflag_detector.rag.redline import needs_decision
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = ROOT / "evals" / "redline_expected.toml"
@@ -100,7 +102,9 @@ def score_run(folder: Path, expected: dict[str, dict]) -> dict:
 
 def routing(rows: list[dict], expected: dict[str, dict]) -> dict[str, float | None]:
     referred = {
-        row["id"]: bool(row["output"] and row["output"]["gaps"]) for row in rows
+        row["id"]: bool(row["output"])
+        and needs_decision(row["output"]["verdict"], row["output"]["gaps"])
+        for row in rows
     }
 
     def share(ids: list[str]) -> float | None:
