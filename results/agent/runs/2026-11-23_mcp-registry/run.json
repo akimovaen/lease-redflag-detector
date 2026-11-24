@@ -1,0 +1,61 @@
+{
+ "name": "mcp-registry",
+ "note": "Step 2.1: the registry behind its MCP server",
+ "date": "2026-11-23T13:47:33",
+ "commit": "141eb83",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "agent-haiku-v1",
+  "model": "claude-haiku-5-5",
+  "prompt": "agent/v2",
+  "stop_prompt": "agent/stop_v1",
+  "extraction": "configs/claude-haiku-medium-v3.toml",
+  "redline": "configs/rag-haiku-v3.toml",
+  "user": "lawyer",
+  "max_tokens": 4000,
+  "timeout_s": 60.0,
+  "max_retries": 2,
+  "limits": {
+   "max_steps": 8,
+   "max_usd": 0.05,
+   "tool_timeout_s": 20.0,
+   "request_timeout_s": 240.0,
+   "reserve_s": 30.0
+  },
+  "retries": {
+   "max_attempts": 3,
+   "backoff_s": 1.0,
+   "max_backoff_s": 8.0
+  },
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "agent/v2",
+ "partial": true,
+ "tasks": {
+  "path": "evals/agent_tasks.toml",
+  "hash": "f0617468e88b",
+  "ids": [
+   "l09",
+   "l10",
+   "l11",
+   "l12",
+   "f24"
+  ]
+ },
+ "totals": {
+  "tasks": 5,
+  "passed": 4,
+  "pass_rate": 0.8,
+  "tools_ok_rate": 0.8,
+  "unauthorized": 0,
+  "errors": 0,
+  "steps_mean": 2.4,
+  "cost_usd": 0.006346,
+  "cost_mean_usd": 0.0012692,
+  "cost_per_1000_usd": 1.2692,
+  "latency_p50_s": 4.0
+ }
+}

@@ -8,6 +8,8 @@ from lease_redflag_detector.agent.confirm import ScriptedConfirmer
 from lease_redflag_detector.agent.loop import AgentConfig, ToolCall
 from lease_redflag_detector.agent.queue import ApprovalQueue
 from lease_redflag_detector.agent.registry import LeaseRegistry
+from lease_redflag_detector.agent.registry_client import RegistryClient
+from lease_redflag_detector.agent.registry_server import build_server
 from lease_redflag_detector.agent.tools import Priced, Tool, Toolbox, ToolError
 from lease_redflag_detector.agent.toolset import (
     DraftArgs,
@@ -22,6 +24,7 @@ from lease_redflag_detector.rag.retrieve import RerankScores
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = AgentConfig.load(ROOT / "configs" / "agent-haiku-v1.toml")
 LEASE = "lease_37032"
+REGISTRY = RegistryClient(build_server())  # the MCP server, in this process
 
 
 class Args(BaseModel):
@@ -82,6 +85,7 @@ class FakeRetriever:
 def toolbox_without_search(tmp_path, confirm=None):
     return build_toolbox(
         CONFIG,
+        registry=REGISTRY,
         retriever=FakeRetriever(),
         warm=False,
         queue=ApprovalQueue(tmp_path / "queue.db"),
@@ -107,6 +111,30 @@ def test_every_tool_has_a_description_and_a_schema(tmp_path):
         "submit_for_review"
     ]
     assert not box.retry_safe("submit_for_review")
+
+
+def test_the_agent_toolbox_sends_the_servers_schema_and_checks_the_result(tmp_path):
+    box = toolbox_without_search(tmp_path)
+    schema = next(s for s in box.schemas() if s["name"] == "get_lease")
+    assert schema == next(t for t in REGISTRY.tools() if t["name"] == "get_lease")
+    result = box.execute(ToolCall("1", "get_lease", {"lease_id": LEASE}))
+    assert not result.is_error and '"sections"' in result.content
+    renamed = box.execute(
+        ToolCall("2", "find_leases", {}),
+        mutate=lambda raw: {"items": raw["leases"]},
+    )
+    assert renamed.error_kind == "schema"
+
+
+def test_search_never_returns_a_lease_of_the_registry():
+    for role in (None, "position", "wording", "law", "precedent", "market"):
+        for versions in ("current", "all"):
+            filters = search_filters(role, versions)
+            assert not filters.matches({"type": "lease", "status": "current"})
+            assert filters.to_qdrant().must_not[-1].key == "type"
+    assert search_filters("market", "current").matches(
+        {"type": "research", "status": "current"}
+    )
 
 
 def test_search_filters_by_role_and_version():
@@ -157,9 +185,8 @@ class FakeGenerator:
 
 
 def test_draft_redline_needs_a_verbatim_quote_and_reports_stage_2_routing():
-    registry = LeaseRegistry()
     generator = FakeGenerator()
-    draft = draft_redline(registry, generator, Drafts())
+    draft = draft_redline(REGISTRY, generator, Drafts())
     with pytest.raises(ToolError, match="not in lease_37032 word for word"):
         draft(
             DraftArgs(
@@ -167,7 +194,7 @@ def test_draft_redline_needs_a_verbatim_quote_and_reports_stage_2_routing():
             )
         )
     assert generator.calls == 0
-    quote = registry.sections(LEASE)[1].text.splitlines()[0]
+    quote = LeaseRegistry().sections(LEASE)[1].text.splitlines()[0]
     priced = draft(DraftArgs(lease_id=LEASE, type="sublease_permitted", quote=quote))
     assert priced.output.needs_decision and priced.output.approval == "юрист"
     assert priced.output.proposed_sources == []

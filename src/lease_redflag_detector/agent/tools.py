@@ -1,7 +1,8 @@
 """Tools of the agent: a description, schemas of the arguments and the result, a function.
 
 The description the model reads lives in `prompts/tools/<name>_v<N>.md`, versioned like
-the prompts; the argument schema goes to the model with it. Before a call the arguments
+the prompts; the argument schema goes to the model with it. A tool of an MCP server
+comes with the description and schema the server gives (`spec`). Before a call the arguments
 are validated against that schema, and after it the result against its own: a tool
 whose result changed shape fails loudly instead of handing the model a silent None.
 
@@ -81,8 +82,13 @@ class Tool:
     side_effect: bool = False
     retry_safe: bool = True
     timeout_s: float | None = None  # None: the default of the agent's limits
+    # A tool of an MCP server: the name, description and schema the server gives,
+    # sent to the model as they are. The arguments are still validated by `args`.
+    spec: dict | None = None
 
     def schema(self) -> dict:
+        if self.spec:
+            return self.spec
         return {
             "name": self.name,
             "description": load_prompt(self.description),

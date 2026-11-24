@@ -70,6 +70,24 @@ def check(task: dict, outcome: Outcome) -> list[Check]:
     for tool, limit in task.get("max_calls", {}).items():
         n = called.count(tool)
         add("tools", f"{tool} ≤ {limit} calls", n <= limit, f"{n} calls")
+    if tool := task.get("no_call_after_error"):
+        # Calls asked for in the same step went out before the error was known.
+        failed = [
+            e["step"]
+            for e in outcome.tool_events()
+            if e["name"] == tool and e["is_error"]
+        ]
+        later = [
+            e["step"]
+            for e in outcome.tool_events()
+            if e["name"] == tool and failed and e["step"] > failed[0]
+        ]
+        add(
+            "tools",
+            f"{tool} not called after its error",
+            not later,
+            f"called again in steps {later}",
+        )
     for pattern in task.get("answer_has", []):
         add(
             "answer",

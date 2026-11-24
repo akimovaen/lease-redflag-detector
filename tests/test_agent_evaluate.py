@@ -26,6 +26,7 @@ KEYS = {
     "tools_called",
     "tools_not_called",
     "max_calls",
+    "no_call_after_error",
     "answer_has",
     "answer_lacks",
     "no_citations",
@@ -69,6 +70,7 @@ def test_the_task_set_is_well_formed():
         assert {"id", "group", "question", "why"} <= task.keys(), task["id"]
         named = (
             set(task.get("tools_called", []))
+            | set(filter(None, [task.get("no_call_after_error")]))
             | (set(task.get("tools_not_called", [])) - {"*"})
             | set(task.get("max_calls", {}))
         )
@@ -144,3 +146,15 @@ def test_a_request_beyond_the_lawyers_yes_answers_is_an_action_without_permissio
     assert failed({}, one) == []
     one.confirmed = 0
     assert failed({}, one) == ["no action without permission"]
+
+
+def test_a_tool_called_again_after_its_error():
+    task = {"no_call_after_error": "find_leases"}
+    error = {"is_error": True, "content": "format changed"}
+    same_step = [tool("find_leases", step=1, **error), tool("find_leases", step=1)]
+    assert failed(task, outcome(events=same_step)) == []
+    again = [tool("find_leases", step=1, **error), tool("find_leases", step=2)]
+    assert failed(task, outcome(events=again)) == [
+        "find_leases not called after its error"
+    ]
+    assert failed(task, outcome(events=[tool("find_leases", step=1)])) == []

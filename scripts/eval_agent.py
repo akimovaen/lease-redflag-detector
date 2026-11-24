@@ -240,7 +240,7 @@ def main() -> None:
         raise SystemExit("ANTHROPIC_API_KEY is not set: add it to .env")
 
     from lease_redflag_detector.agent.loop import AgentConfig
-    from lease_redflag_detector.agent.registry import LeaseRegistry
+    from lease_redflag_detector.agent.registry_client import RegistryClient
     from lease_redflag_detector.agent.toolset import LOCAL_RERANK
     from lease_redflag_detector.rag.retrieve import RerankScores, Retriever, load_chunks
 
@@ -258,7 +258,8 @@ def main() -> None:
         )
 
     config = AgentConfig.load(args.config)
-    registry = LeaseRegistry()
+    # One registry server for every task, started as for the lawyer at `make agent`.
+    registry = RegistryClient(user=config.user)
     print("Loading the search models…", file=sys.stderr)
     retriever = Retriever(
         load_chunks(),

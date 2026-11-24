@@ -6,7 +6,7 @@ RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
 	check check-retrieval check-generation check-fresh evals agent agent-evals review \
-	test lint
+	mcp test lint
 
 run: extract metrics
 
@@ -76,6 +76,11 @@ agent:
 agent-evals:
 	uv run python scripts/eval_agent.py --name $(NAME) --note "$(NOTE)" \
 		$(if $(ONLY),--only $(ONLY)) $(if $(REPEAT),--repeat $(REPEAT))
+
+# The lease registry MCP server alone (stdio), for the MCP Inspector or Claude Desktop;
+# the agent starts its own. No API calls.
+mcp:
+	uv run python -m lease_redflag_detector.agent.registry_server
 
 # The approval queue the agent fills: list, show one, decide (a person, not the agent).
 # make review [ID=R-0001] [STATUS=погоджено|відхилено|повернуто COMMENT="…"]

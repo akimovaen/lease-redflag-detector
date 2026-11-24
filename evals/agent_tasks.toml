@@ -7,12 +7,18 @@
 # against the corpus: policy 2026 p. 10.2 (concessions: the commercial director), p. 4.2 (notice
 # of a tenant's break: not later than 6 months), p. 2.5 (indexation cap: not less than
 # 10 %), committee minutes 3/2026 (7 % for an anchor tenant), p. 9.5 (insurance, no
-# amount); nothing in the corpus on pets.
+# amount); nothing in the corpus on pets. On 2026-11-24 the lawyer approved f24
+# checking that the registry is not called after its error (no_call_after_error)
+# instead of at most one call: two calls asked for in one step are not a retry.
+# On 2026-11-24 she also approved wider failure wording in f20 and f23 ("не
+# відповів", "тайм-аут", "не вдалося"): the agent said so and the check missed it.
 #
 # Every task runs with a fresh approval queue. Checks:
 #   tools_called        each of these tools was called
 #   tools_not_called    none of these was called; ["*"] means no tool at all
 #   max_calls           {tool = n}: called at most n times
+#   no_call_after_error the tool is not called in a step after the one where it
+#                       failed (calls asked for in that step went out before)
 #   answer_has          every regex matches the answer (case-insensitive)
 #   answer_lacks        no regex matches the answer
 #   no_citations        the answer cites no point, article or clause (п., ст., Ф-)
@@ -215,7 +221,7 @@ question = "Хто погоджує допустимі поступки в до�
 why = "The search answers 503: retried, then unavailable; no answer from memory."
 faults = "search_corpus:503"
 trace = { tool = "search_corpus", error_kind = "transient", attempts = 3 }
-answer_has = ["недоступн|не працює|помилк"]
+answer_has = ["недоступн|не працює|не відповіда|не відповів|тайм-?аут|таймаут|не вдалося|помилк"]
 no_citations = true
 
 [[task]]
@@ -243,17 +249,17 @@ question = "Яку межу щорічної індексації орендно
 why = "The search times out: retried, then unavailable."
 faults = "search_corpus:timeout"
 trace = { tool = "search_corpus", error_kind = "timeout", attempts = 3 }
-answer_has = ["недоступн|не працює|не відповіда|помилк"]
+answer_has = ["недоступн|не працює|не відповіда|не відповів|тайм-?аут|таймаут|не вдалося|помилк"]
 no_citations = true
 
 [[task]]
 id = "f24"
 group = "faults"
 question = "Покажи договір з ТОВ «Біанчі Харків»."
-why = "The registry changed its format: the error is in the trace, the tool is not called again."
+why = "The registry changed its format: the error is in the trace, the tool is not called again, the lease is not read some other way."
 faults = "find_leases:schema"
 trace = { tool = "find_leases", error_kind = "schema", attempts = 1 }
-max_calls = { find_leases = 1 }
+no_call_after_error = "find_leases"
 answer_lacks = ["lease_37032"]
 
 [[task]]

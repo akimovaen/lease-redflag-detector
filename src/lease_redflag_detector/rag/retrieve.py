@@ -55,6 +55,7 @@ class Filters:
     date_to: str | None = None
     # Documents without a regime (the policy, research) always pass.
     exclude_regimes: list[str] | None = None
+    exclude_types: list[str] | None = None
 
     def matches(self, meta: dict) -> bool:
         date = str(meta.get("date", ""))
@@ -67,6 +68,7 @@ class Filters:
             and not (
                 self.exclude_regimes and meta.get("regime") in self.exclude_regimes
             )
+            and not (self.exclude_types and meta.get("type") in self.exclude_types)
         )
 
     def to_qdrant(self):
@@ -88,15 +90,14 @@ class Filters:
                     range=models.DatetimeRange(gte=self.date_from, lte=self.date_to),
                 )
             )
-        excluded = (
-            [
-                models.FieldCondition(
-                    key="regime", match=models.MatchAny(any=self.exclude_regimes)
-                )
+        excluded = [
+            models.FieldCondition(key=key, match=models.MatchAny(any=values))
+            for key, values in [
+                ("regime", self.exclude_regimes),
+                ("type", self.exclude_types),
             ]
-            if self.exclude_regimes
-            else []
-        )
+            if values
+        ]
         if not conditions and not excluded:
             return None
         return models.Filter(must=conditions or None, must_not=excluded or None)

@@ -8,6 +8,8 @@ from lease_redflag_detector.agent.faults import FaultyToolbox
 from lease_redflag_detector.agent.loop import Agent, Limits, Reply, ToolCall
 from lease_redflag_detector.agent.queue import PENDING, REPLACED, ApprovalQueue
 from lease_redflag_detector.agent.registry import LeaseRegistry
+from lease_redflag_detector.agent.registry_client import RegistryClient
+from lease_redflag_detector.agent.registry_server import build_server
 from lease_redflag_detector.agent.tools import Tool, Toolbox, ToolError
 from lease_redflag_detector.agent.toolset import (
     Draft,
@@ -21,9 +23,11 @@ from lease_redflag_detector.agent.toolset import (
 from lease_redflag_detector.rag.redline import Redline, Result
 
 LEASE = "lease_37032"
-REGISTRY = LeaseRegistry()
+REGISTRY = RegistryClient(build_server())  # the MCP server, in this process
 QUOTES = [
-    line for line in REGISTRY.sections(LEASE)[2].text.splitlines() if len(line) > 40
+    line
+    for line in LeaseRegistry().sections(LEASE)[2].text.splitlines()
+    if len(line) > 40
 ]
 
 

@@ -1,15 +1,18 @@
 """The registry of the landlord's leases: find a lease, read its sections and its text.
 
-For now it reads the pseudonymized Prozorro leases of the corpus directly. In step 2 it
-moves behind an MCP server with access rights; the agent's tools use only this
-interface, so the tools that need a lease's text (red flags, redlines) get it from the
-registry too and are refused exactly when the lawyer is.
+It reads the pseudonymized Prozorro leases of the corpus. The agent does not use it
+directly: the registry is served by an MCP server (`registry_server.py`), and the agent
+reaches it through `registry_client.py`, as any other client would. The schemas of the
+registry's tools are here, shared by the server and the agent.
 """
 
 import re
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
+from typing import Annotated
+
+from pydantic import BaseModel, Field
 
 from lease_redflag_detector.rag.chunking import block_text, sections
 from lease_redflag_detector.rag.document import Document
@@ -18,9 +21,69 @@ ROOT = Path(__file__).resolve().parents[3]
 DOCUMENTS = ROOT / "data" / "corpus" / "documents"
 QUOTES = re.compile(r'["«»“”„]')
 
+LEASE_ID = r"^lease_\d+$"
+LeaseId = Annotated[
+    str, Field(pattern=LEASE_ID, description="Lease id, e.g. lease_37032.")
+]
+Party = Annotated[
+    str | None,
+    Field(max_length=100, description="Part of the landlord's or tenant's name."),
+]
+City = Annotated[
+    str | None, Field(max_length=100, description="Part of the city name.")
+]
+SectionNumber = Annotated[
+    int, Field(ge=1, description="Section number from get_lease.")
+]
+
+
+class FindArgs(BaseModel):
+    party: Party = None
+    city: City = None
+
+
+class LeaseSummary(BaseModel):
+    lease_id: str
+    title: str
+    landlord: str
+    tenant: str
+    city: str
+    date: str
+
+
+class FindResult(BaseModel):
+    leases: list[LeaseSummary]
+
+
+class LeaseArgs(BaseModel):
+    lease_id: LeaseId
+
+
+class SectionTitle(BaseModel):
+    number: int
+    title: str
+
+
+class LeaseInfo(LeaseSummary):
+    sections: list[SectionTitle]
+
+
+class SectionArgs(LeaseArgs):
+    section: SectionNumber
+
+
+class SectionText(BaseModel):
+    lease_id: str
+    number: int
+    title: str
+    text: str
+
 
 class LeaseNotFound(Exception):
-    pass
+    def __init__(self, lease_id: str):
+        super().__init__(
+            f"No lease {lease_id} in the registry; find_leases lists them."
+        )
 
 
 @dataclass
