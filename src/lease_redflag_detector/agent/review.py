@@ -10,11 +10,16 @@ Whoever looks at the queue says who they are (BY, a user of configs/users.toml),
 a request quotes its lease: a person sees only the requests for the leases they may
 read (`access.py`), as in the registry. A decision is recorded by a lawyer or the head
 of legal (`users.DECIDERS`) who may read the lease, which is then of their own entity.
+A rejected or returned request also becomes a note on the lease for the agent, so that
+its next check knows the committee's reason (`decision_note`).
 """
 
 import argparse
+import datetime
+import sqlite3
 
 from lease_redflag_detector.agent.access import Access
+from lease_redflag_detector.agent.memory import Note, NoteStore, policy_version
 from lease_redflag_detector.agent.queue import (
     DECISIONS,
     RISKS,
@@ -80,6 +85,29 @@ def decider(user_id: str | None, lease_id: str, access: Access | None = None) ->
     return user
 
 
+# Decisions that need something done about the lease: the agent should know them.
+NOTED = ("відхилено", "повернуто")
+
+
+def decision_note(
+    store: NoteStore, request: Request, status: str, user: User, comment: str
+) -> Note | None:
+    """A note on the lease for the agent, when the committee rejected or returned
+    the request: the next check of the lease knows why."""
+    if status not in NOTED:
+        return None
+    note, _ = store.add(
+        f"Комітет: заявку {request.id} {status} {datetime.date.today():%d.%m.%Y}: "
+        f"{comment or 'без коментаря'}",
+        user.id,
+        user.entity,
+        policy_version(),
+        request.lease_id,
+        replace=False,
+    )
+    return note
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--id")
@@ -104,6 +132,17 @@ def main() -> None:
             except ValueError as e:
                 raise SystemExit(str(e)) from None
             request = queue.get(args.id)
+            try:
+                note = decision_note(
+                    NoteStore(), request, args.status, user, args.comment
+                )
+            except sqlite3.Error as e:
+                print(
+                    f"Рішення записано, але нотатку для агента створити не вдалося: {e}"
+                )
+            else:
+                if note:
+                    print(f"Рішення збережено як нотатку {note.id} для агента.")
         may_read(user, request.lease_id, access)
         show(queue, request)
         return

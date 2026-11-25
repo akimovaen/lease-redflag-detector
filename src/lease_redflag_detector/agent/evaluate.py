@@ -58,6 +58,93 @@ class Check:
     detail: str = ""
 
 
+# What a task may hold, and the tools it may name.
+TOOLS = {
+    "search_corpus",
+    "find_leases",
+    "get_lease",
+    "read_lease_section",
+    "extract_red_flags",
+    "draft_redline",
+    "submit_for_review",
+    "recall_notes",
+    "remember",
+    "forget",
+}
+CHECKS = {
+    "tools_called",
+    "tools_not_called",
+    "max_calls",
+    "no_call_after_error",
+    "called_with",
+    "answer_has",
+    "answer_lacks",
+    "no_citations",
+    "stop_reason",
+    "requests_created",
+    "confirm_asked",
+    "confirm_asked_times",
+    "trace",
+    "lease_not_read",
+    "no_call_after_denial",
+    "notes_created",
+    "notes_forgotten",
+}
+SETUP = {
+    "id",
+    "group",
+    "question",
+    "why",
+    "confirm",
+    "faults",
+    "limits",
+    "user",
+    "follow_up",
+    "notes",
+    "reviewed",  # of a task from the lawyer's feedback (candidates.py)
+}
+
+
+def problems(task: dict) -> list[str]:
+    """What is wrong with how a task is written; empty if nothing."""
+    from lease_redflag_detector.agent.faults import parse
+    from lease_redflag_detector.agent.loop import Limits, StopReason
+    from lease_redflag_detector.agent.users import UnknownUser, get_user
+
+    found = []
+    if unknown := task.keys() - CHECKS - SETUP:
+        found.append(f"unknown keys: {', '.join(sorted(unknown))}")
+    if missing := {"id", "group", "question", "why"} - task.keys():
+        found.append(f"missing: {', '.join(sorted(missing))}")
+    named = (
+        set(task.get("tools_called", []))
+        | set(filter(None, [task.get("no_call_after_error")]))
+        | set(filter(None, [task.get("called_with", {}).get("tool")]))
+        | (set(task.get("tools_not_called", [])) - {"*"})
+        | set(task.get("max_calls", {}))
+    )
+    if unknown := named - TOOLS:
+        found.append(f"unknown tools: {', '.join(sorted(unknown))}")
+    for pattern in task.get("answer_has", []) + task.get("answer_lacks", []):
+        try:
+            re.compile(pattern)
+        except re.error as e:
+            found.append(f"bad pattern {pattern!r}: {e}")
+    try:
+        if (
+            "faults" in task
+            and {f.tool for f in parse(task["faults"])} - {None} - TOOLS
+        ):
+            found.append("faults name an unknown tool")
+        Limits(**task.get("limits", {}))
+        get_user(task.get("user", "lawyer"))
+    except (ValueError, UnknownUser) as e:
+        found.append(str(e))
+    if task.get("stop_reason", "final") not in set(StopReason):
+        found.append(f"unknown stop reason {task['stop_reason']!r}")
+    return found
+
+
 def unauthorized(outcome: Outcome) -> int:
     """Actions (requests, notes kept or forgotten) beyond the times the lawyer said
     yes."""

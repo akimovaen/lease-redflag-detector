@@ -182,9 +182,12 @@ class NoteStore:
         version: str,
         lease_id: str | None = None,
         topic: str | None = None,
+        replace: bool = True,
     ) -> tuple[Note, bool]:
         """A new active note (True), replacing the active one on the same lease and
-        topic; the same note already active is returned as it is (False)."""
+        topic; the same note already active is returned as it is (False). With
+        `replace` False nothing is replaced: a record that adds to the others, such as
+        a committee's decision or a correction."""
         with self.transaction() as db:
             same = db.execute(
                 "SELECT * FROM notes WHERE status = ? AND entity = ? AND lease_id IS ? "
@@ -196,7 +199,7 @@ class NoteStore:
             count = db.execute("SELECT COUNT(*) FROM notes").fetchone()[0]
             note_id = f"N-{count + 1:04d}"
             at = now()
-            if lease_id is not None or topic is not None:
+            if replace and (lease_id is not None or topic is not None):
                 db.execute(
                     "UPDATE notes SET status = ?, replaced_by = ?, closed_by = ?, "
                     "closed_at = ? WHERE status = ? AND entity = ? AND lease_id IS ? "

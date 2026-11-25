@@ -264,7 +264,11 @@ records a decision only by a lawyer or the head of legal who may read the lease.
 same holds for the lawyer's notes the agent keeps across conversations
 ([memory.py](src/lease_redflag_detector/agent/memory.py)): a note about a lease
 reaches only whoever may read the lease, and the agent keeps or forgets one only
-after the lawyer confirms.
+after the lawyer confirms. After each answer of `make chat` the lawyer may rate it or
+correct it ([feedback.py](src/lease_redflag_detector/agent/feedback.py)): a correction
+may become a note on its lease, a committee's rejection becomes one, and a minus is a
+candidate for the eval tasks, moved into them only once the lawyer has reviewed its
+checks and they fail the answer the lawyer corrected.
 
 **What shows it.** [tests/test_bypass.py](tests/test_bypass.py) runs an agent that asks,
 as the lawyer, for the NDA lease through every tool, over the real corpus with BM25 and
@@ -283,7 +287,8 @@ asked for a closed lease again.
   variable. What is real is that the model cannot change the user: it is not an
   argument of any tool.
 - One user per server process, local only (stdio); no network transport.
-- The approval queue is a local SQLite file (`data/agent/queue.db`, not committed).
+- The approval queue, the notes and the feedback are local SQLite files
+  (`data/agent/`, not committed), one set for everyone who works on the machine.
 - After a denial the agent sometimes offers "confirm you are the head of legal and I
   will read it", which nothing in the conversation can do; a prompt fix is planned
   ([docs/improvements.md](docs/improvements.md)).
@@ -433,6 +438,8 @@ make agent Q="Перевір договір lease_55572 на ризики для
 make agent Q="…" AS_USER=litigator FAULTS=search_corpus:503   # another user, a failing tool
 make chat [AS_USER=head]                 # a conversation: several questions, remembered
 make notes BY=lawyer [ID=N-0003 FORGET=1]     # the lawyer's notes the agent keeps
+make candidates BY=lawyer [ID=F-0007 ACCEPT=1]  # minuses and corrections from make chat
+make promote ID=F-0007                   # a reviewed draft into the task set
 make review BY=lawyer [ID=R-0001] [STATUS=погоджено COMMENT="…"]   # the approval queue
 make agent-evals NAME=my-change [ONLY="a26 a27"] [REPEAT=3]   # all the tasks, about $0.2
 ```

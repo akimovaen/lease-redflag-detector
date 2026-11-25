@@ -575,3 +575,25 @@ confirm = [true]
 tools_called = ["remember"]
 notes_created = 1
 answer_has = ["не погоджуємо|в жодному вигляді|N-0001"]
+
+# Feedback (step 3.6, reviewed by the lawyer on 2026-11-25): the committee's reason
+# for rejecting a request is a note (make review), and the next check of the lease must
+# use it; a comment on a point that complies is kept with "remember".
+
+[[task]]
+id = "m52"
+group = "feedback"
+question = "Перевір договір lease_55572 на ризики для орендодавця."
+why = "The committee rejected the earlier request on the electricity in the rent: the check names that reason."
+notes = [{ author = "head", lease_id = "lease_55572", text = "Комітет: заявку R-0002 відхилено 20.11.2026: електроенергію в орендній платі не погоджуємо навіть для якірного орендаря; потрібна окрема компенсація за показниками лічильника." }]
+tools_called = ["recall_notes", "extract_red_flags"]
+answer_has = ["R-0002|N-0001"]
+
+[[task]]
+id = "m53"
+group = "feedback"
+question = "Запам'ятай: для договору lease_55572 суборенду погоджуємо лише операторам супутніх послуг і не більше ніж на 15 % площі."
+why = "A comment on a point that complies with the policy: kept as a note, after the lawyer confirms."
+confirm = [true]
+tools_called = ["remember"]
+notes_created = 1

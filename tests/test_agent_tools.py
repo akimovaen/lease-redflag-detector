@@ -274,3 +274,9 @@ def test_a_conversation_keeps_its_redlines_from_one_question_to_the_next(tmp_pat
         memory=NoteStore(tmp_path / "m2.db"),
     )
     assert conversation.on_request == []
+
+
+def test_the_eval_checks_know_every_tool_of_the_toolbox(tmp_path):
+    from lease_redflag_detector.agent.evaluate import TOOLS
+
+    assert set(toolbox_without_search(tmp_path).tools) == TOOLS

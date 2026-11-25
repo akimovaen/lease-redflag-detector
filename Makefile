@@ -6,7 +6,7 @@ RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
 	check check-retrieval check-generation check-fresh evals agent chat agent-evals review \
-	notes mcp test lint
+	notes candidates promote mcp test lint
 
 run: extract metrics
 
@@ -102,6 +102,16 @@ review:
 notes:
 	uv run python -m lease_redflag_detector.agent.notes $(if $(BY),--by $(BY)) \
 		$(if $(ID),--id $(ID)) $(if $(FORGET),--forget)
+
+# The lawyer's feedback as eval tasks: the candidates, a draft, the task set.
+# make candidates BY=lawyer [ID=F-0007 ACCEPT=1 | DISMISS=1]; make promote ID=F-0007
+candidates:
+	uv run python -m lease_redflag_detector.agent.candidates candidates \
+		$(if $(BY),--by $(BY)) $(if $(ID),--id $(ID)) $(if $(ACCEPT),--accept) \
+		$(if $(DISMISS),--dismiss)
+
+promote:
+	uv run python -m lease_redflag_detector.agent.candidates promote $(if $(ID),--id $(ID))
 
 test:
 	uv run pytest

@@ -22,6 +22,8 @@ trace and the answer; the conversation passes the earlier ones along (`Session`)
 Every event of the trace carries the number of its question: steps start from 1 at
 each question, so the checks order events by question, then step.
 
+After every answer the lawyer may rate it or write a correction (`feedback.py`).
+
 The trace of the conversation goes to results/agent/chats/<time>.jsonl (not
 committed): every question's events in turn, each starting with its request.
 """
@@ -161,6 +163,8 @@ def main() -> None:
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY is not set: add it to .env")
 
+    from lease_redflag_detector.agent.feedback import FeedbackStore, take_feedback
+    from lease_redflag_detector.agent.memory import NoteStore
     from lease_redflag_detector.agent.toolset import build_toolbox
     from lease_redflag_detector.agent.users import UnknownUser, get_user
 
@@ -171,7 +175,8 @@ def main() -> None:
         raise SystemExit(str(e)) from None
     config.user = user.id
     print(f"Користувач: {user.describe()}. Loading the search models…", flush=True)
-    agent = Agent.from_config(config, build_toolbox(config, session=True))
+    notes, feedback = NoteStore(), FeedbackStore()
+    agent = Agent.from_config(config, build_toolbox(config, session=True, memory=notes))
     path = CHATS / f"{datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')}.jsonl"
     session = Session(agent, ModelSummarizer(config), path)
     print("Пишіть питання; порожній рядок або Ctrl-D — кінець розмови.\n")
@@ -189,6 +194,19 @@ def main() -> None:
             f"[{answer.stop_reason} · кроків: {answer.steps} · ${answer.cost_usd:.4f}"
             f" · {answer.latency_s:.0f} с]\n"
         )
+        try:
+            take_feedback(
+                feedback,
+                notes,
+                user,
+                session.asked,
+                question,
+                answer.text,
+                str(path.relative_to(ROOT)),
+            )
+        except (EOFError, KeyboardInterrupt):
+            print()
+            break
     print(
         f"Розмова: питань {session.asked}, ${session.cost_usd:.4f}, "
         f"trace: {path.relative_to(ROOT)}"

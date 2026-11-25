@@ -1,56 +1,11 @@
-import re
 import tomllib
 from pathlib import Path
 
-from lease_redflag_detector.agent.evaluate import Outcome, check, tools_ok
-from lease_redflag_detector.agent.faults import parse
-from lease_redflag_detector.agent.loop import Limits, StopReason
+from lease_redflag_detector.agent.evaluate import Outcome, check, problems, tools_ok
 from lease_redflag_detector.agent.queue import Request
-from lease_redflag_detector.agent.users import get_user
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = tomllib.loads((ROOT / "evals" / "agent_tasks.toml").read_text())["task"]
-TOOLS = {
-    "search_corpus",
-    "find_leases",
-    "get_lease",
-    "read_lease_section",
-    "extract_red_flags",
-    "draft_redline",
-    "submit_for_review",
-    "recall_notes",
-    "remember",
-    "forget",
-}
-KEYS = {
-    "id",
-    "group",
-    "question",
-    "why",
-    "tools_called",
-    "tools_not_called",
-    "max_calls",
-    "no_call_after_error",
-    "answer_has",
-    "answer_lacks",
-    "no_citations",
-    "stop_reason",
-    "requests_created",
-    "confirm",
-    "confirm_asked",
-    "confirm_asked_times",
-    "trace",
-    "faults",
-    "limits",
-    "user",
-    "lease_not_read",
-    "no_call_after_denial",
-    "called_with",
-    "follow_up",
-    "notes",
-    "notes_created",
-    "notes_forgotten",
-}
 
 
 def tool(name, content="{}", **fields):
@@ -79,23 +34,15 @@ def test_the_task_set_is_well_formed():
     assert len(TASKS) >= 15
     assert len({t["id"] for t in TASKS}) == len(TASKS)
     for task in TASKS:
-        assert task.keys() <= KEYS, task["id"]
-        assert {"id", "group", "question", "why"} <= task.keys(), task["id"]
-        named = (
-            set(task.get("tools_called", []))
-            | set(filter(None, [task.get("no_call_after_error")]))
-            | set(filter(None, [task.get("called_with", {}).get("tool")]))
-            | (set(task.get("tools_not_called", [])) - {"*"})
-            | set(task.get("max_calls", {}))
-        )
-        assert named <= TOOLS, task["id"]
-        for pattern in task.get("answer_has", []) + task.get("answer_lacks", []):
-            re.compile(pattern)
-        if "faults" in task:
-            assert {f.tool for f in parse(task["faults"])} - {None} <= TOOLS
-        Limits(**task.get("limits", {}))
-        get_user(task.get("user", "lawyer"))
-        assert task.get("stop_reason", "final") in set(StopReason)
+        assert problems(task) == [], task["id"]
+
+
+def test_a_badly_written_task_is_caught():
+    task = {"id": "x", "question": "?", "tools_called": ["delete_all"], "colour": 1}
+    found = problems(task)
+    assert any("unknown keys: colour" in p for p in found)
+    assert any("missing: group, why" in p for p in found)
+    assert any("unknown tools: delete_all" in p for p in found)
 
 
 def test_tool_checks():

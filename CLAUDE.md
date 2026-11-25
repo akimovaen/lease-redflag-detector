@@ -18,7 +18,8 @@ Red flags are judged from the landlord's side. See README.md and REPORT.md.
   run will cost before starting it.
 - Stage 3: `make agent Q="…"` and every question of `make chat` cost about $0.006
   (budget $0.05 a request), `make agent-evals` about $0.2 for all tasks (`ONLY=`,
-  `REPEAT=`); `make mcp`, `make review` and `make notes` call no model. The user is
+  `REPEAT=`); `make mcp`, `make review`, `make notes`, `make candidates` and
+  `make promote` call no model. The user is
   `AS_USER=` for the agent and the server, `BY=` for `make review` and `make notes`
   (configs/users.toml); not `USER` or `AS`, which are taken.
 - Set `HF_HUB_DISABLE_IMPLICIT_TOKEN=1` for local runs that load Hugging Face models.
@@ -40,7 +41,8 @@ Red flags are judged from the landlord's side. See README.md and REPORT.md.
 - No case-specific tuning: a prompt change must be a general rule, never a fix for
   one failing case. Ideas that are not implemented go to `docs/improvements.md`.
 - Every eval or task set is reviewed by the user (a lawyer) before it counts. Mark
-  drafts as unreviewed.
+  drafts as unreviewed. A task from the lawyer's feedback goes in only through
+  `make promote`, which checks the review and that the corrected answer fails it.
 - Results vary between runs: compare configurations over several runs, not one.
 - Do not claim what no run or test has shown. When a number is quoted, it comes
   from a saved run in `results/`.
