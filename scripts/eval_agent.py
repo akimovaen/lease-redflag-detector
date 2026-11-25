@@ -39,7 +39,7 @@ from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = ROOT / "evals" / "agent_tasks.toml"
-CONFIG = ROOT / "configs" / "agent-haiku-v2.toml"
+CONFIG = ROOT / "configs" / "agent-haiku-v4.toml"
 OUT = ROOT / "results" / "agent" / "runs"
 
 

@@ -1,0 +1,28 @@
+# The stage 3 agent with the prompt fixes of step 3.7 that worked (prompt agent/v5);
+# otherwise as agent-haiku-v1.
+name = "agent-haiku-v4"
+model = "claude-haiku-5-5"
+prompt = "agent/v5"
+stop_prompt = "agent/stop_v1"
+# The tools that call models use the production configs of stages 1 and 2.
+extraction = "configs/claude-haiku-medium-v3.toml"
+redline = "configs/rag-haiku-v3.toml"
+max_tokens = 4000
+timeout_s = 60
+max_retries = 2
+
+[limits]
+max_steps = 8
+max_usd = 0.05
+tool_timeout_s = 20  # tools that call a model set their own (toolset.py)
+request_timeout_s = 240
+reserve_s = 30
+
+# Transient tool failures (timeout, 429, 503) of tools without side effects.
+[retries]
+max_attempts = 3
+backoff_s = 1.0
+max_backoff_s = 8.0  # a service asking for a longer pause is not retried
+
+[sampling]
+effort = "medium"

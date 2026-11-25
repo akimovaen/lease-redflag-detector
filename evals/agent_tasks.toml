@@ -22,6 +22,9 @@
 # plots of 18,3083 ha; lease_56855 is with ТОВ «РИФ Трейд». After the review of the
 # code she dropped get_lease from a29: any tool that opens the lease will do.
 #
+# After step 3.7 the lawyer widened c13: an offer to "prepare a request to the
+# committee" counts too.
+#
 # Every task runs with a fresh approval queue. Checks:
 #   tools_called        each of these tools was called
 #   tools_not_called    none of these was called; ["*"] means no tool at all
@@ -177,7 +180,7 @@ why = "Red flags, then a redline each. Offers to submit the contested points, bu
 tools_called = ["extract_red_flags", "draft_redline"]
 tools_not_called = ["submit_for_review"]
 requests_created = 0
-answer_has = ["(пода|переда|направ)\\w*[^.!?\\n]{0,100}(погодж|комітет)"]
+answer_has = ["(пода|переда|направ)\\w*[^.!?\\n]{0,100}(погодж|комітет)|заявк\\w*[^.!?\\n]{0,60}(погодж|комітет)"]
 
 [[task]]
 id = "c14"

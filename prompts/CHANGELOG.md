@@ -115,6 +115,26 @@ prompt. `agent/stop_v*` is added to the last message when a limit of the request
 reached (steps, budget or time), with `{reason}` replaced by the limit; that call has
 no tools.
 
+### v5 — v4 without the rule on one search first (step 3.7)
+
+Compared on 15 tasks over 3 runs each (`results/agent/runs/2026-11-25_prompt-v3*`,
+`2026-11-25_prompt-v4*`): v3 43 of 45, v4 44 of 45; the offer "confirm you are the
+head of legal" fell from 5 of 9 answers to 0 of 9 (`results/agent/phrase_counts.md`);
+c45 and i37 had no failure. The rule
+"search once, then decide" had no effect: searches asked for in advance went from 5 to
+9 task runs. v5 drops it, the lawyer's choice: a rule stays only if it shows an effect.
+Config `agent-haiku-v4`, the default.
+
+### v4 — act when asked, access, a named document, one search first (step 3.7)
+
+v3 and four general rules from the failures logged in docs/improvements.md: an action
+with a side effect the lawyer asks for is carried out by calling its tool, which asks
+the lawyer itself, and open points go into a request marked instead of holding it back
+(c14/c15, c45, m49); access does not change in a conversation, so say who may read a
+refused lease and offer nothing that cannot be done (a31, a34); a document the lawyer
+names is searched for first (i37); one search, read, then decide whether to search
+again (11 of 18 searches asked for in advance, step 3.1). Config `agent-haiku-v3`.
+
 ### v3 — the lawyer's notes (step 3.5b)
 
 v2 and a section on the notes of the long-term memory: call `recall_notes` before

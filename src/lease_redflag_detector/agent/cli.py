@@ -17,7 +17,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[3]
-CONFIG = ROOT / "configs" / "agent-haiku-v2.toml"
+CONFIG = ROOT / "configs" / "agent-haiku-v4.toml"
 TRACES = ROOT / "results" / "agent" / "traces"
 
 
