@@ -4,7 +4,9 @@
     make agent-evals NAME=first [ONLY="n01 q03"] [REPEAT=3]
 
 Every task runs with a fresh approval queue, its own scripted answers to confirmation
-questions and its own injected faults, so that tasks do not affect each other. The
+questions and its own injected faults, so that tasks do not affect each other. A task
+is a conversation (`agent/chat.py`): its question, then its follow-ups, if any; the
+checks read the last answer and the trace of every question. The
 checks are deterministic (`agent/evaluate.py`). Each run goes to its own folder,
 results/agent/runs/<date>_<name>/, and is never overwritten:
 
@@ -24,6 +26,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import statistics
 import subprocess
 import sys
@@ -37,7 +40,7 @@ from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = ROOT / "evals" / "agent_tasks.toml"
-CONFIG = ROOT / "configs" / "agent-haiku-v1.toml"
+CONFIG = ROOT / "configs" / "agent-haiku-v4.toml"
 OUT = ROOT / "results" / "agent" / "runs"
 
 
@@ -47,12 +50,40 @@ def git(*args: str) -> str:
     ).stdout.strip()
 
 
+def folder_name(name: str, date: str) -> str:
+    """The run's folder: the date and the name, the date once even if the name has it."""
+    return name if re.match(r"\d{4}-\d{2}-\d{2}_", name) else f"{date}_{name}"
+
+
 def load_tasks() -> list[dict]:
     return tomllib.loads(TASKS.read_text(encoding="utf-8"))["task"]
 
 
+def seed_notes(store, notes: list[dict]):
+    """The notes a task starts with: written by `author` (lawyer by default) under
+    the policy in force, or under the policy before Amendment 1 (`policy = "previous"`)."""
+    from lease_redflag_detector.agent.memory import policy_version
+    from lease_redflag_detector.agent.users import get_user
+
+    for note in notes:
+        author = get_user(note.get("author", "lawyer"))
+        version = (
+            "policy_2026" if note.get("policy") == "previous" else policy_version()
+        )
+        store.add(
+            note["text"],
+            author.id,
+            author.entity,
+            version,
+            note.get("lease_id"),
+            note.get("topic"),
+        )
+    return store
+
+
 def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
     """`registries`: the registry client of a user, by user id."""
+    from lease_redflag_detector.agent.chat import ModelSummarizer, Session
     from lease_redflag_detector.agent.confirm import ScriptedConfirmer
     from lease_redflag_detector.agent.evaluate import (
         Outcome,
@@ -62,9 +93,9 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
     )
     from lease_redflag_detector.agent.faults import FaultyToolbox
     from lease_redflag_detector.agent.loop import Agent
+    from lease_redflag_detector.agent.memory import NoteStore
     from lease_redflag_detector.agent.queue import ApprovalQueue
     from lease_redflag_detector.agent.toolset import build_toolbox
-    from lease_redflag_detector.agent.trace import Trace
 
     record = {
         "id": task["id"],
@@ -74,6 +105,7 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
     }
     with tempfile.TemporaryDirectory() as tmp:
         queue = ApprovalQueue(Path(tmp) / "queue.db")
+        memory = seed_notes(NoteStore(Path(tmp) / "memory.db"), task.get("notes", []))
         confirm = ScriptedConfirmer(*task.get("confirm", []))
         task_config = config.model_copy(deep=True)
         task_config.user = task.get("user", config.user)
@@ -87,17 +119,32 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
                 warm=False,
                 queue=queue,
                 confirm=confirm,
+                session=True,
+                memory=memory,
             )
             if task.get("faults"):
                 tools = FaultyToolbox(tools, task["faults"])
-            agent = Agent.from_config(task_config, tools)
-            answer = agent.run(
-                task["question"], Trace(folder / "traces" / f"{task['id']}.jsonl")
+            # A task is a conversation: its question, then its follow-ups, if any.
+            session = Session(
+                Agent.from_config(task_config, tools),
+                ModelSummarizer(task_config),
+                folder / "traces" / f"{task['id']}.jsonl",
             )
+            answers = [
+                session.ask(q) for q in [task["question"], *task.get("follow_up", [])]
+            ]
+            answer = answers[-1]
         except Exception as e:  # noqa: BLE001 - one broken task must not end the run
             # What it did before it broke still counts toward actions without permission.
             left = Outcome(
-                "", "", [], queue.all(), confirm.asked, confirm.given.count(True)
+                "",
+                "",
+                [],
+                queue.all(),
+                confirm.asked,
+                confirm.given.count(True),
+                [n.as_dict() for n in memory.all()],
+                len(task.get("notes", [])),
             )
             return record | {
                 "passed": False,
@@ -107,10 +154,12 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
         outcome = Outcome(
             answer.text,
             answer.stop_reason,
-            answer.trace.events,
+            session.events,
             queue.all(),
             confirm.asked,
             confirm.given.count(True),
+            [n.as_dict() for n in memory.all()],
+            len(task.get("notes", [])),
         )
         checks = check(task, outcome)
     failed = [c for c in checks if not c.passed]
@@ -121,11 +170,12 @@ def run_task(task: dict, config, registries, retriever, folder: Path) -> dict:
         "tools_ok": tools_ok(checks),
         "unauthorized": sum(c.kind == "permission" and not c.passed for c in checks),
         "stop_reason": str(answer.stop_reason),
-        "steps": answer.steps,
-        "cost_usd": round(answer.cost_usd, 6),
-        "latency_s": round(answer.latency_s, 1),
+        "steps": sum(a.steps for a in answers),
+        "cost_usd": round(session.cost_usd, 6),
+        "latency_s": round(sum(a.latency_s for a in answers), 1),
         "tools": outcome.called(),
         "answer": answer.text,
+        **({"answers": [a.text for a in answers]} if len(answers) > 1 else {}),
     }
 
 
@@ -264,7 +314,7 @@ def main() -> None:
         tasks = [t for t in tasks if t["id"] in args.only]
     names = [args.name] + [f"{args.name}-r{i}" for i in range(2, args.repeat + 1)]
     date = datetime.date.today().isoformat()
-    folders = [OUT / f"{date}_{name}" for name in names]
+    folders = [OUT / folder_name(name, date) for name in names]
     if existing := [f for f in folders if f.exists()]:
         raise SystemExit(
             f"{existing[0].relative_to(ROOT)} exists; choose another --name"

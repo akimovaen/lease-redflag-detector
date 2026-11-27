@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from lease_redflag_detector.agent.confirm import ScriptedConfirmer
 from lease_redflag_detector.agent.loop import AgentConfig, ToolCall
+from lease_redflag_detector.agent.memory import NoteStore
 from lease_redflag_detector.agent.queue import ApprovalQueue
 from lease_redflag_detector.agent.registry import LeaseRegistry
 from lease_redflag_detector.agent.registry_client import RegistryClient
@@ -93,6 +94,7 @@ def toolbox_without_search(tmp_path, confirm=None):
         warm=False,
         queue=ApprovalQueue(tmp_path / "queue.db"),
         confirm=confirm or ScriptedConfirmer(),
+        memory=NoteStore(tmp_path / "memory.db"),
     )
 
 
@@ -107,11 +109,16 @@ def test_every_tool_has_a_description_and_a_schema(tmp_path):
         "extract_red_flags",
         "draft_redline",
         "submit_for_review",
+        "recall_notes",
+        "remember",
+        "forget",
     ]
     for schema in box.schemas():
         assert len(schema["description"]) > 100 and schema["input_schema"]["properties"]
     assert [n for n, tool in box.tools.items() if tool.side_effect] == [
-        "submit_for_review"
+        "submit_for_review",
+        "remember",
+        "forget",
     ]
     assert not box.retry_safe("submit_for_review")
 
@@ -138,6 +145,7 @@ def test_the_registry_and_the_queue_work_for_the_same_user(tmp_path):
             retriever=FakeRetriever(),
             warm=False,
             queue=ApprovalQueue(tmp_path / "queue.db"),
+            memory=NoteStore(tmp_path / "memory.db"),
         )
 
 
@@ -250,3 +258,25 @@ def test_model_calls_inside_tools_fit_in_the_tool_time_limit():
         config = tool_client(RunConfig.load(ROOT / path), limit)
         # an answer and one repair, no client retries
         assert config.max_retries == 0 and 2 * config.timeout_s < limit
+
+
+def test_a_conversation_keeps_its_redlines_from_one_question_to_the_next(tmp_path):
+    per_question = toolbox_without_search(tmp_path)
+    assert per_question.on_request  # the drafts are reset at every question
+    conversation = build_toolbox(
+        CONFIG,
+        registry=REGISTRY,
+        retriever=FakeRetriever(),
+        warm=False,
+        queue=ApprovalQueue(tmp_path / "q2.db"),
+        confirm=ScriptedConfirmer(),
+        session=True,
+        memory=NoteStore(tmp_path / "m2.db"),
+    )
+    assert conversation.on_request == []
+
+
+def test_the_eval_checks_know_every_tool_of_the_toolbox(tmp_path):
+    from lease_redflag_detector.agent.evaluate import TOOLS
+
+    assert set(toolbox_without_search(tmp_path).tools) == TOOLS

@@ -103,27 +103,33 @@ corpus/
 
 | Group | Documents | Format | Source and license |
 |---|---|---|---|
-| Landlord's documents | leasing policy 2026 and 2024, clause library, committee minutes | DOCX | written for the project, MIT |
+| Landlord's documents | leasing policy 2026 and 2024, Amendment 1 to the 2026 policy, clause library, committee minutes | DOCX | written for the project, MIT |
 | | market study, mall brochure | PDF | written for the project, MIT |
 | | business centre web page | HTML | written for the project, MIT |
 | | staff newsletter | Markdown | written for the project, MIT |
 | Tenant's draft lease | `tenant_draft_lease` (the stage 1 `uk_template`) | DOCX | project author, MIT |
+| Tenant's letter | `tenant_letter_2026_11`, with an injected instruction | PDF | written for the project, MIT |
 | Legislation | Civil Code (ch. 58, art. 533), Law 157-IX, CMU resolutions 483 and 630, Law 543/96-VR; repealed: Law 2269-XII, Commercial Code (art. 283–291) | HTML | [zakon.rada.gov.ua](https://zakon.rada.gov.ua); official documents are not objects of copyright (art. 8 of the Law "On Copyright and Related Rights") |
 | Signed leases | 16 commercial leases under the Civil Code (9 by JSC Ukrtelecom on one template), 3 leases of state property | PDF | [Prozorro.Sale](https://prozorro.sale), public information |
+| | `lease_90001`, an office lease of the landlord with an injected instruction | PDF | written for the project, MIT |
 
 The landlord, ТОВ «Демо Нерухомість», its buildings and its tenants are fictional. Its
 documents are written so that a RAG system has something to get wrong: the 2024 policy
 differs from the 2026 one in most numbers; the web page, the brochure and the
 newsletter promise tenants more than the policy allows; the market study quotes
-market terms, not the company's; the minutes record one deal's exceptions.
+market terms, not the company's; the minutes record one deal's exceptions. Amendment 1
+moves approvals to the commercial committee from 01.10.2026 while the 2026 policy and
+the clause library still name the directors. A tenant's letter and clause 4.1 of
+`lease_90001` hold instructions for the AI that reads them (stage 3).
 
 Metadata used by retrieval filters, per document and per chunk:
 
 | Field | Values |
 |---|---|
-| `type` | policy, clause_library, minutes, research, marketing, newsletter, lease_draft, law, lease |
+| `type` | policy, clause_library, minutes, research, marketing, newsletter, lease_draft, law, lease, letter |
 | `access` | public, internal, confidential |
 | `status` | current, outdated (with `replaced_by`) |
+| `amends` | the document an amendment changes; both stay current |
 | `date`, `version` | the edition date; for laws, the date of the latest amendment |
 | `near_duplicate_of`, `similarity` | the most similar earlier document, if word 3-gram Jaccard ≥ 0.3 |
 | `landlord`, `tenant`, `city`, `regime` | for leases; `regime` is `civil_code` or `law_157_ix` |

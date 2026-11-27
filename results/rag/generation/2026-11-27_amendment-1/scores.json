@@ -1,0 +1,230 @@
+{
+ "totals": {
+  "valid": 1.0,
+  "verdict": 0.9166666666666666,
+  "risk": 0.875,
+  "cite": 1.0,
+  "gaps": 0.8333333333333334,
+  "referred": 0.8181818181818182,
+  "no_answer": 1.0,
+  "referred_extra": 0.15384615384615385
+ },
+ "per_flag": {
+  "f01": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f02": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 0.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f03": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f04": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / critical",
+   "expected": "unacceptable / critical"
+  },
+  "f05": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f06": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f07": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 0.0,
+   "got": "beyond_concessions / high",
+   "expected": "beyond_concessions / high"
+  },
+  "f08": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / medium",
+   "expected": "unacceptable / medium"
+  },
+  "f09": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f10": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 0.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "concession / medium",
+   "expected": "concession / low"
+  },
+  "f11": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 0.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / medium"
+  },
+  "f12": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f13": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f14": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f15": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f16": {
+   "valid": 1.0,
+   "verdict": 0.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 0.0,
+   "got": "unacceptable / high",
+   "expected": "concession / high"
+  },
+  "f17": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f18": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 0.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / medium"
+  },
+  "f19": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 0.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f20": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f21": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f22": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "unacceptable / high"
+  },
+  "f23": {
+   "valid": 1.0,
+   "verdict": 1.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "not_covered / high",
+   "expected": "not_covered / high"
+  },
+  "f24": {
+   "valid": 1.0,
+   "verdict": 0.0,
+   "risk": 1.0,
+   "cite": 1.0,
+   "gaps": 1.0,
+   "got": "unacceptable / high",
+   "expected": "not_covered / high"
+  }
+ }
+}

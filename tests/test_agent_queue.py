@@ -87,14 +87,22 @@ def test_nothing_is_created_without_the_lawyers_yes(tmp_path):
 
 
 def test_a_confirmed_request_lists_the_contested_points_only(tmp_path):
-    drafts = drafts_of("concession", "compliant", "unacceptable", ("compliant", True))
+    drafts = drafts_of(
+        "concession",
+        "compliant",
+        "unacceptable",
+        ("compliant", True),
+        ("unacceptable", True),
+    )
     run, queue, confirm = submit(tmp_path, drafts, True)
     result = run(SubmitArgs(lease_id=LEASE))
     assert result.created and result.request_id == "R-0001" and result.status == PENDING
     request = queue.get("R-0001")
     sections = sorted((i["section"], i["verdict"]) for i in request.items)
-    # compliant left out, unless the lawyer must decide; unacceptable for information
+    # compliant left out, unless it needs analysis; unacceptable for information,
+    # even when it needs analysis (point 10.5)
     assert sections == [
+        ("до відома", "unacceptable"),
         ("до відома", "unacceptable"),
         ("погодження", "compliant"),
         ("погодження", "concession"),
@@ -102,6 +110,7 @@ def test_a_confirmed_request_lists_the_contested_points_only(tmp_path):
     assert "Кому: юрист → комерційний комітет" in confirm.asked[0]
     # each list numbered from 1
     assert confirm.asked[0].count("   1. ") == 2 and "   3. " not in confirm.asked[0]
+    assert confirm.asked[0].count("потребує додаткового аналізу юриста") == 2
     assert queue.history("R-0001")[0]["status"] == PENDING
 
 
@@ -306,3 +315,10 @@ CREATE TABLE requests (
     replaces TEXT
 );
 """
+
+
+def test_the_drafts_of_a_conversation_describe_what_is_kept():
+    assert Drafts().describe() == ""
+    described = drafts_of("concession", "unacceptable").describe()
+    assert described.startswith("Redlines drafted earlier in this conversation")
+    assert f"{LEASE} — 2 clauses (tenant_break_option)" in described

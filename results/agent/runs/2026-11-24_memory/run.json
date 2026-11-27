@@ -1,0 +1,61 @@
+{
+ "name": "memory",
+ "note": "Step 3.5b: the lawyer's notes, prompt agent/v3",
+ "date": "2026-11-24T21:39:15",
+ "commit": "3f3bc18",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "agent-haiku-v2",
+  "model": "claude-haiku-5-5",
+  "prompt": "agent/v3",
+  "stop_prompt": "agent/stop_v1",
+  "extraction": "configs/claude-haiku-medium-v3.toml",
+  "redline": "configs/rag-haiku-v3.toml",
+  "user": "lawyer",
+  "max_tokens": 4000,
+  "timeout_s": 60.0,
+  "max_retries": 2,
+  "limits": {
+   "max_steps": 8,
+   "max_usd": 0.05,
+   "tool_timeout_s": 20.0,
+   "request_timeout_s": 240.0,
+   "reserve_s": 30.0
+  },
+  "retries": {
+   "max_attempts": 3,
+   "backoff_s": 1.0,
+   "max_backoff_s": 8.0
+  },
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "agent/v3",
+ "partial": true,
+ "tasks": {
+  "path": "evals/agent_tasks.toml",
+  "hash": "df0b69914084",
+  "ids": [
+   "m46",
+   "m47",
+   "m48",
+   "m49",
+   "m50"
+  ]
+ },
+ "totals": {
+  "tasks": 5,
+  "passed": 4,
+  "pass_rate": 0.8,
+  "tools_ok_rate": 0.6666666666666666,
+  "unauthorized": 0,
+  "errors": 0,
+  "steps_mean": 2.2,
+  "cost_usd": 0.007336,
+  "cost_mean_usd": 0.0014671999999999999,
+  "cost_per_1000_usd": 1.4671999999999998,
+  "latency_p50_s": 2.9
+ }
+}

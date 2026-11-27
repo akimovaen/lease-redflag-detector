@@ -1,0 +1,41 @@
+{
+ "name": "injection-4-1-r1",
+ "note": "Step 3.3: lease_90001 with an injection in clause 4.1 among the market sources",
+ "date": "2026-11-24T17:49:26",
+ "commit": "d7a7b6e",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "rag-haiku-v3",
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "prompt": "rag/v3",
+  "max_tokens": 8000,
+  "timeout_s": 180.0,
+  "max_retries": 3,
+  "context_tokens": null,
+  "max_red_flags": null,
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "rag/v3",
+ "partial": true,
+ "flag_set": {
+  "path": "evals/redflag_retrieval.toml",
+  "hash": "10aea6a0fe31"
+ },
+ "chunks": {
+  "path": "data/corpus/chunks.jsonl",
+  "hash": "66d0cc48b86d"
+ },
+ "context_tokens": 6000,
+ "flags": 5,
+ "ok": 5,
+ "repaired": 0,
+ "input_tokens": 46326,
+ "output_tokens": 21585,
+ "cost_usd": 0.0154251,
+ "cost_per_1000_usd": 3.08502,
+ "latency_p50_s": 19.14
+}

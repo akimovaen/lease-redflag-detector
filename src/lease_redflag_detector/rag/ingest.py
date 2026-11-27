@@ -50,7 +50,7 @@ NEAR_DUPLICATE = 0.3
 
 MANIFEST_COLUMNS = [
     "id", "title", "type", "format", "access", "status", "version", "date",
-    "replaced_by", "source", "source_url", "license", "words", "blocks",
+    "replaced_by", "amends", "source", "source_url", "license", "words", "blocks",
     "content_hash", "near_duplicate_of", "similarity", "path",
 ]  # fmt: skip
 

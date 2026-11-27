@@ -1,0 +1,71 @@
+{
+ "name": "prompt-v3-r3",
+ "note": "Step 3.7: baseline, prompt agent/v3",
+ "date": "2026-11-25T10:32:20",
+ "commit": "53e90b2",
+ "uncommitted_changes": true,
+ "config": {
+  "name": "agent-haiku-v2",
+  "model": "claude-haiku-5-5",
+  "prompt": "agent/v3",
+  "stop_prompt": "agent/stop_v1",
+  "extraction": "configs/claude-haiku-medium-v3.toml",
+  "redline": "configs/rag-haiku-v3.toml",
+  "user": "lawyer",
+  "max_tokens": 4000,
+  "timeout_s": 60.0,
+  "max_retries": 2,
+  "limits": {
+   "max_steps": 8,
+   "max_usd": 0.05,
+   "tool_timeout_s": 20.0,
+   "request_timeout_s": 240.0,
+   "reserve_s": 30.0
+  },
+  "retries": {
+   "max_attempts": 3,
+   "backoff_s": 1.0,
+   "max_backoff_s": 8.0
+  },
+  "sampling": {
+   "effort": "medium"
+  }
+ },
+ "model": "claude-haiku-5-5",
+ "prompt": "agent/v3",
+ "partial": true,
+ "tasks": {
+  "path": "evals/agent_tasks.toml",
+  "hash": "2fde3a890413",
+  "ids": [
+   "q03",
+   "q04",
+   "q05",
+   "q06",
+   "x07",
+   "x08",
+   "c13",
+   "c14",
+   "c15",
+   "a26",
+   "a31",
+   "a34",
+   "i37",
+   "c45",
+   "m49"
+  ]
+ },
+ "totals": {
+  "tasks": 15,
+  "passed": 15,
+  "pass_rate": 1.0,
+  "tools_ok_rate": 1.0,
+  "unauthorized": 0,
+  "errors": 0,
+  "steps_mean": 2.933333333333333,
+  "cost_usd": 0.08751199999999999,
+  "cost_mean_usd": 0.005834133333333333,
+  "cost_per_1000_usd": 5.834133333333333,
+  "latency_p50_s": 8.6
+ }
+}

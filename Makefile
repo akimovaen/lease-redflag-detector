@@ -5,8 +5,8 @@ NOTE ?=
 RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
-	check check-retrieval check-generation check-fresh evals agent agent-evals review \
-	mcp test lint
+	check check-retrieval check-generation check-fresh check-agent evals agent chat agent-evals review \
+	notes candidates promote mcp test lint
 
 run: extract metrics
 
@@ -43,7 +43,7 @@ calibrate:
 	uv run python scripts/calibrate_judge.py
 
 # Thresholds of evals/thresholds.toml, as in CI; no API calls.
-check: check-retrieval check-generation
+check: check-retrieval check-generation check-agent
 
 # A run just generated, against the looser [fresh] thresholds: make check-fresh RUN=...
 check-fresh:
@@ -54,6 +54,10 @@ check-retrieval:
 
 check-generation:
 	uv run python scripts/check_evals.py generation $(RUN)
+
+# The saved final runs of the agent tasks, or other runs: make check-agent [RUN=...]
+check-agent:
+	uv run python scripts/check_evals.py agent $(RUN)
 
 # The whole stage 2 loop on the current code: generate, judge, score, check.
 evals:
@@ -73,7 +77,12 @@ agent:
 		$(if $(MAX_STEPS),--max-steps $(MAX_STEPS)) $(if $(MAX_USD),--max-usd $(MAX_USD)) \
 		$(if $(FAULTS),--faults "$(FAULTS)") $(if $(AS_USER),--as $(AS_USER))
 
-# Stage 3 tasks with deterministic checks (API calls, about $0.15 a run):
+# A conversation with the agent in the terminal (API calls, about $0.006 a question):
+# make chat [AS_USER=litigator]
+chat:
+	uv run python -m lease_redflag_detector.agent.chat $(if $(AS_USER),--as $(AS_USER))
+
+# Stage 3 tasks with deterministic checks (API calls, about $0.2 a run):
 # make agent-evals NAME=my-change [NOTE="…"] [ONLY="n01 q03"] [REPEAT=3]
 agent-evals:
 	uv run python scripts/eval_agent.py --name $(NAME) --note "$(NOTE)" \
@@ -91,6 +100,22 @@ review:
 	uv run python -m lease_redflag_detector.agent.review $(if $(ID),--id $(ID)) \
 		$(if $(STATUS),--status $(STATUS)) $(if $(BY),--by $(BY)) \
 		$(if $(COMMENT),--comment "$(COMMENT)")
+
+# The lawyer's notes the agent keeps (a person, not the agent): list, forget one.
+# make notes BY=lawyer [ID=N-0003 FORGET=1]
+notes:
+	uv run python -m lease_redflag_detector.agent.notes $(if $(BY),--by $(BY)) \
+		$(if $(ID),--id $(ID)) $(if $(FORGET),--forget)
+
+# The lawyer's feedback as eval tasks: the candidates, a draft, the task set.
+# make candidates BY=lawyer [ID=F-0007 ACCEPT=1 | DISMISS=1]; make promote ID=F-0007
+candidates:
+	uv run python -m lease_redflag_detector.agent.candidates candidates \
+		$(if $(BY),--by $(BY)) $(if $(ID),--id $(ID)) $(if $(ACCEPT),--accept) \
+		$(if $(DISMISS),--dismiss)
+
+promote:
+	uv run python -m lease_redflag_detector.agent.candidates promote $(if $(ID),--id $(ID))
 
 test:
 	uv run pytest

@@ -17,6 +17,7 @@ import anthropic
 from pydantic import BaseModel, Field, ValidationError
 
 from lease_redflag_detector.extraction.extractor import RunConfig, load_prompt
+from lease_redflag_detector.markup import attr, neutral
 from lease_redflag_detector.rag.redline import gap_line
 
 FACT_SCORES = {"present": 1.0, "partial": 0.5, "missing": 0.0}
@@ -94,10 +95,15 @@ def claims_of(output: dict) -> list[dict]:
 def render_answer(row: dict, expected: dict) -> str:
     output = row["output"]
     facts = "\n".join(f"{i}. {fact}" for i, fact in enumerate(expected["key_facts"], 1))
-    findings = "\n".join(f"- {claim['text']}" for claim in output["findings"])
-    gaps = "\n".join(f"- {gap_line(gap)}" for gap in output["gaps"]) or "(none)"
-    return f"""<clause type="{row["type"]}">
-{row["quote"]}
+    # The answer may repeat what a source or the clause said, tags included.
+    findings = "\n".join(f"- {neutral(claim['text'])}" for claim in output["findings"])
+    gaps = (
+        "\n".join(f"- {neutral(gap_line(gap))}" for gap in output["gaps"]) or "(none)"
+    )
+    risk_reason = neutral(output["risk_reason"]["text"])
+    clause = neutral(output["proposed_clause"] or "(none)")
+    return f"""<clause type="{attr(row["type"])}">
+{neutral(row["quote"])}
 </clause>
 
 <expected>
@@ -110,12 +116,12 @@ notes: {expected["note"] or "(none)"}
 
 <answer>
 verdict: {output["verdict"]}
-risk: {output["risk"]} — {output["risk_reason"]["text"]}
+risk: {output["risk"]} — {risk_reason}
 findings:
 {findings}
 points the sources do not settle:
 {gaps}
-changed clause: {output["proposed_clause"] or "(none)"}
+changed clause: {clause}
 </answer>"""
 
 
@@ -124,12 +130,13 @@ def render_claims(row: dict, texts: dict[str, str]) -> str:
     blocks = []
     for number, claim in enumerate(claims_of(row["output"]), 1):
         sources = "\n".join(
-            f'<source id="{s}">\n{texts.get(chunks.get(s, ""), "(missing)")}\n</source>'
+            f'<source id="{attr(s)}">\n'
+            f"{neutral(texts.get(chunks.get(s, ''), '(missing)'))}\n</source>"
             for s in claim["sources"]
         )
         blocks.append(
-            f'<claim number="{number}">\n<text>{claim["text"]}</text>\n{sources}\n'
-            "</claim>"
+            f'<claim number="{number}">\n<text>{neutral(claim["text"])}</text>\n'
+            f"{sources}\n</claim>"
         )
     return "\n\n".join(blocks)
 

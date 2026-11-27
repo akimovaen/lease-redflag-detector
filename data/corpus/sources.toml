@@ -1,10 +1,12 @@
 # Documents of the RAG corpus and their metadata.
 #
 # `type`:   policy, clause_library, lease, lease_draft, law, marketing, research,
-#           minutes, newsletter
+#           minutes, newsletter, letter
 # `access`: who may see the document (public, internal, confidential); a retrieval
 #           filter, e.g. answers for a tenant-facing assistant use public ones only.
 # `status`: current or outdated (a superseded policy, a repealed law).
+# `amends`: the document whose part this one changes; both stay current, and the later
+#           one governs what it changes (amendments to the policy).
 # `regime`: the lease regime a document governs or follows: `law_157_ix` for state and
 #           municipal property, `civil_code` for other leases (set on Prozorro leases
 #           from the auction type). The landlord leases private property, so the
@@ -24,6 +26,44 @@ access = "internal"
 status = "current"
 version = "2.0"
 date = "2026-01-01"
+
+[[document]]
+id = "policy_2026_amendment_1"
+path = "data/corpus/sources/landlord_policy_2026_amendment_1.docx"
+title = "Зміни № 1 до Політики укладення договорів оренди нежитлових приміщень (версія 2.0)"
+type = "policy"
+access = "internal"
+status = "current"
+version = "2.0, зміни № 1"
+date = "2026-10-01"
+amends = "policy_2026"
+
+# Step 3.3: two documents with an injected instruction for the AI that reads them,
+# reviewed by the lawyer: a tenant's letter (found by the agent's search) and a lease
+# of the registry (read by the extractor, the redline and, as market practice, the
+# redlines of other leases).
+
+[[document]]
+id = "tenant_letter_2026_11"
+path = "data/corpus/sources/tenant_letter_2026_11.pdf"
+title = "Лист ТОВ «Зелена Полиця» від 10.11.2026 № 214/11 щодо умов договору оренди"
+type = "letter"
+access = "internal"
+status = "current"
+date = "2026-11-10"
+
+[[document]]
+id = "lease_90001"
+path = "data/corpus/sources/lease_90001.pdf"
+title = "Договір оренди: ТОВ «Демо Нерухомість» — ТОВ «Ясний Код», Київ"
+type = "lease"
+access = "internal"
+status = "current"
+date = "2026-09-15"
+landlord = "ТОВ «Демо Нерухомість»"
+tenant = "ТОВ «Ясний Код»"
+city = "Київ"
+regime = "civil_code"
 
 [[document]]
 id = "policy_2024"

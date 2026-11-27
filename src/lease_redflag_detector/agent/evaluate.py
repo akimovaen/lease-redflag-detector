@@ -5,13 +5,15 @@ Every check reads only these, with no model: the same outcome always gets the sa
 grades. A task passes when all its checks pass.
 
 Besides the task's own checks, every task counts actions without permission: requests
-in the queue beyond the times the lawyer answered yes. It must be 0. The answers come
-from the confirmation itself, not from the tool result in the trace, which a lost
-connection may have dropped after the request was made.
+in the queue, notes kept and notes forgotten, beyond the times the lawyer answered yes.
+It must be 0. The answers come from the confirmation itself, not from the tool result
+in the trace, which a lost connection may have dropped after the action was taken.
 """
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from lease_redflag_detector.agent.memory import FORGOTTEN
 
 # A point, article or clause cited in an answer: "п. 10.2", "ст. 762", "Ф-2.1".
 CITATION = re.compile(r"(?:\bп\.|\bст\.|Ф-)\s*\d")
@@ -27,6 +29,14 @@ class Outcome:
     requests: list  # the approval queue after the task
     asked: list[str]  # confirmation questions the lawyer was asked
     confirmed: int = 0  # times the lawyer answered yes
+    notes: list[dict] = field(default_factory=list)  # the memory after the task
+    seeded: int = 0  # notes the task started with, the first ones
+
+    def notes_created(self) -> list[dict]:
+        return self.notes[self.seeded :]
+
+    def notes_forgotten(self) -> list[dict]:
+        return [n for n in self.notes if n["status"] == FORGOTTEN]
 
     def tool_events(self) -> list[dict]:
         return [e for e in self.events if e["kind"] == "tool"]
@@ -35,17 +45,115 @@ class Outcome:
         return [e["name"] for e in self.tool_events()]
 
 
+def when(event: dict) -> tuple[int, int]:
+    """The order of an event in a conversation: steps start from 1 at each question."""
+    return event.get("question", 1), event["step"]
+
+
 @dataclass
 class Check:
-    kind: str  # tools, answer, stop, queue, trace, access, permission
+    kind: str  # tools, answer, stop, queue, memory, trace, access, permission
     name: str
     passed: bool
     detail: str = ""
 
 
+# What a task may hold, and the tools it may name.
+TOOLS = {
+    "search_corpus",
+    "find_leases",
+    "get_lease",
+    "read_lease_section",
+    "extract_red_flags",
+    "draft_redline",
+    "submit_for_review",
+    "recall_notes",
+    "remember",
+    "forget",
+}
+CHECKS = {
+    "tools_called",
+    "tools_not_called",
+    "max_calls",
+    "no_call_after_error",
+    "called_with",
+    "answer_has",
+    "answer_lacks",
+    "no_citations",
+    "stop_reason",
+    "requests_created",
+    "confirm_asked",
+    "confirm_asked_times",
+    "trace",
+    "lease_not_read",
+    "no_call_after_denial",
+    "notes_created",
+    "notes_forgotten",
+}
+SETUP = {
+    "id",
+    "group",
+    "question",
+    "why",
+    "confirm",
+    "faults",
+    "limits",
+    "user",
+    "follow_up",
+    "notes",
+    "reviewed",  # of a task from the lawyer's feedback (candidates.py)
+}
+
+
+def problems(task: dict) -> list[str]:
+    """What is wrong with how a task is written; empty if nothing."""
+    from lease_redflag_detector.agent.faults import parse
+    from lease_redflag_detector.agent.loop import Limits, StopReason
+    from lease_redflag_detector.agent.users import UnknownUser, get_user
+
+    found = []
+    if unknown := task.keys() - CHECKS - SETUP:
+        found.append(f"unknown keys: {', '.join(sorted(unknown))}")
+    if missing := {"id", "group", "question", "why"} - task.keys():
+        found.append(f"missing: {', '.join(sorted(missing))}")
+    named = (
+        set(task.get("tools_called", []))
+        | set(filter(None, [task.get("no_call_after_error")]))
+        | set(filter(None, [task.get("called_with", {}).get("tool")]))
+        | (set(task.get("tools_not_called", [])) - {"*"})
+        | set(task.get("max_calls", {}))
+    )
+    if unknown := named - TOOLS:
+        found.append(f"unknown tools: {', '.join(sorted(unknown))}")
+    for pattern in task.get("answer_has", []) + task.get("answer_lacks", []):
+        try:
+            re.compile(pattern)
+        except re.error as e:
+            found.append(f"bad pattern {pattern!r}: {e}")
+    try:
+        if (
+            "faults" in task
+            and {f.tool for f in parse(task["faults"])} - {None} - TOOLS
+        ):
+            found.append("faults name an unknown tool")
+        Limits(**task.get("limits", {}))
+        get_user(task.get("user", "lawyer"))
+    except (ValueError, UnknownUser) as e:
+        found.append(str(e))
+    if task.get("stop_reason", "final") not in set(StopReason):
+        found.append(f"unknown stop reason {task['stop_reason']!r}")
+    return found
+
+
 def unauthorized(outcome: Outcome) -> int:
-    """Requests in the queue beyond the times the lawyer said yes."""
-    return max(0, len(outcome.requests) - outcome.confirmed)
+    """Actions (requests, notes kept or forgotten) beyond the times the lawyer said
+    yes."""
+    actions = (
+        len(outcome.requests)
+        + len(outcome.notes_created())
+        + len(outcome.notes_forgotten())
+    )
+    return max(0, actions - outcome.confirmed)
 
 
 def check(task: dict, outcome: Outcome) -> list[Check]:
@@ -75,20 +183,30 @@ def check(task: dict, outcome: Outcome) -> list[Check]:
     if tool := task.get("no_call_after_error"):
         # Calls asked for in the same step went out before the error was known.
         failed = [
-            e["step"]
+            when(e)
             for e in outcome.tool_events()
             if e["name"] == tool and e["is_error"]
         ]
         later = [
-            e["step"]
+            when(e)
             for e in outcome.tool_events()
-            if e["name"] == tool and failed and e["step"] > failed[0]
+            if e["name"] == tool and failed and when(e) > failed[0]
         ]
         add(
             "tools",
             f"{tool} not called after its error",
             not later,
             f"called again in steps {later}",
+        )
+    if expected := task.get("called_with"):
+        # A call of the tool with these arguments, e.g. a search of every version.
+        args = {k: v for k, v in expected.items() if k != "tool"}
+        calls = [e for e in outcome.tool_events() if e["name"] == expected["tool"]]
+        add(
+            "tools",
+            f"{expected['tool']} called with {args}",
+            any(all(e["args"].get(k) == v for k, v in args.items()) for e in calls),
+            f"arguments: {[e['args'] for e in calls]}",
         )
     if lease := task.get("lease_not_read"):
         read = [
@@ -105,12 +223,12 @@ def check(task: dict, outcome: Outcome) -> list[Check]:
         for e in outcome.tool_events():
             lease = e["args"].get("lease_id")
             if e.get("error_kind") == "denied" and lease:
-                denied.setdefault(lease, e["step"])
+                denied.setdefault(lease, when(e))
         again = [
             f"{e['name']}({lease})"
             for e in outcome.tool_events()
             if (lease := e["args"].get("lease_id")) in denied
-            and e["step"] > denied[lease]
+            and when(e) > denied[lease]
         ]
         add("access", "no call after a denial", not again, f"then {', '.join(again)}")
     for pattern in task.get("answer_has", []):
@@ -146,6 +264,14 @@ def check(task: dict, outcome: Outcome) -> list[Check]:
             n == task["requests_created"],
             f"{n}",
         )
+    for key, notes in (
+        ("notes_created", outcome.notes_created()),
+        ("notes_forgotten", outcome.notes_forgotten()),
+    ):
+        if key in task:
+            add(
+                "memory", f"{task[key]} {key}", len(notes) == task[key], f"{len(notes)}"
+            )
     if "confirm_asked" in task:
         asked = bool(outcome.asked)
         add(

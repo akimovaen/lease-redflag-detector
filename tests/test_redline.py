@@ -85,6 +85,27 @@ def test_fixed_points_are_found_in_the_policy_in_force_only():
     ]
 
 
+def test_an_amendment_that_restates_a_point_replaces_the_old_one():
+    amendment = {"type": "policy", "status": "current", "date": "2026-10-01"}
+    chunks = [
+        chunk("policy_2026#002", "1.6. Оцінка змін", meta=POLICY),
+        chunk(
+            "policy_2026#012", "10.1. Юрист\n10.2. Комерційний директор", meta=POLICY
+        ),
+        chunk(
+            "amendment#002", "10.1. Юрист\n10.2. Комерційний комітет", meta=amendment
+        ),
+    ]
+    assert [c.id for c in fixed_chunks(chunks)] == ["policy_2026#002", "amendment#002"]
+
+
+def test_the_committee_approves_what_may_be_approved():
+    for verdict in (Verdict.CONCESSION, Verdict.BEYOND_CONCESSIONS):
+        assert "комерційний комітет" in APPROVAL[verdict]
+        assert "Змін № 1" in APPROVAL[verdict]
+        assert "директор" not in APPROVAL[verdict]
+
+
 def test_sources_are_numbered_once_and_cut_to_the_budget_by_score():
     fixed = [chunk("policy_2026#012", tokens=100)]
     hits = {
@@ -117,15 +138,35 @@ def test_any_gap_needs_the_lawyers_decision():
     assert not Result("failed", [], "").needs_decision
 
 
-def test_open_points_make_the_verdict_provisional():
+def test_open_points_go_to_the_committee_marked_not_held_back():
     assert approval("unacceptable", False) == APPROVAL[Verdict.UNACCEPTABLE]
-    provisional = approval("beyond_concessions", True)
-    assert provisional.startswith("спершу юрист")
-    assert provisional.endswith(APPROVAL[Verdict.BEYOND_CONCESSIONS])
+    marked = approval("beyond_concessions", True)
+    assert marked.startswith(
+        "потребує додаткового аналізу юриста — подається до комітету"
+    )
+    assert "10.5" in marked and "спершу" not in marked
+    assert marked.endswith(APPROVAL[Verdict.BEYOND_CONCESSIONS])
     assert approval("not_covered", True) == APPROVAL[Verdict.NOT_COVERED]
+    assert "комерційного комітету" in APPROVAL[Verdict.NOT_COVERED]
+    info = approval("unacceptable", True)
+    assert info.startswith("для відома комітету") and "подається" not in info
+    assert info.endswith(APPROVAL[Verdict.UNACCEPTABLE])
 
 
 def test_any_gap_or_not_covered_needs_the_lawyer():
     assert needs_decision("compliant", ["Чи діє ліміт для ритейлу?"])
     assert needs_decision("not_covered", [])
     assert not needs_decision("unacceptable", [])
+
+
+def test_the_corpus_gives_the_redline_section_10_as_amended():
+    from lease_redflag_detector.rag.retrieve import load_chunks
+
+    fixed = fixed_chunks(load_chunks())
+    section_10 = [c for c in fixed if "10.2." in c.text]
+    assert [c.doc_id for c in section_10] == ["policy_2026_amendment_1"]
+    # the amendment's own points 1.1-1.3 must not stand in for the policy's 1.6-1.7
+    risk = [c for c in fixed if "1.6." in c.text or "1.7." in c.text]
+    assert risk and {c.doc_id for c in risk} == {"policy_2026"}
+    assert section_10[0].meta["amends"] == "policy_2026"
+    assert "комерційний комітет" in section_10[0].text

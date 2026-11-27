@@ -7,15 +7,18 @@ not settle, the risk level, and the changed clause based on the approved wording
 
 Two parts of the policy apply to every red flag but share no words with the clause, so
 the search never finds them: the risk criteria and levels (1.6–1.7) and who approves
-deviations (section 10). They are always in the context.
+deviations (section 10, as Amendment 1 restates it from 01.10.2026). They are always in
+the context, from the latest document that holds them.
 
-An answer with any gap, or with the verdict not_covered, needs the lawyer's decision
-(`needs_decision`): the code refers every point the model names as open, so the model
-does not have to choose between a verdict and not_covered.
+An answer with any gap, or with the verdict not_covered, needs the lawyer's further
+analysis (`needs_decision`): the code marks every point the model names as open, so the
+model does not have to choose between a verdict and not_covered. By point 10.5 of the
+policy such a point still goes to the committee, marked, rather than waiting.
 
-Who approves the clause follows from the verdict by section 10 of the policy and is
-computed here, not asked of the model. The risk level starts from a default per red flag
-type (`DEFAULT_RISK`); the model may move it and must say why.
+Who approves the clause follows from the verdict by section 10 of the policy (the
+commercial committee since Amendment 1) and is computed here, not asked of the model.
+The risk level starts from a default per red flag type (`DEFAULT_RISK`); the model may
+move it and must say why.
 
 An answer is valid when it matches the schema, every source it cites is in the context,
 every claim cites one, and a changed clause is given exactly when one is needed. If it
@@ -40,6 +43,7 @@ from lease_redflag_detector.extraction.extractor import (
     load_prompt,
 )
 from lease_redflag_detector.extraction.schema import RedFlag, RedFlagType
+from lease_redflag_detector.markup import attr, neutral
 from lease_redflag_detector.rag.chunking import Chunk
 from lease_redflag_detector.rag.redline_search import RedlineSearch
 from lease_redflag_detector.rag.retrieve import Hit
@@ -77,36 +81,51 @@ DEFAULT_RISK = {
     RedFlagType.SUBLEASE_PERMITTED: Risk.MEDIUM,
 }
 
-# Section 10 of the policy.
+# Section 10 of the policy as Amendment 1 (in force from 01.10.2026) restates it.
 APPROVAL = {
     Verdict.COMPLIANT: "юрист (п. 10.1)",
     Verdict.CONCESSION: (
-        "комерційний директор за письмовим висновком юриста; генеральний директор, "
-        "якщо в договорі поступки за трьома або більше розділами Політики (п. 10.2)"
+        "комерційний комітет за письмовим висновком юриста (п. 10.2 в редакції "
+        "Змін № 1)"
     ),
     Verdict.BEYOND_CONCESSIONS: (
-        "генеральний директор — лише для якірного орендаря і в межах, які допускають "
-        "Політика та бібліотека формулювань (п. 10.3); інакше не погоджується"
+        "комерційний комітет — лише для якірного орендаря і в межах, які допускають "
+        "Політика та бібліотека формулювань (п. 10.3 в редакції Змін № 1); інакше не "
+        "погоджується"
     ),
     Verdict.UNACCEPTABLE: "не погоджується (п. 10.4)",
-    Verdict.NOT_COVERED: "Політика не визначає; рішення за юристом",
+    Verdict.NOT_COVERED: (
+        "Політика не визначає; подається до комерційного комітету з позначкою, що "
+        "пункт потребує додаткового аналізу юриста (п. 10.5 в редакції Змін № 1)"
+    ),
 }
+# Point 10.5: a point with open questions goes into the request too, marked; an
+# unacceptable one, which the committee does not approve, only for its information.
+FURTHER_ANALYSIS = (
+    "потребує додаткового аналізу юриста — подається до комітету з цією позначкою "
+    "(п. 10.5 в редакції Змін № 1); за вердиктом: "
+)
+FOR_INFORMATION = (
+    "для відома комітету, з позначкою, що пункт потребує додаткового аналізу юриста "
+    "(п. 10.5 в редакції Змін № 1); "
+)
 
 
 def approval(verdict: str, has_gaps: bool) -> str:
-    """Who approves the clause. With open points the verdict is provisional: the lawyer
-    decides them first, and the route of section 10 applies only if the verdict holds."""
+    """Who approves the clause. A point with open questions is not held back until the
+    lawyer settles them: by point 10.5 it goes into the request to the committee,
+    marked as needing the lawyer's further analysis, with the route of its verdict."""
     route = APPROVAL[Verdict(verdict)]
     if not has_gaps or verdict == Verdict.NOT_COVERED:
         return route
-    return (
-        "спершу юрист — вирішити відкриті пункти; якщо вердикт підтвердиться: " + route
-    )
+    if verdict == Verdict.UNACCEPTABLE:
+        return FOR_INFORMATION + route
+    return FURTHER_ANALYSIS + route
 
 
 def needs_decision(verdict: str, gaps: list) -> bool:
-    """Any gap sends the answer to the lawyer, whatever its verdict; so does
-    not_covered, whose route is the lawyer's decision even without a gap."""
+    """Any gap marks the point as needing the lawyer's further analysis, whatever its
+    verdict; so does not_covered, which the policy does not settle (point 10.5)."""
     return bool(gaps) or verdict == Verdict.NOT_COVERED
 
 
@@ -200,18 +219,22 @@ class Source:
 
 
 def fixed_chunks(chunks: list[Chunk]) -> list[Chunk]:
-    """The chunks of the policy in force that hold the `FIXED_POINTS`."""
-    return [
-        chunk
-        for chunk in chunks
-        if chunk.meta.get("type") == "policy"
-        and chunk.meta.get("status") == "current"
-        and any(
-            line.startswith(point)
-            for line in chunk.text.splitlines()
-            for point in FIXED_POINTS
-        )
-    ]
+    """The chunks of the policy in force that hold the `FIXED_POINTS`. When an
+    amendment restates a point, only the latest document's chunk is kept, so that the
+    model reads the route in force, not the one it replaced."""
+    holders: dict[str, list[Chunk]] = {}
+    for chunk in chunks:
+        if chunk.meta.get("type") != "policy" or chunk.meta.get("status") != "current":
+            continue
+        lines = chunk.text.splitlines()
+        for point in FIXED_POINTS:
+            if any(line.startswith(point) for line in lines):
+                holders.setdefault(point, []).append(chunk)
+    keep = set()
+    for found in holders.values():
+        latest = max(str(chunk.meta.get("date", "")) for chunk in found)
+        keep |= {c.id for c in found if str(c.meta.get("date", "")) == latest}
+    return [chunk for chunk in chunks if chunk.id in keep]
 
 
 def build_sources(
@@ -243,8 +266,8 @@ def build_sources(
 def render_context(red_flag: RedFlag, sources: list[Source]) -> str:
     blocks = [
         f'<source id="{s.id}" role="{ROLE_NAMES[s.role]}" '
-        f'document="{s.chunk.meta.get("title", s.chunk.doc_id)}" '
-        f'section="{s.chunk.section}">\n{s.chunk.text}\n</source>'
+        f'document="{attr(s.chunk.meta.get("title", s.chunk.doc_id))}" '
+        f'section="{attr(s.chunk.section)}">\n{neutral(s.chunk.text)}\n</source>'
         for s in sources
     ]
     return "\n\n".join(
@@ -255,7 +278,7 @@ def render_context(red_flag: RedFlag, sources: list[Source]) -> str:
             (
                 f'<red_flag type="{red_flag.type}" '
                 f'default_risk="{DEFAULT_RISK[red_flag.type]}">\n'
-                f"{red_flag.quote}\n</red_flag>"
+                f"{neutral(red_flag.quote)}\n</red_flag>"
             ),
         ]
     )

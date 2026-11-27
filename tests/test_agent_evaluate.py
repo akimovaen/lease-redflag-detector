@@ -1,48 +1,11 @@
-import re
 import tomllib
 from pathlib import Path
 
-from lease_redflag_detector.agent.evaluate import Outcome, check, tools_ok
-from lease_redflag_detector.agent.faults import parse
-from lease_redflag_detector.agent.loop import Limits, StopReason
+from lease_redflag_detector.agent.evaluate import Outcome, check, problems, tools_ok
 from lease_redflag_detector.agent.queue import Request
-from lease_redflag_detector.agent.users import get_user
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = tomllib.loads((ROOT / "evals" / "agent_tasks.toml").read_text())["task"]
-TOOLS = {
-    "search_corpus",
-    "find_leases",
-    "get_lease",
-    "read_lease_section",
-    "extract_red_flags",
-    "draft_redline",
-    "submit_for_review",
-}
-KEYS = {
-    "id",
-    "group",
-    "question",
-    "why",
-    "tools_called",
-    "tools_not_called",
-    "max_calls",
-    "no_call_after_error",
-    "answer_has",
-    "answer_lacks",
-    "no_citations",
-    "stop_reason",
-    "requests_created",
-    "confirm",
-    "confirm_asked",
-    "confirm_asked_times",
-    "trace",
-    "faults",
-    "limits",
-    "user",
-    "lease_not_read",
-    "no_call_after_denial",
-}
 
 
 def tool(name, content="{}", **fields):
@@ -71,22 +34,15 @@ def test_the_task_set_is_well_formed():
     assert len(TASKS) >= 15
     assert len({t["id"] for t in TASKS}) == len(TASKS)
     for task in TASKS:
-        assert task.keys() <= KEYS, task["id"]
-        assert {"id", "group", "question", "why"} <= task.keys(), task["id"]
-        named = (
-            set(task.get("tools_called", []))
-            | set(filter(None, [task.get("no_call_after_error")]))
-            | (set(task.get("tools_not_called", [])) - {"*"})
-            | set(task.get("max_calls", {}))
-        )
-        assert named <= TOOLS, task["id"]
-        for pattern in task.get("answer_has", []) + task.get("answer_lacks", []):
-            re.compile(pattern)
-        if "faults" in task:
-            assert {f.tool for f in parse(task["faults"])} - {None} <= TOOLS
-        Limits(**task.get("limits", {}))
-        get_user(task.get("user", "lawyer"))
-        assert task.get("stop_reason", "final") in set(StopReason)
+        assert problems(task) == [], task["id"]
+
+
+def test_a_badly_written_task_is_caught():
+    task = {"id": "x", "question": "?", "tools_called": ["delete_all"], "colour": 1}
+    found = problems(task)
+    assert any("unknown keys: colour" in p for p in found)
+    assert any("missing: group, why" in p for p in found)
+    assert any("unknown tools: delete_all" in p for p in found)
 
 
 def test_tool_checks():
@@ -182,3 +138,44 @@ def test_a_closed_lease_not_read_and_not_asked_for_again():
     # a denial without a lease does not make every later call without one a retry
     odd = [tool("get_lease", step=1, **denied), tool("find_leases", step=2)]
     assert failed(task, outcome(events=odd)) == []
+
+
+def test_a_tool_called_with_given_arguments():
+    task = {"called_with": {"tool": "search_corpus", "versions": "all"}}
+    current = tool("search_corpus", args={"query": "q", "versions": "current"})
+    every = tool("search_corpus", args={"query": "q", "versions": "all"})
+    assert failed(task, outcome(events=[current])) == [
+        "search_corpus called with {'versions': 'all'}"
+    ]
+    assert failed(task, outcome(events=[current, every])) == []
+
+
+def test_events_are_ordered_by_question_then_step():
+    task = {"no_call_after_error": "find_leases", "no_call_after_denial": True}
+    error = {"is_error": True, "content": "format changed"}
+    # step 3 of question 1, then step 1 of question 2: the second comes later
+    again = [
+        tool("find_leases", step=3, question=1, **error),
+        tool("find_leases", step=1, question=2),
+    ]
+    assert failed(task, outcome(events=again)) == [
+        "find_leases not called after its error"
+    ]
+    denied = {"is_error": True, "error_kind": "denied", "args": {"lease_id": "lease_9"}}
+    asked_again = [
+        tool("get_lease", step=2, question=1, **denied),
+        tool("read_lease_section", step=1, question=2, args={"lease_id": "lease_9"}),
+    ]
+    assert failed(task, outcome(events=asked_again)) == ["no call after a denial"]
+
+
+def test_notes_kept_or_forgotten_count_and_need_a_yes():
+    seeded = {"id": "N-0001", "status": "забута"}
+    new = {"id": "N-0002", "status": "чинна"}
+    result = outcome()
+    result.notes, result.seeded, result.confirmed = [seeded, new], 1, 2
+    task = {"notes_created": 1, "notes_forgotten": 1}
+    assert failed(task, result) == []
+    result.confirmed = 1  # two actions, one yes
+    assert failed(task, result) == ["no action without permission"]
+    assert failed({"notes_created": 0}, result)[0] == "0 notes_created"
