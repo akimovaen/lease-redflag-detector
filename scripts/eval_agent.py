@@ -26,6 +26,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import statistics
 import subprocess
 import sys
@@ -47,6 +48,11 @@ def git(*args: str) -> str:
     return subprocess.run(
         ["git", *args], cwd=ROOT, capture_output=True, text=True, check=True
     ).stdout.strip()
+
+
+def folder_name(name: str, date: str) -> str:
+    """The run's folder: the date and the name, the date once even if the name has it."""
+    return name if re.match(r"\d{4}-\d{2}-\d{2}_", name) else f"{date}_{name}"
 
 
 def load_tasks() -> list[dict]:
@@ -308,7 +314,7 @@ def main() -> None:
         tasks = [t for t in tasks if t["id"] in args.only]
     names = [args.name] + [f"{args.name}-r{i}" for i in range(2, args.repeat + 1)]
     date = datetime.date.today().isoformat()
-    folders = [OUT / f"{date}_{name}" for name in names]
+    folders = [OUT / folder_name(name, date) for name in names]
     if existing := [f for f in folders if f.exists()]:
         raise SystemExit(
             f"{existing[0].relative_to(ROOT)} exists; choose another --name"

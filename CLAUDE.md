@@ -17,7 +17,7 @@ Red flags are judged from the landlord's side. See README.md and REPORT.md.
 - `make retrieval`, `make redline`, `make evals` call models or cost money: say what a
   run will cost before starting it.
 - Stage 3: `make agent Q="…"` and every question of `make chat` cost about $0.006
-  (budget $0.05 a request), `make agent-evals` about $0.2 for all tasks (`ONLY=`,
+  (budget $0.05 a request), `make agent-evals` about $0.25 for all tasks (`ONLY=`,
   `REPEAT=`); `make mcp`, `make review`, `make notes`, `make candidates` and
   `make promote` call no model. The user is
   `AS_USER=` for the agent and the server, `BY=` for `make review` and `make notes`

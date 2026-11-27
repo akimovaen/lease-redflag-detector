@@ -72,3 +72,15 @@ def test_point_10_2_counts_from_the_policy_or_the_amendment():
 
 def test_the_tasks_named_by_the_script_are_in_the_task_set():
     sb.check_tasks()
+
+
+def test_runs_of_different_prompts_are_counted_apart(tmp_path):
+    runs = []
+    for name, prompt in [("a", "agent/v2"), ("b", "agent/v5"), ("c", "agent/v2")]:
+        folder = tmp_path / name
+        folder.mkdir()
+        info = {"prompt": prompt, "tasks": {"hash": "h"}, "commit": "c"}
+        (folder / "run.json").write_text(json.dumps(info))
+        runs.append(folder)
+    groups = sb.by_prompt(runs)
+    assert [[r.name for r in g] for g in groups.values()] == [["a", "c"], ["b"]]

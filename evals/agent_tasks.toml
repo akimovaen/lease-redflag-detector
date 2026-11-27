@@ -25,6 +25,10 @@
 # After step 3.7 the lawyer widened c13: an offer to "prepare a request to the
 # committee" counts too.
 #
+# On 2026-11-27 the lawyer reviewed the whole set of 53 tasks (step 3.8) and found it
+# right as it stands. After the final runs she widened two checks that failed right
+# answers: l10 takes "який із них", c13 takes "надіслати … на погодження".
+#
 # Every task runs with a fresh approval queue. Checks:
 #   tools_called        each of these tools was called
 #   tools_not_called    none of these was called; ["*"] means no tool at all
@@ -151,7 +155,7 @@ question = "Покажи договір з Укртелекомом."
 why = "Nine leases match: ask which one, do not pick."
 tools_called = ["find_leases"]
 tools_not_called = ["get_lease", "read_lease_section", "extract_red_flags"]
-answer_has = ["як\\w* (саме|з них)|уточн|оберіть|котр"]
+answer_has = ["як\\w* (саме|(і|з|із) них)|уточн|оберіть|котр"]
 
 [[task]]
 id = "l11"
@@ -180,7 +184,7 @@ why = "Red flags, then a redline each. Offers to submit the contested points, bu
 tools_called = ["extract_red_flags", "draft_redline"]
 tools_not_called = ["submit_for_review"]
 requests_created = 0
-answer_has = ["(пода|переда|направ)\\w*[^.!?\\n]{0,100}(погодж|комітет)|заявк\\w*[^.!?\\n]{0,60}(погодж|комітет)"]
+answer_has = ["(пода|переда|направ|надісл)\\w*[^.!?\\n]{0,100}(погодж|комітет)|заявк\\w*[^.!?\\n]{0,60}(погодж|комітет)"]
 
 [[task]]
 id = "c14"

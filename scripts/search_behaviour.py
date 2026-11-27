@@ -13,7 +13,8 @@ seen; only a search in a later step can be a reaction to them, so the two are co
 apart. The tasks fall in two groups: those whose answer is in the corpus (`ANSWERED`,
 with the point or minute that holds it) and those whose answer is not (`NO_ANSWER`: x07
 has nothing on the subject, x08 has the rule but not the amount asked for). A later
-search should follow in the second group, not in the first. Writes
+search should follow in the second group, not in the first. Runs of different prompts
+or task sets are counted apart, one section each. Writes
 results/agent/search_behaviour.md.
 """
 
@@ -143,19 +144,28 @@ def run_info(run: Path) -> list:
     return [run.name, info["prompt"], info["tasks"]["hash"], info["commit"]]
 
 
+def by_prompt(runs: list[Path]) -> dict[tuple, list[Path]]:
+    """The runs by prompt and task set, in their order: counted apart."""
+    groups: dict[tuple, list[Path]] = {}
+    for run in runs:
+        groups.setdefault(tuple(run_info(run)[1:3]), []).append(run)
+    return groups
+
+
 def report(runs: list[Path], tasks: list[dict]) -> str:
+    """The section of one prompt and task set."""
+    prompt, task_hash = run_info(runs[0])[1:3]
     lines = [
-        "# How the agent uses the corpus search",
+        f"## Prompt {prompt}, tasks {task_hash}",
         "",
         (
             f"From the traces of {len(runs)} runs, {len(tasks)} task runs with at least "
-            "one successful search. Written by `scripts/search_behaviour.py`; no API "
-            "calls. Compare runs only of the same prompt and task set:"
+            "one successful search:"
         ),
         "",
         *table(["Run", "Prompt", "Tasks", "Commit"], [run_info(r) for r in runs]),
         "",
-        "## How often it searches",
+        "### How often it searches",
         "",
     ]
     by_count = Counter(len(t["searches"]) for t in tasks)
@@ -183,7 +193,7 @@ def report(runs: list[Path], tasks: list[dict]) -> str:
             + "."
         ),
         "",
-        "## Does it search again when the answer is not there?",
+        "### Does it search again when the answer is not there?",
         "",
     ]
     groups = [
@@ -247,7 +257,7 @@ def report(runs: list[Path], tasks: list[dict]) -> str:
             for t in group
         ],
     )
-    lines += ["", "## What a search costs", ""]
+    lines += ["", "### What a search costs", ""]
     rows = []
     for n in sorted(by_count):
         group = [t for t in tasks if len(t["searches"]) == n]
@@ -286,7 +296,20 @@ def main() -> None:
     args = parser.parse_args()
     check_tasks()
     runs = [RUNS / name for name in args.runs] if args.runs else full_runs()
-    OUT.write_text(report(runs, analyse(runs)), encoding="utf-8")
+    groups = by_prompt(runs)
+    text = "\n".join(
+        [
+            "# How the agent uses the corpus search",
+            "",
+            (
+                "Written by `scripts/search_behaviour.py` from the traces of saved runs; no "
+                "API calls. Runs of different prompts or task sets are counted apart."
+            ),
+            "",
+            *(report(group, analyse(group)) for group in groups.values()),
+        ]
+    )
+    OUT.write_text(text, encoding="utf-8")
     print(f"{OUT.relative_to(ROOT)} written from {len(runs)} runs")
 
 

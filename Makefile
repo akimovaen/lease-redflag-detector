@@ -5,7 +5,7 @@ NOTE ?=
 RUN ?=
 
 .PHONY: run extract metrics corpus chunks retrieval redline judge scores calibrate \
-	check check-retrieval check-generation check-fresh evals agent chat agent-evals review \
+	check check-retrieval check-generation check-fresh check-agent evals agent chat agent-evals review \
 	notes candidates promote mcp test lint
 
 run: extract metrics
@@ -43,7 +43,7 @@ calibrate:
 	uv run python scripts/calibrate_judge.py
 
 # Thresholds of evals/thresholds.toml, as in CI; no API calls.
-check: check-retrieval check-generation
+check: check-retrieval check-generation check-agent
 
 # A run just generated, against the looser [fresh] thresholds: make check-fresh RUN=...
 check-fresh:
@@ -54,6 +54,10 @@ check-retrieval:
 
 check-generation:
 	uv run python scripts/check_evals.py generation $(RUN)
+
+# The saved final runs of the agent tasks, or other runs: make check-agent [RUN=...]
+check-agent:
+	uv run python scripts/check_evals.py agent $(RUN)
 
 # The whole stage 2 loop on the current code: generate, judge, score, check.
 evals:

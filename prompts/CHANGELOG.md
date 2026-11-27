@@ -119,7 +119,8 @@ no tools.
 
 Compared on 15 tasks over 3 runs each (`results/agent/runs/2026-11-25_prompt-v3*`,
 `2026-11-25_prompt-v4*`): v3 43 of 45, v4 44 of 45; the offer "confirm you are the
-head of legal" fell from 5 of 9 answers to 0 of 9 (`results/agent/phrase_counts.md`);
+head of legal" fell from 4 of 9 answers to 0 of 9 (`results/agent/phrase_counts.md`;
+5 of 9 before the count was narrowed in step 3.8);
 c45 and i37 had no failure. The rule
 "search once, then decide" had no effect: searches asked for in advance went from 5 to
 9 task runs. v5 drops it, the lawyer's choice: a rule stays only if it shows an effect.

@@ -16,8 +16,9 @@ model does not have to choose between a verdict and not_covered. By point 10.5 o
 policy such a point still goes to the committee, marked, rather than waiting.
 
 Who approves the clause follows from the verdict by section 10 of the policy (the
-commercial committee since Amendment 1) and is computed here, not asked of the model. The risk level starts from a default per red flag
-type (`DEFAULT_RISK`); the model may move it and must say why.
+commercial committee since Amendment 1) and is computed here, not asked of the model.
+The risk level starts from a default per red flag type (`DEFAULT_RISK`); the model may
+move it and must say why.
 
 An answer is valid when it matches the schema, every source it cites is in the context,
 every claim cites one, and a changed clause is given exactly when one is needed. If it

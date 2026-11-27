@@ -32,13 +32,19 @@ COUNTS = [
         "what": (
             "After a denial the agent offers what it cannot do: to read the lease once "
             "the lawyer confirms being the head of legal or the litigation team "
-            "(step 3.7; the lawyer judged it a prompt fix, not a failure of the task)"
+            "(step 3.7; the lawyer judged it a prompt fix, not a failure of the task). "
+            "Narrowed in step 3.8: advice to open the lease under one's own account is "
+            "right and is not counted"
         ),
         "tasks": ["a26", "a31", "a34"],
-        "pattern": r"підтверд\w*[^.]{0,60}(керівник|судов)|якщо ви (керівник|належите|з судов)",
+        "pattern": (
+            r"підтверд\w*[^.]{0,60}(керівник|судов)"
+            r"|(керівник|судов)\w*[^.]{0,60}(підтверд|скажіть|відкрию)"
+        ),
         "groups": {
             "agent/v3": runs("2026-11-25_prompt-v3"),
             "agent/v4": runs("2026-11-25_prompt-v4"),
+            "agent/v5": runs("2026-11-27_final-v5"),
         },
     },
     {
@@ -49,7 +55,10 @@ COUNTS = [
         ),
         "tasks": ["v42"],
         "pattern": r"Ф-2\.3|[Бб]ібліотек",
-        "groups": {"agent/v3": runs("2026-11-24_versions")},
+        "groups": {
+            "agent/v3": runs("2026-11-24_versions"),
+            "agent/v5": runs("2026-11-27_final-v5"),
+        },
     },
 ]
 

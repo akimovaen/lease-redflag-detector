@@ -1,0 +1,29 @@
+{
+ "facts": 0.8546511627906976,
+ "clause": 0.6086956521739131,
+ "faithfulness": 0.75,
+ "unsupported_claims": 2,
+ "claims": 114,
+ "judge_failed": 0,
+ "judge": {
+  "name": "judge-sonnet-v1",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "prompt": "judge/answer_v1",
+  "max_tokens": 4000,
+  "timeout_s": 180.0,
+  "max_retries": 3,
+  "context_tokens": null,
+  "max_red_flags": null,
+  "sampling": {
+   "effort": "low"
+  }
+ },
+ "prompts": [
+  "judge/answer_v1",
+  "judge/faithfulness_v1"
+ ],
+ "input_tokens": 180333,
+ "output_tokens": 21544,
+ "cost_usd": 0.576106
+}

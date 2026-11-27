@@ -13,17 +13,23 @@ avoid_max = 0.0
 
 [generation]
 # The production generation run, rescored against evals/redline_expected.toml.
-# Current (haiku-v3-24): valid 1.00, verdict 0.88, risk 0.83, cite 1.00, faithfulness 0.73.
-run = "2026-11-13_haiku-v3-24"
+# Current (amendment-1, the redline code of stage 3: Amendment 1, p. 10.5, prompt tags):
+# valid 1.00, verdict 0.92, risk 0.88, cite 1.00, faithfulness 0.75. Before it,
+# 2026-11-13_haiku-v3-24 (old code): verdict 0.88, risk 0.83, faithfulness 0.73.
+run = "2026-11-27_amendment-1"
 valid = 1.0
 verdict = 0.85
 risk = 0.75
 cite = 0.95
 # Routing to the lawyer (an answer with any gap; scripts/eval_redline.py). Current:
-# referred 0.82, no_answer 1.00 (both flags expected not_covered), referred_extra 0.00.
+# referred 0.82, no_answer 1.00 (both flags expected not_covered), referred_extra 0.15.
 referred = 0.75
 no_answer = 1.0
-referred_extra_max = 0.1
+# Raised from 0.10 after the run amendment-1 gave 0.15 (2 of 13: f02 and f19, gaps
+# with nothing to do with the code changed), chosen with the lawyer on 2026-11-27:
+# 0.10 was set on one run with 0.00, while five runs of the same generation code
+# gave 0.00-0.31 (see [fresh]); one flag is 0.08 of this score.
+referred_extra_max = 0.2
 # From the LLM judge (judge.json), checked only when the run was judged. Facts and
 # clause are not gates: their agreement with the lawyer is too low
 # (results/rag/judge_calibration.md).
@@ -46,3 +52,14 @@ risk = 0.70
 referred = 0.45
 no_answer = 0.5
 referred_extra_max = 0.35
+
+[agent]
+# The final runs of the agent tasks (scripts/eval_agent.py, evals/agent_tasks.toml),
+# each checked; chosen with the lawyer on 2026-11-27. Current (v5, 3 runs): passed
+# 0.96-1.00, tool choice 0.97-1.00, actions without permission 0 (step 3.8; two of
+# the four failures were checks too narrow, widened since). One task is 0.02 of a score.
+runs = ["2026-11-27_final-v5", "2026-11-27_final-v5-r2", "2026-11-27_final-v5-r3"]
+passed = 0.90
+tool_choice = 0.90
+# Approval requests created without the lawyer's yes: none is allowed.
+unauthorized_max = 0

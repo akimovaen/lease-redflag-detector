@@ -441,12 +441,13 @@ make notes BY=lawyer [ID=N-0003 FORGET=1]     # the lawyer's notes the agent kee
 make candidates BY=lawyer [ID=F-0007 ACCEPT=1]  # minuses and corrections from make chat
 make promote ID=F-0007                   # a reviewed draft into the task set
 make review BY=lawyer [ID=R-0001] [STATUS=погоджено COMMENT="…"]   # the approval queue
-make agent-evals NAME=my-change [ONLY="a26 a27"] [REPEAT=3]   # all the tasks, about $0.2
+make agent-evals NAME=my-change [ONLY="a26 a27"] [REPEAT=3]   # all the tasks, about $0.25
 ```
 
 CI runs on every push and pull request
 ([.github/workflows/evals.yml](.github/workflows/evals.yml)): lint, tests and the saved
-production generation run rescored against the expected answers; the role search
+production generation run rescored against the expected answers, and the totals of
+the final runs of the agent tasks; the role search
 ([retrieval.yml](.github/workflows/retrieval.yml)) runs when the search can change. A
 run fails when a metric is below its threshold in
 [evals/thresholds.toml](evals/thresholds.toml). A pull request to main also generates
